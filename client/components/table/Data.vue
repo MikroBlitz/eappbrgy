@@ -124,10 +124,10 @@
                         <UTooltip text="View Actions">
                             <UPopover>
                                 <UButton
-                                    color="green"
+                                    color="gray"
                                     trailing-icon="solar:menu-dots-bold-duotone"
                                     variant="ghost"
-                                    class="hover:scale-125 transition-all duration-300 rounded-full"
+                                    class="hover:scale-125 p-1 transition-all duration-300"
                                 />
 
                                 <template #panel>

@@ -3,7 +3,8 @@
         <UButton
             icon="solar:hamburger-menu-broken"
             variant="ghost"
-            :color="isDark ? 'green' : 'gray'"
+            color="green"
+            size="xl"
             class="w-full justify-start hover:bg-transparent hover:scale-110 transition-all duration-300 p-2"
             @click="isOpen = true"
         >

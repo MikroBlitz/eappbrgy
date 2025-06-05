@@ -40,28 +40,23 @@
                             >
                                 <UTooltip :text="`Add ${config.singular}`">
                                     <UButton
-                                        class="p-2 rounded-full group"
+                                        class="group-hover:scale-150 transition-all duration-300 p-1"
+                                        icon="solar:add-square-broken"
+                                        variant="ghost"
+                                        size="xl"
                                         @click="openAddModal"
-                                    >
-                                        <UIcon
-                                            name="mdi:add"
-                                            class="group-hover:scale-150 transition-all duration-300"
-                                        />
-                                    </UButton>
+                                    />
                                 </UTooltip>
                             </template>
                             <UTooltip text="Refetch Data">
                                 <UButton
-                                    class="p-2 rounded-full group"
-                                    variant="outline"
+                                    class="transition-transform duration-500 group-hover:scale-150 rounded-full p-1"
+                                    :style="`transform: rotate(${rotationRefetch}deg);`"
+                                    icon="solar:refresh-bold"
+                                    variant="ghost"
+                                    size="xl"
                                     @click="handleRefetch"
-                                >
-                                    <UIcon
-                                        name="mdi:reload"
-                                        class="transition-transform duration-500 group-hover:scale-150"
-                                        :style="`transform: rotate(${rotationRefetch}deg);`"
-                                    />
-                                </UButton>
+                                />
                             </UTooltip>
                         </div>
                     </div>
@@ -254,7 +249,7 @@ const computedActions = computed(() => {
               {
                   color: () => "yellow",
                   condition: () => auth.can(props.config.permissions.view),
-                  icon: () => "mdi:eye",
+                  icon: () => "solar:eye-broken",
                   onClick: (row: T) => openViewModal(row),
                   tooltip: (row: T) =>
                       `View ${props.config.singular} ${row.name || row.id}`,
@@ -264,7 +259,7 @@ const computedActions = computed(() => {
               {
                   color: () => "blue",
                   condition: () => auth.can(props.config.permissions.edit),
-                  icon: () => "mdi:pencil",
+                  icon: () => "solar:pen-new-square-outline",
                   onClick: (row: T) => openEditModal(row),
                   tooltip: (row: T) =>
                       `Edit ${props.config.singular} ${row.name || row.id}`,
@@ -274,7 +269,7 @@ const computedActions = computed(() => {
               {
                   color: () => "red",
                   condition: () => auth.can(props.config.permissions.delete),
-                  icon: () => "mdi:delete",
+                  icon: () => "solar:trash-bin-minimalistic-broken",
                   onClick: (row: T) => openDeleteModal(row),
                   tooltip: (row: T) =>
                       `Delete ${props.config.singular} ${row.name || row.id}`,
