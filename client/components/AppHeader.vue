@@ -1,6 +1,6 @@
 <template>
     <header
-        class="bg-slate-800 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4"
+        class="bg-green-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-3 px-4"
     >
         <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -9,22 +9,22 @@
 
             <div class="flex items-center space-x-4">
                 <UButton
-                    icon="i-heroicons-bell"
-                    color="primary"
+                    icon="solar:bell-broken"
+                    :color="isDark ? 'primary' : 'gray'"
                     variant="ghost"
                     :trailing="false"
+                    class="hover:bg-transparent hover:scale-110 transition-all duration-300"
                 />
 
                 <ClientOnly>
                     <UButton
                         :icon="
-                            isDark
-                                ? 'i-heroicons-moon-20-solid'
-                                : 'i-heroicons-sun-20-solid'
+                            isDark ? 'solar:moon-broken' : 'solar:sun-broken'
                         "
-                        color="primary"
+                        :color="isDark ? 'primary' : 'gray'"
                         variant="ghost"
                         aria-label="Theme"
+                        class="hover:bg-transparent hover:scale-110 transition-all duration-300"
                         @click="isDark = !isDark"
                     />
                     <template #fallback>
@@ -39,13 +39,5 @@
 <script setup lang="ts">
 defineEmits(["toggle-sidebar"]);
 
-const colorMode = useColorMode();
-const isDark = computed({
-    get() {
-        return colorMode.value === "dark";
-    },
-    set() {
-        colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-    },
-});
+const isDark = inject("isDark");
 </script>

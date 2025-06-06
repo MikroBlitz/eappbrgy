@@ -12,8 +12,15 @@ const isMobile = ref(false);
 const auth = useAuthStore();
 const isAdmin = computed(() => auth.user?.is_admin);
 
-provide("isMobile", isMobile);
-provide("isAdmin", isAdmin);
+const colorMode = useColorMode();
+const isDark = computed({
+    get() {
+        return colorMode.value === "dark";
+    },
+    set() {
+        colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+    },
+});
 
 onMounted(() => {
     const mediaQuery = useMediaQuery("(max-width: 768px)");
@@ -23,4 +30,8 @@ onMounted(() => {
         isMobile.value = newValue;
     });
 });
+
+provide("isDark", isDark);
+provide("isMobile", isMobile);
+provide("isAdmin", isAdmin);
 </script>

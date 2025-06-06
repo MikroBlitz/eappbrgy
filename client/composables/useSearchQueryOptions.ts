@@ -1,4 +1,5 @@
 import { useDebounceFn } from "@vueuse/shared";
+import { ref, computed, watch, readonly } from "vue";
 
 import type { FieldOption } from "~/types/fields";
 
@@ -24,49 +25,59 @@ export function useSearchQueryOptions<T = any>(
         variables = {},
     } = options;
 
-    const loadingOptions = ref(false);
-    const queryOptions = ref<FieldOption[]>([]);
+    const searchTerm = ref("");
+    const isInitialized = ref(false);
 
-    const fetchItems = async (search = "") => {
-        try {
-            const queryVariables = {
-                first: pageSize,
-                search,
-                ...variables,
-            };
+    const queryVariables = computed(() => ({
+        first: pageSize,
+        search: searchTerm.value,
+        ...variables,
+    }));
 
-            const { data } = await useAsyncQuery(query, queryVariables);
+    const { error, loading, refetch, result } = useQuery(query, queryVariables);
 
-            if (data.value && data.value[queryKey]) {
-                const items =
-                    data.value[queryKey][dataKey] || data.value[queryKey];
-                return Array.isArray(items) ? items.map(mapFn) : [];
-            }
-
-            return [];
-        } catch (error) {
-            console.error(`Failed to fetch ${queryKey}:`, error);
+    const queryOptions = computed<FieldOption[]>(() => {
+        if (!result.value || !result.value[queryKey]) {
             return [];
         }
-    };
 
-    const searchItems = async (searchTerm: string) => {
-        loadingOptions.value = true;
-        const result = await fetchItems(searchTerm);
-        loadingOptions.value = false;
-        return result;
+        try {
+            const items =
+                result.value[queryKey][dataKey] || result.value[queryKey];
+            return Array.isArray(items) ? items.map(mapFn) : [];
+        } catch (err) {
+            console.error(`Failed to process ${queryKey} data:`, err);
+            return [];
+        }
+    });
+
+    const searchItems = async (search: string) => {
+        searchTerm.value = search;
+        await refetch();
+        return queryOptions.value;
     };
 
     const debouncedSearch = useDebounceFn(searchItems, debounceMs);
 
     const initializeOptions = async () => {
-        queryOptions.value = await fetchItems();
+        if (!isInitialized.value) {
+            searchTerm.value = "";
+            isInitialized.value = true;
+            await refetch();
+        }
+        return queryOptions.value;
     };
+
+    watch(error, (newError) => {
+        if (newError) {
+            console.error(`Failed to fetch ${queryKey}:`, newError);
+        }
+    });
 
     return {
         debouncedSearch,
         initializeOptions,
-        loadingOptions,
-        queryOptions,
+        loadingOptions: readonly(loading),
+        queryOptions: readonly(queryOptions),
     };
 }

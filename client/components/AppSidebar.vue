@@ -1,10 +1,10 @@
 <template>
     <div>
         <UButton
-            icon="i-heroicons-bars-3"
+            icon="solar:hamburger-menu-broken"
             variant="ghost"
-            color="green"
-            class="w-full justify-start hover:bg-transparent hover:scale-125 transition-all duration-300"
+            :color="isDark ? 'green' : 'gray'"
+            class="w-full justify-start hover:bg-transparent hover:scale-110 transition-all duration-300 p-2"
             @click="isOpen = true"
         >
             <USlideover
@@ -165,4 +165,6 @@ const { adminItems, mainMenuItems, userMenuItems } = useLinks();
 const isActive = (path: string) => {
     return route.path === path;
 };
+
+const isDark = inject("isDark");
 </script>
