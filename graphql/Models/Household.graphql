@@ -2,7 +2,7 @@ type Household {
     id: ID!
     household_no: String!
     address: String
-    purok: [Purok] @belongsTo
+    purok: Purok @belongsTo
     created_at: DateTime!
     updated_at: DateTime!
 }

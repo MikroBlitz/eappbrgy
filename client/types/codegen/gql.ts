@@ -18,11 +18,11 @@ const documents = {
     "\n    mutation login($email: String!, $password: String!) {\n        login(email: $email, password: $password) {\n            token\n            user {\n                id\n                name\n                email\n                is_admin\n                roles {\n                    name\n                }\n                permissions {\n                    name\n                }\n            }\n        }\n    }\n": types.LoginDocument,
     "\n    mutation logout {\n        logout {\n            message\n        }\n    }\n": types.LogoutDocument,
     "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        #        messages {\n        #            ...message\n        #        }\n        #        contacts {\n        #            id\n        #        }\n        resident {\n            id\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n": types.UserFragmentDoc,
-    "\n    fragment household on Household {\n        id\n        household_no\n        address\n        created_at\n        updated_at\n    }\n": types.HouseholdFragmentDoc,
+    "\n    fragment household on Household {\n        id\n        household_no\n        purok {\n            id\n            name\n        }\n        address\n        created_at\n        updated_at\n    }\n": types.HouseholdFragmentDoc,
     "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        created_at\n        updated_at\n    }\n": types.ResidentFragmentDoc,
     "\n    fragment message on Message {\n        id\n        message\n        sender {\n            id\n            name\n        }\n        receiver {\n            id\n            name\n        }\n        messagesCount\n        created_at\n        updated_at\n    }\n": types.MessageFragmentDoc,
     "\n    fragment role on Role {\n        id\n        name\n        guard_name\n        users {\n            id\n            name\n        }\n        permissions {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.RoleFragmentDoc,
-    "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        roles {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.PermissionFragmentDoc,
+    "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n": types.PermissionFragmentDoc,
     "\n    query householdsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        householdsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...household\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.HouseholdsPaginateDocument,
     "\n    mutation upsertHousehold($input: HouseholdInput!) {\n        upsertHousehold(input: $input) {\n            ...household\n        }\n    }\n    \n": types.UpsertHouseholdDocument,
     "\n    mutation deleteHousehold($id: [ID!]) {\n        deleteHousehold(id: $id) {\n            id\n        }\n    }\n": types.DeleteHouseholdDocument,
@@ -81,7 +81,7 @@ export function graphql(source: "\n    fragment user on User {\n        id\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    fragment household on Household {\n        id\n        household_no\n        address\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment household on Household {\n        id\n        household_no\n        address\n        created_at\n        updated_at\n    }\n"];
+export function graphql(source: "\n    fragment household on Household {\n        id\n        household_no\n        purok {\n            id\n            name\n        }\n        address\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment household on Household {\n        id\n        household_no\n        purok {\n            id\n            name\n        }\n        address\n        created_at\n        updated_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -97,7 +97,7 @@ export function graphql(source: "\n    fragment role on Role {\n        id\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        roles {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        roles {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"];
+export function graphql(source: "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

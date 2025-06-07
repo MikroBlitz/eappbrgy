@@ -33,6 +33,10 @@ export const householdFragment = gql`
     fragment household on Household {
         id
         household_no
+        purok {
+            id
+            name
+        }
         address
         created_at
         updated_at
@@ -99,10 +103,6 @@ export const permissionFragment = gql`
         id
         name
         guard_name
-        roles {
-            id
-            name
-        }
         created_at
         updated_at
     }

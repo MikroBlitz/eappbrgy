@@ -1,8 +1,11 @@
+import type { BadgeColor } from "#ui/types";
+
 import { Briefcase, Shield, User } from "lucide-vue-next";
 import { z } from "zod";
 
 import type { FormSchema } from "~/types/fields";
 
+// It is used for logging out via gql it can be improved.
 export const authContext = () => {
     const authStore = useAuthStore();
     if (!authStore.token) throw new Error("Missing auth token");
@@ -22,7 +25,7 @@ export const roleIconMap: Record<string, any> = {
     User: User,
 };
 
-export const colorMap: Record<string, string> = {
+export const colorMap: Record<string, BadgeColor> = {
     Admin: "emerald",
     Manager: "orange",
     User: "blue",

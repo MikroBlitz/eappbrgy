@@ -306,6 +306,7 @@ function select(row: T) {
 }
 
 function openAddModal() {
+    selectedItem.value = null;
     Object.assign(formState, props.operations.getFormState());
     isOpen.value = true;
 }

@@ -1,4 +1,7 @@
+import { UBadge } from "#components";
+
 import type { Column } from "~/components/table/types";
+import type { Household } from "~/types/codegen/graphql";
 
 export const columns: Column[] = [
     {
@@ -13,6 +16,31 @@ export const columns: Column[] = [
     {
         key: "household_no",
         label: "Household no.",
+        render: (row: Household) => {
+            return h(
+                UBadge,
+                {
+                    color: "gray",
+                    label: row.household_no,
+                    size: "sm",
+                    variant: "solid",
+                },
+                {
+                    default: () =>
+                        h("div", { class: "flex items-center space-x-1" }, [
+                            h("span", null, row.household_no),
+                        ]),
+                },
+            );
+        },
+        sortable: true,
+    },
+    {
+        key: "purok",
+        label: "Purok",
+        render: (row: Household) => {
+            return row.purok?.name;
+        },
         sortable: true,
     },
     {

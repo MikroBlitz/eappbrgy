@@ -64,6 +64,7 @@ const operations = useCrudOperations<User>(
     {
         getFormState: (user?: User) => {
             if (user) {
+                // This is for editing data
                 const roleIds = user.roles
                     ? user.roles.map((role) => role?.id)
                     : [];
@@ -71,7 +72,7 @@ const operations = useCrudOperations<User>(
                 return {
                     email: user.email || "",
                     first_name: user.first_name || "",
-                    id: user.id || "",
+                    id: user.id,
                     is_active: user.is_active || false,
                     last_name: user.last_name || "",
                     middle_name: user.middle_name || "",
@@ -80,11 +81,12 @@ const operations = useCrudOperations<User>(
                     roles: roleIds,
                 };
             } else {
+                // This is adding data
                 initializeOptions();
                 return {
                     email: "",
                     first_name: "",
-                    id: "",
+                    id: undefined,
                     is_active: false,
                     last_name: "",
                     middle_name: "",

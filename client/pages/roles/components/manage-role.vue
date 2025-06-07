@@ -60,14 +60,14 @@ const operations = useCrudOperations<Role>(
                     : [];
                 initializeOptions();
                 return {
-                    id: role.id || "",
+                    id: role.id,
                     name: role.name,
                     permissions: permissionIds,
                 };
             } else {
                 initializeOptions();
                 return {
-                    id: "",
+                    id: undefined,
                     name: "",
                     permissions: [],
                 };

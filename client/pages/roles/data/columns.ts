@@ -4,8 +4,6 @@ import { ShieldCheck, User } from "lucide-vue-next";
 import type { Column } from "~/components/table/types";
 import type { Role } from "~/types/codegen/graphql";
 
-import { colorMap, roleIconMap } from "~/utils/helpers";
-
 export const columns: Column[] = [
     {
         class: "w-2",

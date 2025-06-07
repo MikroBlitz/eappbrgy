@@ -47,12 +47,12 @@ const operations = useCrudOperations<Permission>(
         getFormState: (permission?: Permission) => {
             if (permission) {
                 return {
-                    id: permission.id || "",
+                    id: permission.id,
                     name: permission.name,
                 };
             } else {
                 return {
-                    id: "",
+                    id: undefined,
                     name: "",
                 };
             }
@@ -60,6 +60,7 @@ const operations = useCrudOperations<Permission>(
         prepareSubmitData: (data: any, selectedPermission?: Permission) => {
             return {
                 ...data,
+                guard_name: "web",
                 id: selectedPermission?.id || undefined,
             };
         },
