@@ -50,8 +50,8 @@ Make sure you have the following software installed on your system:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/MikroBlitz/markethub.git
-    cd markethub
+    git clone https://github.com/MikroBlitz/eappbrgy.git
+    cd eappbrgy
     ```
 
 2. Install the backend dependencies:
