@@ -131,7 +131,7 @@
                                 />
 
                                 <template #panel>
-                                    <div class="flex gap-2 items-center p-2">
+                                    <div class="grid grid-cols-3 gap-2 p-2">
                                         <template
                                             v-for="(action, index) in actions"
                                             :key="index"

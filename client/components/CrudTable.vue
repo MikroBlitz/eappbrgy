@@ -81,6 +81,16 @@
             :option-loading="optionLoading"
         />
 
+        <!-- View Modal -->
+        <ModalView
+            v-model:is-open="isViewModal"
+            :title="`View ${config.singular}`"
+            :form-schema="formSchema"
+            :state="viewState"
+            :show-edit-button="auth.can(config.permissions.edit)"
+            @edit-clicked="handleEditFromView"
+        />
+
         <!-- Delete Modal -->
         <ModalConfirm
             v-model:is-open="isDeleteModal"
@@ -158,6 +168,7 @@ const selectedFilters = ref([]);
 const debouncedSearch = useDebounce(search, 500);
 
 const isOpen = ref(false);
+const isViewModal = ref(false);
 const isDeleteModal = ref(false);
 const isChangeStatusModal = ref(false);
 const selectedItem = ref<T | null>(null);
@@ -165,6 +176,7 @@ const selectedItem = ref<T | null>(null);
 const modalLoading = ref(false);
 const rotationRefetch = ref(0);
 const formState = reactive({});
+const viewState = reactive({});
 
 const queryVariables = computed(() => {
     const variables: Record<string, unknown> = {
@@ -313,9 +325,8 @@ function openAddModal() {
 
 function openViewModal(item: T) {
     selectedItem.value = item;
-    Object.assign(formState, props.operations.getFormState(item));
-    // isOpen.value = true;
-    console.log("View", item);
+    Object.assign(viewState, props.operations.getFormState(item));
+    isViewModal.value = true;
 }
 
 function openEditModal(item: T) {
@@ -332,6 +343,13 @@ function openDeleteModal(item: T) {
 function openChangeStatusModal(item: T) {
     selectedItem.value = item;
     isChangeStatusModal.value = true;
+}
+
+function handleEditFromView() {
+    isViewModal.value = false;
+    // The formState should already be populated from openViewModal
+    Object.assign(formState, viewState);
+    isOpen.value = true;
 }
 
 async function handleRefetch() {

@@ -87,8 +87,9 @@
                         color="gray"
                         variant="ghost"
                         @click="isModalOpen = false"
-                        >Cancel</UButton
                     >
+                        Cancel
+                    </UButton>
                     <UButton :loading="loading" type="submit" label="Submit" />
                 </div>
             </UForm>
