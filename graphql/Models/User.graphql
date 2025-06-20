@@ -46,6 +46,8 @@ input RegisterInput {
     phone: String
     email: String
     password: String
+    roles: ConnectRolesRelation
+    is_active: Boolean!
 }
 
 input SortInput {
@@ -71,12 +73,12 @@ extend type Query @guard {
     usersCount: Int! @count(model: "User")
 }
 
-extend type Mutation @guard {
+extend type Mutation {
     registerUser(input: RegisterInput! @spread): User! @create
-    upsertUser(input: UserInput! @spread): User! @upsert
-    deleteUser(id: [ID!] @eq): [User] @delete
-    restoreUser(id: ID!): User! @restore
-    updateUserStatus(id: ID!, is_active: Boolean!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@updateStatus")
+    upsertUser(input: UserInput! @spread): User! @upsert @guard
+    deleteUser(id: [ID!] @eq): [User] @delete @guard
+    restoreUser(id: ID!): User! @restore @guard
+    updateUserStatus(id: ID!, is_active: Boolean!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@updateStatus") @guard
 }
 
 

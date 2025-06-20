@@ -7,9 +7,9 @@
         >
             <div class="flex items-center">
                 <span class="text-blue-500 font-bold text-xl"
-                >Barangay<span class="text-slate-900 dark:text-white"
-                >Connect</span
-                ></span
+                    >Barangay<span class="text-slate-900 dark:text-white"
+                        >Connect</span
+                    ></span
                 >
             </div>
             <ClientOnly>
@@ -54,16 +54,15 @@
                     class="text-4xl md:text-5xl font-bold pb-4 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent"
                 >
                     Barangay Services
-                    <span class="text-blue-500 dark:text-blue-400"
-                    >Online</span
-                    >
+                    <span class="text-blue-500 dark:text-blue-400">Online</span>
                 </h1>
 
                 <p
                     class="text-sm text-slate-600 dark:text-gray-400 mb-8 max-w-md mx-auto"
                 >
-                    Access barangay documents, certificates, and services online.
-                    Fast, secure, and convenient digital solutions for your community needs.
+                    Access barangay documents, certificates, and services
+                    online. Fast, secure, and convenient digital solutions for
+                    your community needs.
                 </p>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
@@ -71,42 +70,66 @@
                         class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg px-6 py-2"
                         @click="navigateTo('/register')"
                     >
-                        Apply Now
+                        Register
                     </UButton>
                     <UButton
                         variant="ghost"
                         class="text-slate-700 dark:text-gray-300 border border-slate-300 dark:border-gray-700 rounded-lg px-6 py-2 hover:border-blue-500 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:text-blue-400"
-                        @click="navigateTo('/services')"
+                        @click="navigateTo('/login')"
                     >
-                        View Services
+                        Login
                     </UButton>
                 </div>
 
                 <!-- Service highlights -->
                 <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto">
-                            <UIcon name="i-heroicons-document-text" class="text-blue-600 dark:text-blue-400" />
+                    <div
+                        class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                    >
+                        <div
+                            class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto"
+                        >
+                            <UIcon
+                                name="i-heroicons-document-text"
+                                class="text-blue-600 dark:text-blue-400"
+                            />
                         </div>
                         <h3 class="font-semibold text-sm mb-2">Certificates</h3>
                         <p class="text-xs text-slate-600 dark:text-gray-400">
-                            Barangay clearance, indigency, residency certificates
+                            Barangay clearance, indigency, residency
+                            certificates
                         </p>
                     </div>
 
-                    <div class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto">
-                            <UIcon name="i-heroicons-megaphone" class="text-blue-600 dark:text-blue-400" />
+                    <div
+                        class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                    >
+                        <div
+                            class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto"
+                        >
+                            <UIcon
+                                name="i-heroicons-megaphone"
+                                class="text-blue-600 dark:text-blue-400"
+                            />
                         </div>
-                        <h3 class="font-semibold text-sm mb-2">Announcements</h3>
+                        <h3 class="font-semibold text-sm mb-2">
+                            Announcements
+                        </h3>
                         <p class="text-xs text-slate-600 dark:text-gray-400">
                             Stay updated with community news and events
                         </p>
                     </div>
 
-                    <div class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto">
-                            <UIcon name="i-heroicons-chat-bubble-left-right" class="text-blue-600 dark:text-blue-400" />
+                    <div
+                        class="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                    >
+                        <div
+                            class="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-3 mx-auto"
+                        >
+                            <UIcon
+                                name="i-heroicons-chat-bubble-left-right"
+                                class="text-blue-600 dark:text-blue-400"
+                            />
                         </div>
                         <h3 class="font-semibold text-sm mb-2">Support</h3>
                         <p class="text-xs text-slate-600 dark:text-gray-400">
@@ -141,7 +164,8 @@
                 </a>
             </div>
             <p class="text-xs text-slate-500 dark:text-gray-500">
-                © {{ getYear() }} BarangayConnect. Serving our community digitally.
+                © {{ getYear() }} BarangayConnect. Serving our community
+                digitally.
             </p>
         </footer>
     </div>

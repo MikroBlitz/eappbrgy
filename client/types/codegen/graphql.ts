@@ -30,90 +30,6 @@ export type AuthPayload = {
   user: User;
 };
 
-export type Brand = {
-  __typename?: 'Brand';
-  created_at: Scalars['DateTime']['output'];
-  deleted_at?: Maybe<Scalars['DateTime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  image_url?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  slug: Scalars['String']['output'];
-  updated_at: Scalars['DateTime']['output'];
-};
-
-export type BrandInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  slug: Scalars['String']['input'];
-};
-
-/** A paginated list of Brand items. */
-export type BrandPaginator = {
-  __typename?: 'BrandPaginator';
-  /** A list of Brand items. */
-  data: Array<Brand>;
-  /** Pagination information about the list of items. */
-  paginatorInfo: PaginatorInfo;
-};
-
-export type Category = {
-  __typename?: 'Category';
-  created_at: Scalars['DateTime']['output'];
-  deleted_at?: Maybe<Scalars['DateTime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  image_url?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  slug: Scalars['String']['output'];
-  updated_at: Scalars['DateTime']['output'];
-};
-
-export type CategoryInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  slug: Scalars['String']['input'];
-};
-
-/** A paginated list of Category items. */
-export type CategoryPaginator = {
-  __typename?: 'CategoryPaginator';
-  /** A list of Category items. */
-  data: Array<Category>;
-  /** Pagination information about the list of items. */
-  paginatorInfo: PaginatorInfo;
-};
-
-export type ConnectBrandRelation = {
-  connect?: InputMaybe<Scalars['ID']['input']>;
-  delete?: InputMaybe<Scalars['Boolean']['input']>;
-  disconnect?: InputMaybe<Scalars['Boolean']['input']>;
-  upsert?: InputMaybe<BrandInput>;
-};
-
-export type ConnectBrandsRelation = {
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  delete?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  upsert?: InputMaybe<Array<InputMaybe<BrandInput>>>;
-};
-
-export type ConnectCategoriesRelation = {
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  delete?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  upsert?: InputMaybe<Array<InputMaybe<CategoryInput>>>;
-};
-
-export type ConnectCategoryRelation = {
-  connect?: InputMaybe<Scalars['ID']['input']>;
-  delete?: InputMaybe<Scalars['Boolean']['input']>;
-  disconnect?: InputMaybe<Scalars['Boolean']['input']>;
-  upsert?: InputMaybe<CategoryInput>;
-};
-
 export type ConnectContactRelation = {
   connect?: InputMaybe<Scalars['ID']['input']>;
   delete?: InputMaybe<Scalars['ID']['input']>;
@@ -126,19 +42,6 @@ export type ConnectContactsRelation = {
   delete?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   id?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   upsert?: InputMaybe<Array<InputMaybe<ContactInput>>>;
-};
-
-export type ConnectInventoriesRelation = {
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  delete?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  upsert?: InputMaybe<Array<InputMaybe<InventoryInput>>>;
-};
-
-export type ConnectInventoryRelation = {
-  connect?: InputMaybe<Scalars['ID']['input']>;
-  delete?: InputMaybe<Scalars['Boolean']['input']>;
-  disconnect?: InputMaybe<Scalars['Boolean']['input']>;
-  upsert?: InputMaybe<InventoryInput>;
 };
 
 export type ConnectMessageRelation = {
@@ -169,19 +72,6 @@ export type ConnectPermissionsRelation = {
   sync?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   update?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   upsert?: InputMaybe<Array<InputMaybe<PermissionInput>>>;
-};
-
-export type ConnectProductRelation = {
-  connect?: InputMaybe<Scalars['ID']['input']>;
-  delete?: InputMaybe<Scalars['Boolean']['input']>;
-  disconnect?: InputMaybe<Scalars['Boolean']['input']>;
-  upsert?: InputMaybe<ProductInput>;
-};
-
-export type ConnectProductsRelation = {
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  delete?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  upsert?: InputMaybe<Array<InputMaybe<ProductInput>>>;
 };
 
 export type ConnectRoleRelation = {
@@ -239,33 +129,6 @@ export type FilterInput = {
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type Inventory = {
-  __typename?: 'Inventory';
-  created_at: Scalars['DateTime']['output'];
-  deleted_at?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  location?: Maybe<Scalars['String']['output']>;
-  product?: Maybe<Product>;
-  qty?: Maybe<Scalars['Int']['output']>;
-  updated_at: Scalars['DateTime']['output'];
-};
-
-export type InventoryInput = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-  location?: InputMaybe<Scalars['String']['input']>;
-  product?: InputMaybe<ConnectProductRelation>;
-  qty?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** A paginated list of Inventory items. */
-export type InventoryPaginator = {
-  __typename?: 'InventoryPaginator';
-  /** A list of Inventory items. */
-  data: Array<Inventory>;
-  /** Pagination information about the list of items. */
-  paginatorInfo: PaginatorInfo;
-};
-
 export type LogoutResponse = {
   __typename?: 'LogoutResponse';
   message: Scalars['String']['output'];
@@ -300,43 +163,21 @@ export type MessagePaginator = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  deleteBrand?: Maybe<Array<Maybe<Brand>>>;
-  deleteCategory?: Maybe<Array<Maybe<Category>>>;
   deleteContact?: Maybe<Contact>;
-  deleteInventory?: Maybe<Array<Maybe<Inventory>>>;
-  deleteMessage?: Maybe<Message>;
+  deleteMessage?: Maybe<Array<Maybe<Message>>>;
   deletePermission?: Maybe<Array<Maybe<Permission>>>;
-  deleteProduct?: Maybe<Array<Maybe<Product>>>;
   deleteRole?: Maybe<Array<Maybe<Role>>>;
   deleteUser?: Maybe<Array<Maybe<User>>>;
   login: AuthPayload;
   logout?: Maybe<LogoutResponse>;
   registerUser: User;
-  restoreBrand?: Maybe<Array<Maybe<Brand>>>;
-  restoreCategory?: Maybe<Array<Maybe<Category>>>;
-  restoreInventory?: Maybe<Array<Maybe<Inventory>>>;
-  restoreProduct?: Maybe<Array<Maybe<Product>>>;
   restoreUser: User;
   updateUserStatus?: Maybe<User>;
-  upsertBrand?: Maybe<Brand>;
-  upsertCategory?: Maybe<Category>;
   upsertContact: Contact;
-  upsertInventory?: Maybe<Inventory>;
   upsertMessage: Message;
   upsertPermission: Permission;
-  upsertProduct?: Maybe<Product>;
   upsertRole: Role;
   upsertUser: User;
-};
-
-
-export type MutationDeleteBrandArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
-export type MutationDeleteCategoryArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 
@@ -345,22 +186,12 @@ export type MutationDeleteContactArgs = {
 };
 
 
-export type MutationDeleteInventoryArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
 export type MutationDeleteMessageArgs = {
-  id: Scalars['ID']['input'];
+  id?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 
 export type MutationDeletePermissionArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
-export type MutationDeleteProductArgs = {
   id?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
@@ -386,26 +217,6 @@ export type MutationRegisterUserArgs = {
 };
 
 
-export type MutationRestoreBrandArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
-export type MutationRestoreCategoryArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
-export type MutationRestoreInventoryArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
-export type MutationRestoreProductArgs = {
-  id?: InputMaybe<Array<Scalars['ID']['input']>>;
-};
-
-
 export type MutationRestoreUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -417,23 +228,8 @@ export type MutationUpdateUserStatusArgs = {
 };
 
 
-export type MutationUpsertBrandArgs = {
-  input: BrandInput;
-};
-
-
-export type MutationUpsertCategoryArgs = {
-  input: CategoryInput;
-};
-
-
 export type MutationUpsertContactArgs = {
   input: ContactInput;
-};
-
-
-export type MutationUpsertInventoryArgs = {
-  input: InventoryInput;
 };
 
 
@@ -444,11 +240,6 @@ export type MutationUpsertMessageArgs = {
 
 export type MutationUpsertPermissionArgs = {
   input: PermissionInput;
-};
-
-
-export type MutationUpsertProductArgs = {
-  input: ProductInput;
 };
 
 
@@ -536,92 +327,21 @@ export type PermissionPaginator = {
   paginatorInfo: PaginatorInfo;
 };
 
-export type Product = {
-  __typename?: 'Product';
-  brand?: Maybe<Brand>;
-  category?: Maybe<Category>;
-  created_at: Scalars['DateTime']['output'];
-  deleted_at?: Maybe<Scalars['DateTime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  image_url?: Maybe<Scalars['String']['output']>;
-  inventories?: Maybe<Array<Maybe<Inventory>>>;
-  name: Scalars['String']['output'];
-  price?: Maybe<Scalars['Int']['output']>;
-  slug: Scalars['String']['output'];
-  updated_at: Scalars['DateTime']['output'];
-};
-
-export type ProductInput = {
-  brand?: InputMaybe<ConnectBrandRelation>;
-  category?: InputMaybe<ConnectCategoryRelation>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  image_url?: InputMaybe<Scalars['String']['input']>;
-  inventories?: InputMaybe<ConnectInventoriesRelation>;
-  name: Scalars['String']['input'];
-  price?: InputMaybe<Scalars['Int']['input']>;
-  slug: Scalars['String']['input'];
-};
-
-/** A paginated list of Product items. */
-export type ProductPaginator = {
-  __typename?: 'ProductPaginator';
-  /** A list of Product items. */
-  data: Array<Product>;
-  /** Pagination information about the list of items. */
-  paginatorInfo: PaginatorInfo;
-};
-
 export type Query = {
   __typename?: 'Query';
-  brands: Array<Maybe<Brand>>;
-  brandsCount: Scalars['Int']['output'];
-  brandsPaginate: BrandPaginator;
-  categories: Array<Maybe<Category>>;
-  categoriesCount: Scalars['Int']['output'];
-  categoriesPaginate: CategoryPaginator;
   contact?: Maybe<Contact>;
   contacts: ContactPaginator;
-  inventories: Array<Maybe<Inventory>>;
-  inventoriesCount: Scalars['Int']['output'];
-  inventoriesPaginate: InventoryPaginator;
   me: User;
   message?: Maybe<Message>;
   messages: MessagePaginator;
   messagesCount: Scalars['Int']['output'];
   permissions: Array<Maybe<Permission>>;
   permissionsPaginate: PermissionPaginator;
-  products: Array<Maybe<Product>>;
-  productsCount: Scalars['Int']['output'];
-  productsPaginate: ProductPaginator;
   roles: Array<Maybe<Role>>;
   rolesPaginate: RolePaginator;
   users: Array<Maybe<User>>;
   usersCount: Scalars['Int']['output'];
   usersPaginate: UserPaginator;
-};
-
-
-export type QueryBrandsArgs = {
-  search?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryBrandsPaginateArgs = {
-  first: Scalars['Int']['input'];
-  page?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type QueryCategoriesArgs = {
-  search?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryCategoriesPaginateArgs = {
-  first: Scalars['Int']['input'];
-  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -634,17 +354,6 @@ export type QueryContactsArgs = {
   first: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryInventoriesArgs = {
-  search?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryInventoriesPaginateArgs = {
-  first: Scalars['Int']['input'];
-  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -666,17 +375,6 @@ export type QueryPermissionsPaginateArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<SortInput>;
-};
-
-
-export type QueryProductsArgs = {
-  search?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryProductsPaginateArgs = {
-  first: Scalars['Int']['input'];
-  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -733,10 +431,12 @@ export type QueryMessagesWhereWhereConditionsRelation = {
 export type RegisterInput = {
   email?: InputMaybe<Scalars['String']['input']>;
   first_name?: InputMaybe<Scalars['String']['input']>;
+  is_active: Scalars['Boolean']['input'];
   last_name?: InputMaybe<Scalars['String']['input']>;
   middle_name?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
+  roles?: InputMaybe<ConnectRolesRelation>;
 };
 
 export type Role = {
@@ -1045,6 +745,16 @@ export type UpdateUserStatusMutationVariables = Exact<{
 
 export type UpdateUserStatusMutation = { __typename?: 'Mutation', updateUserStatus?: { __typename?: 'User', id: string, is_active: boolean } | null };
 
+export type RegisterUserMutationVariables = Exact<{
+  input: RegisterInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: (
+    { __typename?: 'User' }
+    & { ' $fragmentRefs'?: { 'UserFragment': UserFragment } }
+  ) };
+
 export const UserFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"user"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"middle_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"password"}},{"kind":"Field","name":{"kind":"Name","value":"is_admin"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"is_active"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"deleted_at"}}]}}]} as unknown as DocumentNode<UserFragment, unknown>;
 export const MessageFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"message"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Message"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"receiver"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"messagesCount"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<MessageFragment, unknown>;
 export const RoleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"role"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"guard_name"}},{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<RoleFragment, unknown>;
@@ -1065,3 +775,4 @@ export const UpsertUserDocument = {"kind":"Document","definitions":[{"kind":"Ope
 export const DeleteUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteUserMutation, DeleteUserMutationVariables>;
 export const RestoreUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"restoreUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"restoreUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<RestoreUserMutation, RestoreUserMutationVariables>;
 export const UpdateUserStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateUserStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"is_active"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUserStatus"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"is_active"},"value":{"kind":"Variable","name":{"kind":"Name","value":"is_active"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"is_active"}}]}}]}}]} as unknown as DocumentNode<UpdateUserStatusMutation, UpdateUserStatusMutationVariables>;
+export const RegisterUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"registerUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"user"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"user"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"middle_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"password"}},{"kind":"Field","name":{"kind":"Name","value":"is_admin"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"is_active"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"deleted_at"}}]}}]} as unknown as DocumentNode<RegisterUserMutation, RegisterUserMutationVariables>;

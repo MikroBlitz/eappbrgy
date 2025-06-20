@@ -34,6 +34,7 @@ const documents = {
     "\n    mutation deleteUser($id: [ID!]) {\n        deleteUser(id: $id) {\n            id\n        }\n    }\n": types.DeleteUserDocument,
     "\n    mutation restoreUser($id: ID!) {\n        restoreUser(id: $id) {\n            id\n        }\n    }\n": types.RestoreUserDocument,
     "\n    mutation updateUserStatus($id: ID!, $is_active: Boolean!) {\n        updateUserStatus(id: $id, is_active: $is_active) {\n            id\n            is_active\n        }\n    }\n": types.UpdateUserStatusDocument,
+    "\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n": types.RegisterUserDocument,
 };
 
 /**
@@ -130,6 +131,10 @@ export function graphql(source: "\n    mutation restoreUser($id: ID!) {\n       
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation updateUserStatus($id: ID!, $is_active: Boolean!) {\n        updateUserStatus(id: $id, is_active: $is_active) {\n            id\n            is_active\n        }\n    }\n"): (typeof documents)["\n    mutation updateUserStatus($id: ID!, $is_active: Boolean!) {\n        updateUserStatus(id: $id, is_active: $is_active) {\n            id\n            is_active\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n"): (typeof documents)["\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

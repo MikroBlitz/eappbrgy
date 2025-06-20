@@ -74,3 +74,12 @@ export const updateUserStatus = gql`
         }
     }
 `;
+
+export const registerUser = gql`
+    mutation registerUser($input: RegisterInput!) {
+        registerUser(input: $input) {
+            ...user
+        }
+    }
+    ${userFragment}
+`;

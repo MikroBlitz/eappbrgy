@@ -16,19 +16,56 @@
                 </div>
             </template>
 
-            <UForm :validate="validate" :state="formState" @submit="onSubmit">
-                <UFormGroup label="Name" name="name">
+            <UForm
+                :validate="validate"
+                :state="formState"
+                class="gap-y-2 flex flex-col"
+                @submit="onSubmit"
+            >
+                <UFormGroup label="First Name" name="first_name">
                     <UInput
-                        v-model="formState.name"
-                        placeholder="Enter your name"
+                        v-model="formState.first_name"
+                        placeholder="Enter first name"
                         type="text"
-                        autocomplete="name"
+                        autocomplete="first_name"
                         icon="line-md:account"
                         required
                     />
                 </UFormGroup>
 
-                <UFormGroup label="Email" name="email" class="mt-4">
+                <UFormGroup label="Middle Name" name="middle_name">
+                    <UInput
+                        v-model="formState.middle_name"
+                        placeholder="Enter middle name"
+                        type="text"
+                        autocomplete="middle_name"
+                        icon="line-md:account"
+                    />
+                </UFormGroup>
+
+                <UFormGroup label="Last Name" name="last_name">
+                    <UInput
+                        v-model="formState.last_name"
+                        placeholder="Enter last name"
+                        type="text"
+                        autocomplete="last_name"
+                        icon="line-md:account"
+                        required
+                    />
+                </UFormGroup>
+
+                <UFormGroup label="Phone" name="phone">
+                    <UInput
+                        v-model="formState.phone"
+                        placeholder="Enter your phone"
+                        type="phone"
+                        autocomplete="phone"
+                        icon="i-heroicons-phone"
+                        required
+                    />
+                </UFormGroup>
+
+                <UFormGroup label="Email" name="email">
                     <UInput
                         v-model="formState.email"
                         placeholder="Enter your email"
@@ -39,7 +76,7 @@
                     />
                 </UFormGroup>
 
-                <UFormGroup label="Password" name="password" class="mt-4">
+                <UFormGroup label="Password" name="password">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
@@ -105,7 +142,8 @@ import { z } from "zod";
 
 import type { FormStateRegister } from "~/types/global";
 
-import { upsertUser } from "~/graphql/User";
+import { registerUser } from "~/graphql/User";
+import { phoneRegex } from "~/utils/helpers";
 const isLoading = ref<boolean>(false);
 const toast = useToast();
 
@@ -120,12 +158,15 @@ useHead({
     title: "BarangayConnect - Register",
 });
 
-const { mutate: registerUser } = useMutation(upsertUser);
+const { mutate: register } = useMutation(registerUser);
 
 const formState = reactive({
     email: "",
-    name: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
     password: "",
+    phone: "",
 });
 
 const onSubmit = async () => {
@@ -135,14 +176,18 @@ const onSubmit = async () => {
     try {
         const variables = {
             email: formState.email,
-            name: formState.name,
+            first_name: formState.first_name,
+            is_active: true,
+            last_name: formState.last_name,
+            middle_name: formState.middle_name,
             password: formState.password,
+            phone: formState.phone,
             roles: {
                 sync: 3, // default user role on sign up
             },
         };
 
-        const response = await registerUser({ input: variables });
+        const response = await register({ input: variables });
 
         console.log(response);
         toast.add({
@@ -157,16 +202,27 @@ const onSubmit = async () => {
     }
 };
 
-const loginSchema = z.object({
+const schema = z.object({
     email: z.string().email("Invalid email address"),
-    name: z
+    first_name: z
         .string()
         .regex(/^[a-z\s-]+$/i, "Only contain letters, spaces, and hyphens."),
+    last_name: z
+        .string()
+        .regex(/^[a-z\s-]+$/i, "Only contain letters, spaces, and hyphens."),
+    middle_name: z.string().optional(),
     password: z.string().min(8, "Password must be at least 8 characters"),
+    phone: z
+        .string()
+        .optional()
+        .refine(
+            (val) => !val || phoneRegex.test(val),
+            "Invalid Philippine phone number",
+        ),
 });
 
 const validate = (state: FormStateRegister) => {
-    const result = loginSchema.safeParse(state);
+    const result = schema.safeParse(state);
     if (result.success) return [];
 
     return result.error.issues.map((issue) => ({

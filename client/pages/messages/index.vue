@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import ManageMessages from "./components/manage-messages.vue";
 
-definePageMeta({ layout: "default", permission: "view messages" });
+definePageMeta({ layout: "default" });
 useHead({
     meta: [
         {
