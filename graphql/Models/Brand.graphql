@@ -1,0 +1,48 @@
+type Brand {
+    id: ID!
+    name: String!
+    slug: String!
+    description: String
+    image_url: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+}
+
+input BrandInput {
+    id: ID
+    name: String!
+    slug: String!
+    description: String
+    image_url: String
+}
+
+input ConnectBrandRelation {
+    connect: ID
+    upsert: BrandInput
+    disconnect: Boolean
+    delete: Boolean
+}
+
+input ConnectBrandsRelation {
+    connect: [ID]
+    upsert: [BrandInput]
+    delete: [ID]
+}
+
+extend type Query {
+    brands(
+        search: String @scope(name: "search")
+    ): [Brand]! @all
+    brandsPaginate(
+        first: Int!
+        page: Int
+    ): [Brand]! @paginate
+    brandsCount: Int! @count(model: "Brand")
+}
+
+extend type Mutation {
+    upsertBrand(input: BrandInput! @spread): Brand @upsert
+    deleteBrand(id: [ID!] @eq): [Brand] @delete
+    restoreBrand(id: [ID!] @eq): [Brand] @restore
+}

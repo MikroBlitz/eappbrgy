@@ -1,0 +1,48 @@
+type Category {
+    id: ID!
+    name: String!
+    slug: String!
+    description: String
+    image_url: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+}
+
+input CategoryInput {
+    id: ID
+    name: String!
+    slug: String!
+    description: String
+    image_url: String
+}
+
+input ConnectCategoryRelation {
+    connect: ID
+    upsert: CategoryInput
+    disconnect: Boolean
+    delete: Boolean
+}
+
+input ConnectCategoriesRelation {
+    connect: [ID]
+    upsert: [CategoryInput]
+    delete: [ID]
+}
+
+extend type Query {
+    categories(
+        search: String @scope(name: "search")
+    ): [Category]! @all
+    categoriesPaginate(
+        first: Int!
+        page: Int
+    ): [Category]! @paginate
+    categoriesCount: Int! @count(model: "Category")
+}
+
+extend type Mutation {
+    upsertCategory(input: CategoryInput! @spread): Category @upsert
+    deleteCategory(id: [ID!] @eq): [Category] @delete
+    restoreCategory(id: [ID!] @eq): [Category] @restore
+}

@@ -1,0 +1,42 @@
+type Contact {
+    id: ID!
+    user: User @belongsTo
+    contact: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+input ContactInput {
+    id: ID
+    user: ConnectUserRelation
+    contact: ConnectUserRelation
+}
+
+input ConnectContactRelation {
+    id: ID
+    connect: ID
+    upsert: ContactInput
+    delete: ID
+}
+
+input ConnectContactsRelation {
+    id: [ID]
+    connect: [ID]
+    upsert: [ContactInput]
+    delete: [ID]
+}
+
+extend type Query { # TODO: add @guard after implemented
+    contact(id: ID! @eq): Contact @find
+    contacts(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+    ): [Contact!]! @paginate
+}
+
+extend type Mutation { # TODO: add @guard after implemented
+    upsertContact(input: ContactInput! @spread): Contact! @upsert
+    deleteContact(id: ID! @eq): Contact @delete
+}

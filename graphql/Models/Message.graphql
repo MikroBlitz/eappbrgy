@@ -1,0 +1,46 @@
+type Message {
+    id: ID!
+    sender: User @belongsTo
+    receiver: User @belongsTo
+    message: String!
+    messagesCount: Int
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input MessageInput {
+    id: ID
+    sender: ConnectUserRelation
+    receiver: ConnectUserRelation
+    message: String
+}
+
+input ConnectMessageRelation {
+    id: ID
+    connect: ID
+    upsert: MessageInput
+    delete: ID
+}
+
+input ConnectMessagesRelation {
+    id: [ID]
+    connect: [ID]
+    upsert: [MessageInput]
+    delete: [ID]
+}
+
+extend type Query { # TODO: add @guard after implemented
+    message(id: ID! @eq): Message @all
+    messages(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        where: _ @whereConditions(columns: ["sender_id", "receiver_id"])
+    ): [Message!]! @paginate
+    messagesCount: Int! @count(model: "Message")
+}
+
+extend type Mutation { # TODO: add @guard after implemented
+    upsertMessage(input: MessageInput! @spread): Message! @upsert
+    deleteMessage(id: [ID!] @eq): [Message] @delete
+}

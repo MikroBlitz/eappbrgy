@@ -1,0 +1,20 @@
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type LogoutResponse {
+    message: String!
+}
+
+type Query {
+    me: User! @auth(guards: ["sanctum"])
+}
+
+type Mutation {
+    login(
+        email: String!
+        password: String!
+    ): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\LoginMutator@login")
+    logout: LogoutResponse @field(resolver: "App\\GraphQL\\Mutations\\LogoutMutator@resolve")
+}
