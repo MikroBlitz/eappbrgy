@@ -10,10 +10,10 @@ useHead({
     meta: [
         {
             content:
-                "A secure platform connecting buyers and sellers in a community-driven ecosystem.",
+                "Access barangay services online. Apply for certificates, stay updated with announcements, and connect with your local government digitally.",
             name: "description",
         },
     ],
-    title: "MarketHub - Users",
+    title: "BarangayConnect - Users",
 });
 </script>

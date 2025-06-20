@@ -51,16 +51,6 @@ class DatabaseSeeder extends Seeder
             'create permission',
             'edit permission',
             'delete permission',
-
-            'view product',
-            'create product',
-            'edit product',
-            'delete product',
-
-            'view order',
-            'create order',
-            'edit order',
-            'delete order',
         ];
 
         // Create permissions if not exists

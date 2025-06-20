@@ -12,18 +12,6 @@ export const useLinks = () => {
             to: "/dashboard",
         },
         {
-            icon: "solar:bag-4-outline",
-            label: "Products",
-            permission: auth.can("view product"),
-            to: "/products",
-        },
-        {
-            icon: "solar:cart-4-outline",
-            label: "Orders",
-            permission: auth.can("view order"),
-            to: "/orders",
-        },
-        {
             icon: "solar:users-group-rounded-outline",
             label: "Customers",
             permission: auth.can("view customer"),

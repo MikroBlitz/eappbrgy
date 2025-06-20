@@ -8,7 +8,7 @@
                     <h1
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
-                        Welcome to <span class="text-primary">MarketHub</span>
+                        Welcome to <span class="text-primary">EApp</span>
                     </h1>
                     <p class="text-slate-800 dark:text-slate-200 mt-2">
                         Register in to your account
@@ -100,8 +100,8 @@
 </template>
 
 <script setup lang="ts">
-import { z } from "zod";
 import { ref, reactive } from "vue";
+import { z } from "zod";
 
 import type { FormStateRegister } from "~/types/global";
 
@@ -113,11 +113,11 @@ useHead({
     meta: [
         {
             content:
-                "Login to your account. Sign in to your account and start trading with MarketHub.",
-            name: "Login",
+                "Access barangay services online. Apply for certificates, stay updated with announcements, and connect with your local government digitally.",
+            name: "description",
         },
     ],
-    title: "MarketHub - Register",
+    title: "BarangayConnect - Register",
 });
 
 const { mutate: registerUser } = useMutation(upsertUser);

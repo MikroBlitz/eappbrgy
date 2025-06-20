@@ -1,7 +1,7 @@
 # Fullstack APP
 
 ## Project Overview
-This project is a full stack monolith built using **Nuxt.js** on the frontend and **Laravel** on the backend, with **Apollo GraphQL** for data fetching and **Laravel Lighthouse** handling GraphQL on the server. The state management is handled by **Pinia**, and **Sanctum** provides secure authentication. The platform facilitates the buying and selling of a wide range of items. It is a community-driven marketplace that connects buyers and sellers, making it easy for users to discover listings, communicate, and complete transactions efficiently.
+This project is a full stack monolith built using **Nuxt.js** on the frontend and **Laravel** on the backend, with **Apollo GraphQL** for data fetching and **Laravel Lighthouse** handling GraphQL on the server. The state management is handled by **Pinia**, and **Sanctum** provides secure authentication.
 
 ### Features
 - **Nuxt.js**: A Vue.js framework that supports SSR (Server Side Rendering) and static site generation.
