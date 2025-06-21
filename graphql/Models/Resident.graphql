@@ -1,0 +1,80 @@
+type Resident {
+    id: ID!
+    name: String
+    first_name: String!
+    middle_name: String
+    last_name: String!
+    suffix: String
+    birthdate: DateTime
+    gender: Gender!
+    civil_status: CivilStatus!
+    citizenship: String!
+    phone: String
+    email: String
+    household: Household @belongsTo
+    purok: Purok @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input ResidentInput {
+    id: ID
+    name: String
+    first_name: String
+    middle_name: String
+    last_name: String
+    suffix: String
+    birthdate: DateTime
+    gender: Gender
+    civil_status: CivilStatus
+    citizenship: String
+    phone: String
+    email: String
+    household: ConnectHouseholdRelation
+    purok: ConnectPurokRelation
+}
+
+enum Gender {
+    MALE @enum(value: "male")
+    FEMALE @enum(value: "female")
+}
+
+enum CivilStatus {
+    SINGLE @enum(value: "single")
+    MARRIED @enum(value: "married")
+    SEPARATED @enum(value: "separated")
+    WIDOWED @enum(value: "widowed")
+}
+
+input ConnectResidentRelation {
+    id: ID
+    connect: ID
+    upsert: ResidentInput
+    delete: ID
+}
+
+input ConnectResidentsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [ResidentInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query @guard {
+    residents: [Resident]! @all
+    residentsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Resident]! @paginate
+    residentsCount: Int! @count(model: "Resident")
+}
+
+extend type Mutation @guard {
+    upsertResident(input: ResidentInput! @spread): Resident! @upsert
+    deleteResident(id: [ID!] @eq): [Resident] @delete
+}

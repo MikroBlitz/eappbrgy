@@ -1,0 +1,48 @@
+type Household {
+    id: ID!
+    household_no: String!
+    address: String
+    purok: [Purok] @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input HouseholdInput {
+    id: ID
+    household_no: String
+    address: String
+    purok: ConnectPurokRelation
+}
+
+input ConnectHouseholdRelation {
+    id: ID
+    connect: ID
+    upsert: HouseholdInput
+    delete: ID
+}
+
+input ConnectHouseholdsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [HouseholdInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query @guard {
+    households: [Household]! @all
+    householdsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Household]! @paginate
+    householdsCount: Int! @count(model: "Household")
+}
+
+extend type Mutation @guard {
+    upsertHousehold(input: HouseholdInput! @spread): Household! @upsert
+    deleteHousehold(id: [ID!] @eq): [Household] @delete
+}

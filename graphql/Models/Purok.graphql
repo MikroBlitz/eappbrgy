@@ -1,0 +1,48 @@
+type Purok {
+    id: ID!
+    name: String!
+    residents: [Resident] @hasMany
+    households: [Household] @hasMany
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input PurokInput {
+    id: ID
+    name: String
+    residents: ConnectResidentsRelation
+    households: ConnectHouseholdsRelation
+}
+
+input ConnectPurokRelation {
+    id: ID
+    connect: ID
+    upsert: PurokInput
+    delete: ID
+}
+
+input ConnectPuroksRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [PurokInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query @guard {
+    puroks: [Purok]! @all
+    puroksPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Purok]! @paginate
+    puroksCount: Int! @count(model: "Purok")
+}
+
+extend type Mutation @guard {
+    upsertPurok(input: PurokInput! @spread): Purok! @upsert
+    deletePurok(id: [ID!] @eq): [Purok] @delete
+}

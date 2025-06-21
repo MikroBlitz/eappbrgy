@@ -13,6 +13,7 @@ type User {
     roles: [Role]! @morphToMany
     messages: [Message] @hasMany
     contacts: [Contact] @hasMany
+    resident: Resident @belongsTo
     permissions: [Permission] @field(resolver: "App\\GraphQL\\Resolvers\\UserResolver@permissions")
     created_at: DateTime!
     updated_at: DateTime!
@@ -29,6 +30,7 @@ input UserInput {
     password: String
     is_active: Boolean
     roles: ConnectRolesRelation
+    resident: ConnectResidentRelation
 }
 
 input ConnectUserRelation {
@@ -48,17 +50,6 @@ input RegisterInput {
     password: String
     roles: ConnectRolesRelation
     is_active: Boolean!
-}
-
-input SortInput {
-    column: String
-    direction: String
-}
-
-input FilterInput {
-    key: String
-    value: String
-    label: String
 }
 
 extend type Query @guard {
