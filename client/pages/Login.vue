@@ -129,8 +129,8 @@ const loginSchema = z.object({
 });
 
 const formState = reactive<FormState>({
-    email: "",
-    password: "",
+    email: "admin@mail.com",
+    password: "admin1234",
     rememberMe: false,
 });
 

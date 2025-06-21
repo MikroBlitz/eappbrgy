@@ -51,6 +51,21 @@ class DatabaseSeeder extends Seeder
             'create permission',
             'edit permission',
             'delete permission',
+
+            'view purok',
+            'create purok',
+            'edit purok',
+            'delete purok',
+
+            'view household',
+            'create household',
+            'edit household',
+            'delete household',
+
+            'view resident',
+            'create resident',
+            'edit resident',
+            'delete resident',
         ];
 
         // Create permissions if not exists

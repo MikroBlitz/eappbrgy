@@ -12,10 +12,22 @@ export const useLinks = () => {
             to: "/dashboard",
         },
         {
-            icon: "solar:users-group-rounded-outline",
-            label: "Customers",
-            permission: auth.can("view customer"),
-            to: "/customers",
+            icon: "solar:home-angle-broken",
+            label: "Puroks",
+            permission: auth.can("view purok"),
+            to: "/puroks",
+        },
+        {
+            icon: "solar:home-broken",
+            label: "Households",
+            permission: auth.can("view household"),
+            to: "/households",
+        },
+        {
+            icon: "solar:users-group-two-rounded-broken",
+            label: "Residents",
+            permission: auth.can("view resident"),
+            to: "/residents",
         },
         {
             icon: "solar:chat-round-dots-outline",

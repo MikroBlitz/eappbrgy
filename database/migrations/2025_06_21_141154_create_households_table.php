@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('households', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('purok_id')->nullable()->constrained()->nullOnDelete();
             $table->string('household_no')->unique();
             $table->string('address');
-            $table->foreignId('purok_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -13,10 +13,48 @@ export const userFragment = gql`
             id
             name
         }
+        messages {
+            ...message
+        }
+        #        contacts {
+        #            id
+        #        }
+        resident {
+            id
+        }
         is_active
         created_at
         updated_at
         deleted_at
+    }
+`;
+
+export const householdFragment = gql`
+    fragment household on Household {
+        id
+        household_no
+        address
+        created_at
+        updated_at
+    }
+`;
+
+export const residentFragment = gql`
+    fragment resident on Resident {
+        id
+        name
+        first_name
+        middle_name
+        last_name
+        suffix
+        birthdate
+        gender
+        civil_status
+        citizenship
+        phone
+        email
+        created_at
+        updated_at
     }
 `;
 
