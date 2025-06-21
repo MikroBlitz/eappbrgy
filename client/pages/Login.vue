@@ -8,7 +8,8 @@
                     <h1
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
-                        Welcome to <span class="text-primary">EApp</span>
+                        Welcome to
+                        <span class="text-primary">{{ appTitle }}</span>
                     </h1>
                     <p class="text-slate-800 dark:text-slate-200 mt-2">
                         Sign in to your account
@@ -121,6 +122,8 @@ useHead({
     ],
     title: "BarangayConnect - Login",
 });
+
+const { appTitle } = useConstants();
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),

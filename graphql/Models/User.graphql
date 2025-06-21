@@ -7,7 +7,7 @@ type User {
     phone: String
     email: String!
     password: String!
-    is_active: Boolean!
+    is_active: Boolean
     is_admin: Boolean! @method(name: "is_admin")
     usersCount: Int
     roles: [Role]! @morphToMany
@@ -49,7 +49,7 @@ input RegisterInput {
     email: String
     password: String
     roles: ConnectRolesRelation
-    is_active: Boolean!
+    is_active: Boolean
 }
 
 extend type Query @guard {
@@ -65,7 +65,7 @@ extend type Query @guard {
 }
 
 extend type Mutation {
-    registerUser(input: RegisterInput! @spread): User! @create
+    registerUser(input: RegisterInput!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@registerUser")
     upsertUser(input: UserInput! @spread): User! @upsert @guard
     deleteUser(id: [ID!] @eq): [User] @delete @guard
     restoreUser(id: ID!): User! @restore @guard

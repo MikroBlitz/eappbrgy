@@ -13,9 +13,9 @@ export const userFragment = gql`
             id
             name
         }
-        messages {
-            ...message
-        }
+        #        messages {
+        #            ...message
+        #        }
         #        contacts {
         #            id
         #        }

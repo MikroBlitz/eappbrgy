@@ -8,7 +8,8 @@
                     <h1
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
-                        Welcome to <span class="text-primary">EApp</span>
+                        Welcome to
+                        <span class="text-primary">{{ appTitle }}</span>
                     </h1>
                     <p class="text-slate-800 dark:text-slate-200 mt-2">
                         Register in to your account
@@ -29,7 +30,6 @@
                         type="text"
                         autocomplete="first_name"
                         icon="line-md:account"
-                        required
                     />
                 </UFormGroup>
 
@@ -50,7 +50,6 @@
                         type="text"
                         autocomplete="last_name"
                         icon="line-md:account"
-                        required
                     />
                 </UFormGroup>
 
@@ -61,7 +60,6 @@
                         type="phone"
                         autocomplete="phone"
                         icon="i-heroicons-phone"
-                        required
                     />
                 </UFormGroup>
 
@@ -72,7 +70,6 @@
                         type="email"
                         autocomplete="email"
                         icon="i-heroicons-envelope"
-                        required
                     />
                 </UFormGroup>
 
@@ -83,7 +80,6 @@
                         type="password"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
-                        required
                     />
                 </UFormGroup>
 
@@ -137,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import { useTimeoutFn } from "@vueuse/shared";
 import { ref, reactive } from "vue";
 import { z } from "zod";
 
@@ -158,7 +155,7 @@ useHead({
     title: "BarangayConnect - Register",
 });
 
-const { mutate: register } = useMutation(registerUser);
+const { appTitle } = useConstants();
 
 const formState = reactive({
     email: "",
@@ -171,20 +168,18 @@ const formState = reactive({
 
 const onSubmit = async () => {
     const validationErrors = validate(formState);
+    const { mutate: register } = useMutation(registerUser);
 
     if (validationErrors.length > 0) return;
+    isLoading.value = true;
     try {
         const variables = {
             email: formState.email,
             first_name: formState.first_name,
-            is_active: true,
             last_name: formState.last_name,
             middle_name: formState.middle_name,
             password: formState.password,
             phone: formState.phone,
-            roles: {
-                sync: 3, // default user role on sign up
-            },
         };
 
         const response = await register({ input: variables });
@@ -196,9 +191,13 @@ const onSubmit = async () => {
             icon: "i-mdi-check-circle-outline",
             title: "Success",
         });
-        navigateTo("/login");
     } catch (error) {
         console.error(error);
+    } finally {
+        useTimeoutFn(() => {
+            isLoading.value = false;
+        }, 1000);
+        navigateTo("/login");
     }
 };
 

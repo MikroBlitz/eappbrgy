@@ -54,7 +54,7 @@
                                 <UButton
                                     class="p-2 rounded-full group"
                                     variant="outline"
-                                    @click="fetchData"
+                                    @click="handleRefetch"
                                 >
                                     <UIcon
                                         name="mdi:reload"
@@ -110,7 +110,7 @@
 import type { FormSubmitEvent } from "#ui/types";
 import type { ZodType, ZodTypeDef } from "zod";
 
-import { useDebounce, useTimeoutFn } from "@vueuse/shared";
+import { useDebounce } from "@vueuse/shared";
 
 import type { CrudConfig, CrudOperations } from "~/components/table/types";
 import type { FormSchema } from "~/types/fields";
@@ -144,18 +144,44 @@ const isDeleteModal = ref(false);
 const isChangeStatusModal = ref(false);
 const selectedItem = ref<T | null>(null);
 
-const data = ref<T[]>([]);
-const loading = ref(false);
 const modalLoading = ref(false);
-const result = ref<any>({});
 const rotationRefetch = ref(0);
 const formState = reactive({});
 
-const pageTotal = computed(() => {
+const queryVariables = computed(() => {
+    const variables: Record<string, unknown> = {
+        first: Number(pageCount.value),
+        page: page.value,
+    };
+
+    if (debouncedSearch.value) variables.search = debouncedSearch.value;
+    if (sort.value) variables.sort = sort.value;
+    if (selectedFilters.value && selectedFilters.value.length > 0) {
+        variables.filter = selectedFilters.value;
+    }
+
+    return variables;
+});
+
+const { error, loading, refetch, result } = useQuery(
+    props.operations.query,
+    queryVariables,
+    {
+        errorPolicy: "all",
+        fetchPolicy: "cache-and-network",
+    },
+);
+
+const data = computed(() => {
+    if (!result.value) return [];
     const queryKey = Object.keys(result.value)[0];
-    if (!queryKey) return;
-    if (!result.value[queryKey]?.paginatorInfo) return 0;
-    return result.value[queryKey].paginatorInfo.total;
+    return result.value[queryKey]?.data || [];
+});
+
+const pageTotal = computed(() => {
+    if (!result.value) return 0;
+    const queryKey = Object.keys(result.value)[0];
+    return result.value[queryKey]?.paginatorInfo?.total || 0;
 });
 
 const computedActions = computed(() => {
@@ -206,6 +232,16 @@ const computedActions = computed(() => {
         : defaultActions;
 });
 
+// Watch for errors and handle them
+watch(error, (newError) => {
+    if (newError) {
+        console.error(
+            `Error fetching ${props.config.title.toLowerCase()}:`,
+            newError,
+        );
+    }
+});
+
 const resetFilters = () => {
     search.value = "";
     selectedFilters.value = [];
@@ -248,38 +284,15 @@ function openChangeStatusModal(item: T) {
     isChangeStatusModal.value = true;
 }
 
-async function fetchData() {
+async function handleRefetch() {
     rotationRefetch.value += 360;
     try {
-        loading.value = true;
-        const variables: Record<string, unknown> = {
-            first: Number(pageCount.value),
-            page: page.value,
-        };
-
-        if (search.value) variables.search = search.value;
-        if (sort.value) variables.sort = sort.value;
-        if (selectedFilters.value && selectedFilters.value.length > 0) {
-            variables.filter = selectedFilters.value;
-        }
-
-        const { data: responseData } = await useAsyncQuery(
-            props.operations.query,
-            variables,
-        );
-
-        if (responseData.value) {
-            result.value = responseData.value;
-            const queryKey = Object.keys(result.value)[0];
-            data.value = result.value[queryKey].data;
-        }
+        await refetch();
     } catch (error) {
         console.error(
-            `Error fetching ${props.config.title.toLowerCase()}:`,
+            `Error refetching ${props.config.title.toLowerCase()}:`,
             error,
         );
-    } finally {
-        useTimeoutFn(() => (loading.value = false), 300);
     }
 }
 
@@ -292,7 +305,7 @@ async function handleDelete(id: string) {
         { id },
         {
             auth: auth.user?.id,
-            fetch: fetchData,
+            fetch: () => refetch(),
             modal: isDeleteModal,
             mutation: deleteMutation,
         },
@@ -317,7 +330,7 @@ async function handleStatusChange(id: string) {
         input,
         {
             auth: auth.user?.id,
-            fetch: fetchData,
+            fetch: () => refetch(),
             modal: isChangeStatusModal,
             mutation: statusMutation,
         },
@@ -337,18 +350,10 @@ async function onSubmit(event: FormSubmitEvent<any>) {
         modalLoading,
         { input },
         {
-            fetch: fetchData,
+            fetch: () => refetch(),
             modal: isOpen,
             mutation: upsertMutation,
         },
     );
 }
-
-onMounted(() => fetchData());
-onBeforeMount(() => fetchData());
-watch(
-    [page, pageCount, sort, debouncedSearch, selectedFilters],
-    () => fetchData(),
-    { deep: true },
-);
 </script>
