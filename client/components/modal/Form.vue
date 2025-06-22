@@ -97,8 +97,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ZodSchema } from "zod";
 import type { FormSubmitEvent } from "#ui/types";
+import type { ZodSchema } from "zod";
 
 import { UInput, USelectMenu } from "#components";
 
@@ -115,7 +115,7 @@ type Props<T> = {
     zodSchema?: ZodSchema;
     state: T;
     loading: boolean;
-    optionLoading: Ref<boolean>;
+    optionLoading?: Ref<boolean, boolean> | boolean;
     onSubmit: (event: FormSubmitEvent<T>) => void;
 };
 

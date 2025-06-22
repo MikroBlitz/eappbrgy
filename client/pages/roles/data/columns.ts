@@ -2,7 +2,7 @@ import { UBadge } from "#components";
 import { ShieldCheck, User } from "lucide-vue-next";
 
 import type { Column } from "~/components/table/types";
-import type { RoleFragment } from "~/types/codegen/graphql";
+import type { Role } from "~/types/codegen/graphql";
 
 import { colorMap, roleIconMap } from "~/utils/helpers";
 
@@ -44,7 +44,7 @@ export const columns: Column[] = [
     {
         key: "permissions",
         label: "Permissions",
-        render: (row: RoleFragment) => {
+        render: (row: Role) => {
             const Icon = ShieldCheck;
 
             if (row.name === "Admin") {

@@ -6,7 +6,7 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
-        :option-loading="role.loadingRoles"
+        :option-loading="loadingOptions"
         :actions="customActions"
     />
 </template>
@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import type { User } from "~/types/codegen/graphql";
 
+import { rolesPaginate } from "~/graphql/Role";
 import {
     usersPaginate,
     upsertUser,
@@ -24,22 +25,33 @@ import {
 import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
-const role = useRoleQueryOption();
+// Role Search Option
+const { debouncedSearch, initializeOptions, loadingOptions, queryOptions } =
+    useSearchQueryOptions(rolesPaginate, {
+        mapFn: (map: { name: string; id: string }) => ({
+            label: map.name,
+            value: map.id,
+        }),
+        pageSize: 10,
+        queryKey: "rolesPaginate",
+    });
+
+const permission = "user";
 const crudConfig = useCrudConfig(
     "Users", // title
     "User", // subtitle
     "solar:users-group-rounded-outline", // icon
     {
         // permissions
-        create: "create user",
-        delete: "delete user",
-        edit: "edit user",
+        create: `create ${permission}`,
+        delete: `delete ${permission}`,
+        edit: `edit ${permission}`,
         updateStatus: "update user status",
-        view: "view user",
+        view: `view ${permission}`,
     },
     true, // is_active button
 );
-const formSchema = computed(() => schema(role.roleOptions, role.searchRoles));
+const formSchema = computed(() => schema(queryOptions, debouncedSearch));
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const operations = useCrudOperations<User>(
@@ -55,7 +67,7 @@ const operations = useCrudOperations<User>(
                 const roleIds = user.roles
                     ? user.roles.map((role) => role?.id)
                     : [];
-                role.initializeRoles();
+                initializeOptions();
                 return {
                     email: user.email || "",
                     first_name: user.first_name || "",
@@ -68,7 +80,7 @@ const operations = useCrudOperations<User>(
                     roles: roleIds,
                 };
             } else {
-                role.initializeRoles();
+                initializeOptions();
                 return {
                     email: "",
                     first_name: "",

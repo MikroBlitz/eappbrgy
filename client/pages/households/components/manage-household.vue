@@ -10,22 +10,22 @@
 </template>
 
 <script setup lang="ts">
-import type { Permission } from "~/types/codegen/graphql";
+import type { Household } from "~/types/codegen/graphql";
 
 import {
-    permissionsPaginate,
-    upsertPermission,
-    deletePermission,
-} from "~/graphql/Permission";
+    householdsPaginate,
+    upsertHousehold,
+    deleteHousehold,
+} from "~/graphql/Household";
 
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = "permission";
+const permission = "household";
 const crudConfig = useCrudConfig(
-    "Permissions", // title
-    "Permission", // subtitle
-    "solar:lock-outline", // icon
+    "Households", // title
+    "Household", // subtitle
+    "solar:home-broken", // icon
     {
         // permissions
         create: `create ${permission}`,
@@ -37,30 +37,33 @@ const crudConfig = useCrudConfig(
 const formSchema = computed(() => schema());
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
-const operations = useCrudOperations<Permission>(
+const operations = useCrudOperations<Household>(
     {
-        delete: deletePermission,
-        paginate: permissionsPaginate,
-        upsert: upsertPermission,
+        delete: deleteHousehold,
+        paginate: householdsPaginate,
+        upsert: upsertHousehold,
     },
     {
-        getFormState: (permission?: Permission) => {
-            if (permission) {
+        getFormState: (household?: Household) => {
+            if (household) {
                 return {
-                    id: permission.id || "",
-                    name: permission.name,
+                    address: household.address,
+                    household_no: household.household_no,
+                    id: household.id || "",
+                    purok: household.purok,
                 };
             } else {
                 return {
+                    address: "",
+                    household_no: "",
                     id: "",
-                    name: "",
                 };
             }
         },
-        prepareSubmitData: (data: any, selectedPermission?: Permission) => {
+        prepareSubmitData: (data: any, selectedRow?: Household) => {
             return {
                 ...data,
-                id: selectedPermission?.id || undefined,
+                id: selectedRow?.id || undefined,
             };
         },
     },

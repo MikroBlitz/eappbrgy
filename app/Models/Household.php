@@ -25,6 +25,7 @@ class Household extends Model
         if (empty($search)) return $query;
 
         return $query->where('id', $search)
+            ->orWhere('address', 'like', "%{$search}%")
             ->orWhere('household_no', 'like', "%{$search}%");
     }
 

@@ -1,11 +1,11 @@
 <template>
-    <ManagePurok />
+    <ManageHousehold />
 </template>
 
 <script setup lang="ts">
-import ManagePurok from "./components/manage-purok.vue";
+import ManageHousehold from "./components/manage-household.vue";
 
-definePageMeta({ layout: "app-layout", permission: "view purok" });
+definePageMeta({ layout: "app-layout", permission: "view household" });
 useHead({
     meta: [
         {
@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Puroks",
+    title: "BarangayConnect - Households",
 });
 </script>

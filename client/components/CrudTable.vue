@@ -123,10 +123,10 @@ interface Props<T extends Record<string, unknown>> {
     actions?: TableAction[];
     columns: Array<Record<string, unknown>>;
     config: CrudConfig;
-    filters: Array<Record<string, unknown>>;
+    filters?: Array<Record<string, unknown>>;
     formSchema: FormSchema;
     operations: CrudOperations<T>;
-    optionLoading?: Ref<boolean, boolean> | undefined;
+    optionLoading?: Ref<boolean, boolean> | boolean;
     zodSchema: ZodType<any, ZodTypeDef, any> | undefined;
 
     // Action configuration
@@ -139,8 +139,10 @@ interface Props<T extends Record<string, unknown>> {
 const props = withDefaults(defineProps<Props<any>>(), {
     actionPosition: "end",
     actions: () => [],
+    filters: () => [],
     hideDefaultActions: false,
     maxVisibleActions: 5,
+    optionLoading: false,
     useActionDropdown: false,
 });
 
@@ -311,7 +313,8 @@ function openAddModal() {
 function openViewModal(item: T) {
     selectedItem.value = item;
     Object.assign(formState, props.operations.getFormState(item));
-    isOpen.value = true;
+    // isOpen.value = true;
+    console.log("View", item);
 }
 
 function openEditModal(item: T) {

@@ -2,8 +2,6 @@ import { UBadge } from "#components";
 
 import type { Column } from "~/components/table/types";
 
-import { colorMap } from "~/utils/helpers";
-
 export const columns: Column[] = [
     {
         class: "w-2",
@@ -17,21 +15,34 @@ export const columns: Column[] = [
     {
         key: "name",
         label: "Name",
+        sortable: true,
+    },
+    {
+        key: "households",
+        label: "Households",
         render: (row) => {
             return h(
-                UBadge,
-                {
-                    color: colorMap[row.name] || "gray",
-                    label: row.name,
-                    size: "sm",
-                    variant: "solid",
-                },
-                {
-                    default: () =>
-                        h("div", { class: "flex items-center space-x-1" }, [
-                            h("span", null, row.name),
-                        ]),
-                },
+                "div",
+                { class: "flex flex-wrap gap-1" },
+                row.permissions?.map((household: { name: string }) =>
+                    h(
+                        UBadge,
+                        {
+                            color: "gray",
+                            label: household?.name,
+                            size: "sm",
+                            variant: "solid",
+                        },
+                        {
+                            default: () =>
+                                h(
+                                    "div",
+                                    { class: "flex items-center space-x-1" },
+                                    [h("span", null, household?.name)],
+                                ),
+                        },
+                    ),
+                ),
             );
         },
         sortable: true,

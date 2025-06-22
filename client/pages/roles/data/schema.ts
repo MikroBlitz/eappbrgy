@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import type { formZodSchema } from "~/utils/helpers";
 import type { FieldOption, FormSchema } from "~/types/fields";
+import type { formZodSchema } from "~/utils/helpers";
 
 export const schema = (
     options: Ref<FieldOption[]>,

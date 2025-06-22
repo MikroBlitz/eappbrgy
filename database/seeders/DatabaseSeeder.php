@@ -34,6 +34,42 @@ class DatabaseSeeder extends Seeder
             'is_active' => 1,
         ]);
 
+        // Create roles
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $managerRole = Role::firstOrCreate(['name' => 'Manager']);
+        $userRole = Role::firstOrCreate(['name' => 'User']);
+        $roles = [
+            'System Administrator',
+            'Team Lead',
+            'Project Manager',
+            'Department Head',
+            'Operations Manager',
+            'HR Manager',
+            'Finance Manager',
+            'Guest',
+            'Member',
+            'Premium Member',
+            'VIP Member',
+            'Developer',
+            'Designer',
+            'Content Creator',
+            'Editor',
+            'Moderator',
+            'Support Agent',
+            'Customer Service',
+            'Sales Representative',
+            'Marketing Specialist',
+            'Analyst',
+            'Client',
+            'Vendor',
+            'Partner',
+            'Contractor',
+            'Consultant'
+        ];
+        foreach ($roles as $roleName) {
+            Role::firstOrCreate(['name' => $roleName]);
+        }
+
         // Define permissions
         $permissions = [
             'view user',
@@ -73,11 +109,6 @@ class DatabaseSeeder extends Seeder
         foreach ($permissions as $permissionName) {
             $permissionMap[$permissionName] = Permission::firstOrCreate(['name' => $permissionName]);
         }
-
-        // Create roles
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        $managerRole = Role::firstOrCreate(['name' => 'Manager']);
-        $userRole = Role::firstOrCreate(['name' => 'User']);
 
         $managerRole->syncPermissions(array_map(fn($name) => $permissionMap[$name], $permissions));
 

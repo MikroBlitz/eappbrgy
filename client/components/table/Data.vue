@@ -63,6 +63,7 @@
 
                 <div class="flex gap-2">
                     <USelectMenu
+                        v-if="filters.length"
                         v-model="selectedStatus"
                         :options="filters"
                         multiple

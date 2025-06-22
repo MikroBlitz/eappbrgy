@@ -46,7 +46,7 @@ export const columns: Column[] = [
                 }),
             ]);
         },
-        sortable: true,
+        sortable: false,
     },
     {
         key: "name",

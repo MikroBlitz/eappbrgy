@@ -6,34 +6,44 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
-        :option-loading="permission.loadingPermissions"
+        :option-loading="loadingOptions"
     />
 </template>
 
 <script setup lang="ts">
 import type { Role } from "~/types/codegen/graphql";
 
+import { permissionsPaginate } from "~/graphql/Permission";
 import { rolesPaginate, upsertRole, deleteRole } from "~/graphql/Role";
 
 import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = usePermissionQueryOption();
+// Permission Search Option
+const { debouncedSearch, initializeOptions, loadingOptions, queryOptions } =
+    useSearchQueryOptions(permissionsPaginate, {
+        mapFn: (map: { name: string; id: string }) => ({
+            label: map.name,
+            value: map.id,
+        }),
+        pageSize: 50,
+        queryKey: "permissionsPaginate",
+    });
+
+const permissionName = "role";
 const crudConfig = useCrudConfig(
     "Roles", // title
     "Role", // subtitle
     "solar:key-outline", // icon
     {
         // permissions
-        create: "create role",
-        delete: "delete role",
-        edit: "edit role",
-        view: "view role",
+        create: `create ${permissionName}`,
+        delete: `delete ${permissionName}`,
+        edit: `edit ${permissionName}`,
+        view: `view ${permissionName}`,
     },
 );
-const formSchema = computed(() =>
-    schema(permission.permissionOptions, permission.searchPermissions),
-);
+const formSchema = computed(() => schema(queryOptions, debouncedSearch));
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const operations = useCrudOperations<Role>(
@@ -48,14 +58,14 @@ const operations = useCrudOperations<Role>(
                 const permissionIds = role.permissions
                     ? role.permissions.map((perm) => perm?.id)
                     : [];
-                permission.initializePermissions();
+                initializeOptions();
                 return {
                     id: role.id || "",
                     name: role.name,
                     permissions: permissionIds,
                 };
             } else {
-                permission.initializePermissions();
+                initializeOptions();
                 return {
                     id: "",
                     name: "",
