@@ -112,11 +112,15 @@ import type { ZodType, ZodTypeDef } from "zod";
 
 import { useDebounce } from "@vueuse/shared";
 
-import type { CrudConfig, CrudOperations } from "~/components/table/types";
+import type {
+    CrudConfig,
+    CrudOperations,
+    TableAction,
+} from "~/components/table/types";
 import type { FormSchema } from "~/types/fields";
 
 interface Props<T extends Record<string, unknown>> {
-    actions?: Array<Record<string, unknown>>;
+    actions?: TableAction[];
     columns: Array<Record<string, unknown>>;
     config: CrudConfig;
     filters: Array<Record<string, unknown>>;
@@ -124,9 +128,21 @@ interface Props<T extends Record<string, unknown>> {
     operations: CrudOperations<T>;
     optionLoading?: Ref<boolean, boolean> | undefined;
     zodSchema: ZodType<any, ZodTypeDef, any> | undefined;
+
+    // Action configuration
+    actionPosition?: "start" | "end" | "both";
+    hideDefaultActions?: boolean;
+    maxVisibleActions?: number;
+    useActionDropdown?: boolean;
 }
 
-const props = defineProps<Props<any>>();
+const props = withDefaults(defineProps<Props<any>>(), {
+    actionPosition: "end",
+    actions: () => [],
+    hideDefaultActions: false,
+    maxVisibleActions: 5,
+    useActionDropdown: false,
+});
 
 const auth = useAuthStore();
 const selectedColumns = ref(props.columns);
@@ -175,61 +191,91 @@ const { error, loading, refetch, result } = useQuery(
 const data = computed(() => {
     if (!result.value) return [];
     const queryKey = Object.keys(result.value)[0];
-    return result.value[queryKey]?.data || [];
+    if (!queryKey) return [];
+    return result.value[queryKey].data || [];
 });
 
 const pageTotal = computed(() => {
     if (!result.value) return 0;
     const queryKey = Object.keys(result.value)[0];
-    return result.value[queryKey]?.paginatorInfo?.total || 0;
+    if (!queryKey) return 0;
+    return result.value[queryKey].paginatorInfo?.total || 0;
 });
 
+// Helper function to resolve dynamic values
+const resolveDynamicValue = <T, K>(value: K | ((row: T) => K), row: T): K => {
+    return typeof value === "function" ? (value as (row: T) => K)(row) : value;
+};
+
+// Enhanced computed actions with full customization
 const computedActions = computed(() => {
-    const defaultActions = [];
+    const customActions = props.actions.map((action, _index) => ({
+        ...action,
+    }));
 
-    if (props.config.hasStatus) {
-        defaultActions.push({
-            color: (row: T) => (row.is_active ? "green" : "gray"),
-            condition: () =>
-                auth.can(props.config.permissions.updateStatus || ""),
-            icon: (row: T) =>
-                row.is_active ? "mdi:toggle-switch" : "mdi:toggle-switch-off",
-            onClick: (row: T) => openChangeStatusModal(row),
-            tooltip: (row: T) =>
-                `Switch status to "${row.is_active ? "Inactive" : "Active"}"`,
-        });
-    }
+    const defaultActions = props.hideDefaultActions
+        ? []
+        : [
+              ...(props.config.hasStatus
+                  ? [
+                        {
+                            color: (row: T) =>
+                                row.is_active ? "green" : "gray",
+                            condition: () =>
+                                auth.can(
+                                    props.config.permissions.updateStatus || "",
+                                ),
+                            icon: (row: T) =>
+                                row.is_active
+                                    ? "mdi:toggle-switch"
+                                    : "mdi:toggle-switch-off",
+                            onClick: (row: T) => openChangeStatusModal(row),
+                            tooltip: (row: T) =>
+                                `Switch status to "${row.is_active ? "Inactive" : "Active"}"`,
+                        },
+                    ]
+                  : []),
 
-    defaultActions.push(
-        {
-            color: () => "yellow",
-            condition: () => auth.can(props.config.permissions.view),
-            icon: () => "mdi:eye",
-            onClick: (row: T) => openViewModal(row),
-            tooltip: (row: T) =>
-                `View ${props.config.singular} ${row.name || row.id}`,
-        },
-        {
-            color: () => "blue",
-            condition: () => auth.can(props.config.permissions.edit),
-            icon: () => "mdi:pencil",
-            onClick: (row: T) => openEditModal(row),
-            tooltip: (row: T) =>
-                `Edit ${props.config.singular} ${row.name || row.id}`,
-        },
-        {
-            color: () => "red",
-            condition: () => auth.can(props.config.permissions.delete),
-            icon: () => "mdi:delete",
-            onClick: (row: T) => openDeleteModal(row),
-            tooltip: (row: T) =>
-                `Delete ${props.config.singular} ${row.name || row.id}`,
-        },
-    );
+              // View action
+              {
+                  color: () => "yellow",
+                  condition: () => auth.can(props.config.permissions.view),
+                  icon: () => "mdi:eye",
+                  onClick: (row: T) => openViewModal(row),
+                  tooltip: (row: T) =>
+                      `View ${props.config.singular} ${row.name || row.id}`,
+              },
 
-    return props.actions
-        ? [...props.actions, ...defaultActions]
-        : defaultActions;
+              // Edit action
+              {
+                  color: () => "blue",
+                  condition: () => auth.can(props.config.permissions.edit),
+                  icon: () => "mdi:pencil",
+                  onClick: (row: T) => openEditModal(row),
+                  tooltip: (row: T) =>
+                      `Edit ${props.config.singular} ${row.name || row.id}`,
+              },
+
+              // Delete action
+              {
+                  color: () => "red",
+                  condition: () => auth.can(props.config.permissions.delete),
+                  icon: () => "mdi:delete",
+                  onClick: (row: T) => openDeleteModal(row),
+                  tooltip: (row: T) =>
+                      `Delete ${props.config.singular} ${row.name || row.id}`,
+              },
+          ];
+
+    const allActions = [...customActions, ...defaultActions];
+
+    return allActions.map((action) => ({
+        color: action.color,
+        condition: action.condition,
+        icon: action.icon,
+        onClick: action.onClick,
+        tooltip: action.tooltip,
+    }));
 });
 
 // Watch for errors and handle them
@@ -356,4 +402,13 @@ async function onSubmit(event: FormSubmitEvent<any>) {
         },
     );
 }
+
+// Expose helper function for parent components
+defineExpose({
+    openAddModal,
+    openEditModal,
+    openViewModal,
+    refetch: handleRefetch,
+    resolveDynamicValue,
+});
 </script>

@@ -1,3 +1,5 @@
+import type { ApolloQueryResult } from "@apollo/client";
+
 import { useToast } from "#ui/composables/useToast";
 
 type Action<
@@ -6,7 +8,7 @@ type Action<
     TMutationResult = unknown,
 > = {
     auth?: string | undefined;
-    fetch: () => Promise<TFetchResult>;
+    fetch: () => Promise<ApolloQueryResult<TFetchResult>> | undefined;
     modal?: Ref<boolean>;
     mutation: (args: TInput) => Promise<TMutationResult>;
 };

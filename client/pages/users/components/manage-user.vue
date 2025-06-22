@@ -7,6 +7,7 @@
         :zod-schema="zodSchema"
         :operations="operations"
         :option-loading="role.loadingRoles"
+        :actions="customActions"
     />
 </template>
 
@@ -96,4 +97,23 @@ const operations = useCrudOperations<User>(
         },
     },
 );
+
+// Custom actions
+const customActions = [
+    {
+        color: () => "orange",
+        condition: () => true,
+        icon: () => "solar:file-download-broken",
+        onClick: (row: User) => customFunction(row),
+        tooltip: (row: User) => `Log the Purok Data ${row.name}`,
+    },
+];
+const customFunction = (user: User) => {
+    console.log("User Row Data:", user);
+    useToast().add({
+        color: "green",
+        description: `Row data for ${user.name} logged to console`,
+        title: "Custom Action Triggered",
+    });
+};
 </script>
