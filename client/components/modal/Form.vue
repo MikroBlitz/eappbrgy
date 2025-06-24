@@ -105,6 +105,8 @@ import { UInput, USelectMenu } from "#components";
 
 import type { FieldType, FormSchema } from "~/types/fields";
 
+import DatePicker from "~/components/DatePickerButton.vue";
+
 const emit = defineEmits<{
     (e: "update:is-open", value: boolean): void;
 }>();
@@ -129,6 +131,7 @@ const isModalOpen = computed({
 
 const componentMap: Record<FieldType, Component> = {
     combobox: USelectMenu,
+    date: DatePicker,
     email: UInput,
     number: UInput,
     password: UInput,

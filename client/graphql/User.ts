@@ -83,3 +83,9 @@ export const registerUser = gql`
     }
     ${userFragment}
 `;
+
+export const usersCount = gql`
+    query {
+        usersCount
+    }
+`;

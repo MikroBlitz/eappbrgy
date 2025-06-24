@@ -61,7 +61,7 @@
                                     v-if="state[field.name]"
                                     class="text-gray-700 dark:text-gray-300"
                                 >
-                                    {{ formatDate(state[field.name]) }}
+                                    {{ getFriendlyDate(state[field.name]) }}
                                 </span>
                                 <span v-else class="text-gray-400 italic"
                                     >Not set</span
@@ -216,6 +216,8 @@
 
 <script setup lang="ts">
 import type { FormSchema } from "~/types/fields";
+
+import { getFriendlyDate } from "~/utils/helpers";
 
 const emit = defineEmits<{
     (e: "update:is-open", value: boolean): void;

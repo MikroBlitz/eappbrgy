@@ -7,7 +7,8 @@ export type FieldType =
     | "select"
     | "combobox"
     | "tel"
-    | "number";
+    | "number"
+    | "date";
 
 export interface FieldOption {
     label: string;
@@ -15,19 +16,19 @@ export interface FieldOption {
 }
 
 export interface FormField {
-    name: string;
-    label: string;
     class?: string;
-    type: FieldType;
-    required?: boolean;
+    label: string;
     multiple?: boolean;
-    placeholder?: string;
-    searchable?: boolean;
+    name: string;
+    onSearch?: (query: string) => Promise<FieldOption[]>;
+    optionAttribute?: string;
     options?: FieldOption[];
+    placeholder?: string;
+    required?: boolean;
+    searchable?: boolean;
+    type: FieldType;
     validation?: ZodTypeAny;
     valueAttribute?: string;
-    optionAttribute?: string;
-    onSearch?: (query: string) => Promise<FieldOption[]>;
 }
 
 export interface FormSchema {

@@ -6,7 +6,7 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
-        :option-loading="loadingOptions"
+        :option-loading="roleSearch.loadingOptions"
         :actions="customActions"
     />
 </template>
@@ -26,15 +26,9 @@ import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
 // Role Search Option
-const { debouncedSearch, initializeOptions, loadingOptions, queryOptions } =
-    useSearchQueryOptions(rolesPaginate, {
-        mapFn: (map: { name: string; id: string }) => ({
-            label: map.name,
-            value: map.id,
-        }),
-        pageSize: 10,
-        queryKey: "rolesPaginate",
-    });
+const roleSearch = useSearchQueryOptions(rolesPaginate, {
+    queryKey: "rolesPaginate",
+});
 
 const permission = "user";
 const crudConfig = useCrudConfig(
@@ -51,7 +45,9 @@ const crudConfig = useCrudConfig(
     },
     true, // is_active button
 );
-const formSchema = computed(() => schema(queryOptions, debouncedSearch));
+const formSchema = computed(() =>
+    schema(roleSearch.queryOptions, roleSearch.debouncedSearch),
+);
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const operations = useCrudOperations<User>(
@@ -68,7 +64,7 @@ const operations = useCrudOperations<User>(
                 const roleIds = user.roles
                     ? user.roles.map((role) => role?.id)
                     : [];
-                initializeOptions();
+                roleSearch.initializeOptions();
                 return {
                     email: user.email || "",
                     first_name: user.first_name || "",
@@ -82,7 +78,7 @@ const operations = useCrudOperations<User>(
                 };
             } else {
                 // This is adding data
-                initializeOptions();
+                roleSearch.initializeOptions();
                 return {
                     email: "",
                     first_name: "",
@@ -119,7 +115,7 @@ const customActions = [
         condition: () => true,
         icon: () => "solar:file-download-broken",
         onClick: (row: User) => customFunction(row),
-        tooltip: (row: User) => `Log the Purok Data ${row.name}`,
+        tooltip: (row: User) => `Log the Data ${row.name}`,
     },
 ];
 const customFunction = (user: User) => {

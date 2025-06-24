@@ -627,11 +627,11 @@ export type Resident = {
   __typename?: 'Resident';
   birthdate?: Maybe<Scalars['DateTime']['output']>;
   citizenship: Scalars['String']['output'];
-  civil_status: CivilStatus;
+  civil_status: Scalars['String']['output'];
   created_at: Scalars['DateTime']['output'];
   email?: Maybe<Scalars['String']['output']>;
   first_name: Scalars['String']['output'];
-  gender: Gender;
+  gender: Scalars['String']['output'];
   household?: Maybe<Household>;
   id: Scalars['ID']['output'];
   last_name: Scalars['String']['output'];
@@ -646,15 +646,14 @@ export type Resident = {
 export type ResidentInput = {
   birthdate?: InputMaybe<Scalars['DateTime']['input']>;
   citizenship?: InputMaybe<Scalars['String']['input']>;
-  civil_status?: InputMaybe<CivilStatus>;
+  civil_status?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Gender>;
+  gender?: InputMaybe<Scalars['String']['input']>;
   household?: InputMaybe<ConnectHouseholdRelation>;
   id?: InputMaybe<Scalars['ID']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   middle_name?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   purok?: InputMaybe<ConnectPurokRelation>;
   suffix?: InputMaybe<Scalars['String']['input']>;
@@ -847,7 +846,7 @@ export type UserFragment = { __typename?: 'User', id: string, name?: string | nu
 
 export type HouseholdFragment = { __typename?: 'Household', id: string, household_no: string, address?: string | null, created_at: any, updated_at: any, purok?: { __typename?: 'Purok', id: string, name: string } | null } & { ' $fragmentName'?: 'HouseholdFragment' };
 
-export type ResidentFragment = { __typename?: 'Resident', id: string, name?: string | null, first_name: string, middle_name?: string | null, last_name: string, suffix?: string | null, birthdate?: any | null, gender: Gender, civil_status: CivilStatus, citizenship: string, phone?: string | null, email?: string | null, created_at: any, updated_at: any } & { ' $fragmentName'?: 'ResidentFragment' };
+export type ResidentFragment = { __typename?: 'Resident', id: string, name?: string | null, first_name: string, middle_name?: string | null, last_name: string, suffix?: string | null, birthdate?: any | null, gender: string, civil_status: string, citizenship: string, phone?: string | null, email?: string | null, created_at: any, updated_at: any } & { ' $fragmentName'?: 'ResidentFragment' };
 
 export type MessageFragment = { __typename?: 'Message', id: string, message: string, messagesCount?: number | null, created_at: any, updated_at: any, sender?: { __typename?: 'User', id: string, name?: string | null } | null, receiver?: { __typename?: 'User', id: string, name?: string | null } | null } & { ' $fragmentName'?: 'MessageFragment' };
 

@@ -6,7 +6,7 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
-        :option-loading="loadingOptions"
+        :option-loading="purokSearch.loadingOptions"
     />
 </template>
 
@@ -23,15 +23,9 @@ import { puroksPaginate } from "~/graphql/Purok";
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
 
-const { debouncedSearch, initializeOptions, loadingOptions, queryOptions } =
-    useSearchQueryOptions(puroksPaginate, {
-        mapFn: (map: { name: string; id: string }) => ({
-            label: map.name,
-            value: map.id,
-        }),
-        pageSize: 50,
-        queryKey: "puroksPaginate",
-    });
+const purokSearch = useSearchQueryOptions(puroksPaginate, {
+    queryKey: "puroksPaginate",
+});
 
 const permission = "household";
 const crudConfig = useCrudConfig(
@@ -46,7 +40,9 @@ const crudConfig = useCrudConfig(
         view: `view ${permission}`,
     },
 );
-const formSchema = computed(() => schema(queryOptions, debouncedSearch));
+const formSchema = computed(() =>
+    schema(purokSearch.queryOptions, purokSearch.debouncedSearch),
+);
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const operations = useCrudOperations<Household>(
@@ -58,7 +54,7 @@ const operations = useCrudOperations<Household>(
     {
         getFormState: (household?: Household) => {
             if (household) {
-                initializeOptions();
+                purokSearch.initializeOptions();
                 return {
                     address: household.address,
                     household_no: household.household_no,
@@ -66,7 +62,7 @@ const operations = useCrudOperations<Household>(
                     purok: household.purok,
                 };
             } else {
-                initializeOptions();
+                purokSearch.initializeOptions();
                 return {
                     address: "",
                     household_no: "",

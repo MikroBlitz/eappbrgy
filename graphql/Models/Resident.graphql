@@ -6,8 +6,8 @@ type Resident {
     last_name: String!
     suffix: String
     birthdate: DateTime
-    gender: Gender!
-    civil_status: CivilStatus!
+    gender: String!
+    civil_status: String!
     citizenship: String!
     phone: String
     email: String
@@ -19,14 +19,13 @@ type Resident {
 
 input ResidentInput {
     id: ID
-    name: String
     first_name: String
     middle_name: String
     last_name: String
     suffix: String
     birthdate: DateTime
-    gender: Gender
-    civil_status: CivilStatus
+    gender: String
+    civil_status: String
     citizenship: String
     phone: String
     email: String

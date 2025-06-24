@@ -43,3 +43,9 @@ export const deleteResident = gql`
         }
     }
 `;
+
+export const residentsCount = gql`
+    query {
+        residentsCount
+    }
+`;

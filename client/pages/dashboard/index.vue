@@ -29,7 +29,7 @@
                             <p
                                 class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                             >
-                                2,847
+                                {{ residentCounter }}
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
@@ -535,7 +535,21 @@
 </template>
 
 <script setup>
+import { residentsCount } from "~/graphql/Resident.js";
+
 definePageMeta({ layout: "app-layout" });
+
+const residentCounter = ref(0);
+
+const { refetch: refetchResident, result: residentCounts } =
+    useQuery(residentsCount);
+
+onMounted(async () => {
+    await refetchResident();
+    if (residentCounts.value) {
+        residentCounter.value = residentCounts.value.residentsCount;
+    }
+});
 
 useHead({
     meta: [

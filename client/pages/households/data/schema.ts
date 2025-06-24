@@ -27,9 +27,7 @@ export const schema = (
             type: "combobox",
             validation: z.union([
                 z.string().min(1, "Purok is required"),
-                z
-                    .array(z.string())
-                    .min(1, "At least one permission is required"),
+                z.array(z.string()).min(1, "At least one purok is required"),
             ]),
         },
         {

@@ -6,7 +6,7 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
-        :option-loading="loadingOptions"
+        :option-loading="permissionSearch.loadingOptions"
     />
 </template>
 
@@ -20,15 +20,9 @@ import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
 // Permission Search Option
-const { debouncedSearch, initializeOptions, loadingOptions, queryOptions } =
-    useSearchQueryOptions(permissionsPaginate, {
-        mapFn: (map: { name: string; id: string }) => ({
-            label: map.name,
-            value: map.id,
-        }),
-        pageSize: 50,
-        queryKey: "permissionsPaginate",
-    });
+const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
+    queryKey: "permissionsPaginate",
+});
 
 const permissionName = "role";
 const crudConfig = useCrudConfig(
@@ -43,7 +37,9 @@ const crudConfig = useCrudConfig(
         view: `view ${permissionName}`,
     },
 );
-const formSchema = computed(() => schema(queryOptions, debouncedSearch));
+const formSchema = computed(() =>
+    schema(permissionSearch.queryOptions, permissionSearch.debouncedSearch),
+);
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const operations = useCrudOperations<Role>(
@@ -58,14 +54,14 @@ const operations = useCrudOperations<Role>(
                 const permissionIds = role.permissions
                     ? role.permissions.map((perm) => perm?.id)
                     : [];
-                initializeOptions();
+                permissionSearch.initializeOptions();
                 return {
                     id: role.id,
                     name: role.name,
                     permissions: permissionIds,
                 };
             } else {
-                initializeOptions();
+                permissionSearch.initializeOptions();
                 return {
                     id: undefined,
                     name: "",

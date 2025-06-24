@@ -1,13 +1,12 @@
 import { useDebounceFn } from "@vueuse/shared";
-import { ref, computed, watch, readonly } from "vue";
 
 import type { FieldOption } from "~/types/fields";
 
 interface SearchQueryOptions<T = any> {
-    dataKey?: string;
-    debounceMs?: number;
-    mapFn?: (item: T) => FieldOption;
-    pageSize?: number;
+    dataKey?: string; // default: "data"
+    debounceMs?: number; // default: 700
+    mapFn?: (item: T) => FieldOption; // default: map to { label, value }
+    pageSize?: number; // default: 50
     queryKey: string;
     variables?: Record<string, any>;
 }
@@ -19,7 +18,10 @@ export function useSearchQueryOptions<T = any>(
     const {
         dataKey = "data",
         debounceMs = 700,
-        mapFn = (item: any) => ({ label: item.name, value: item.id }),
+        mapFn = (item: any) => ({
+            label: item.name,
+            value: item.id,
+        }), // 👈 this covers what useEntitySearchOptions did!
         pageSize = 50,
         queryKey,
         variables = {},
@@ -37,16 +39,14 @@ export function useSearchQueryOptions<T = any>(
     const { error, loading, refetch, result } = useQuery(query, queryVariables);
 
     const queryOptions = computed<FieldOption[]>(() => {
-        if (!result.value || !result.value[queryKey]) {
-            return [];
-        }
+        const raw = result.value?.[queryKey];
+        if (!raw) return [];
+        const items = Array.isArray(raw[dataKey]) ? raw[dataKey] : raw;
 
         try {
-            const items =
-                result.value[queryKey][dataKey] || result.value[queryKey];
-            return Array.isArray(items) ? items.map(mapFn) : [];
+            return items.map(mapFn);
         } catch (err) {
-            console.error(`Failed to process ${queryKey} data:`, err);
+            console.error(`Error mapping ${queryKey} items:`, err);
             return [];
         }
     });
@@ -61,23 +61,23 @@ export function useSearchQueryOptions<T = any>(
 
     const initializeOptions = async () => {
         if (!isInitialized.value) {
-            searchTerm.value = "";
             isInitialized.value = true;
+            searchTerm.value = "";
             await refetch();
         }
         return queryOptions.value;
     };
 
-    watch(error, (newError) => {
-        if (newError) {
-            console.error(`Failed to fetch ${queryKey}:`, newError);
+    watchEffect(() => {
+        if (error.value) {
+            console.error(`GraphQL error in "${queryKey}":`, error.value);
         }
     });
 
     return {
         debouncedSearch,
         initializeOptions,
-        loadingOptions: readonly(loading),
-        queryOptions: readonly(queryOptions),
+        loadingOptions: loading,
+        queryOptions,
     };
 }

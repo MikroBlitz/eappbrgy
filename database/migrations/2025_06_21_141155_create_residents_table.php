@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('citizenship')->default('Filipino');
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->date('birthdate');
+            $table->dateTime('birthdate');
             $table->enum('gender', ['male', 'female']);
             $table->enum('civil_status', ['single', 'married', 'separated', 'widowed']);
             $table->timestamps();

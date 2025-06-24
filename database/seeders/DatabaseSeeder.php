@@ -119,5 +119,11 @@ class DatabaseSeeder extends Seeder
         // Create additional users
         $users = User::factory(50)->create();
         $users->each(fn($user) => $user->assignRole($userRole));
+
+        $this->call([
+            PurokSeeder::class,
+            HouseholdSeeder::class,
+            ResidentSeeder::class,
+        ]);
     }
 }
