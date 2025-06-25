@@ -1,5 +1,5 @@
 <template>
-    <UModal v-model="isModalOpen" :transition="false">
+    <UModal v-model="isModalOpen">
         <UCard class="max-w-2xl">
             <template #header>
                 <div class="flex items-center gap-3">

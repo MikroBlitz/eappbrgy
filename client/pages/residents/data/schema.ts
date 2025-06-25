@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import type { FieldOption, FormSchema } from "~/types/fields";
 
-// import { CivilStatus, Gender } from "~/types/codegen/graphql";
-import { CivilStatus, Gender } from "~/types/codegen/graphql";
 import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 
 export const schema = ({
@@ -16,6 +14,38 @@ export const schema = ({
     searchOptions: (q: string) => Promise<FieldOption[]>;
 }): FormSchema => ({
     fields: [
+        {
+            class: "col-span-full",
+            label: "Purok",
+            multiple: false,
+            name: "purok",
+            onSearch: searchOptions,
+            options: purokOptions.value,
+            placeholder: "Select Purok",
+            searchable: true,
+            type: "combobox",
+            validation: z.union([
+                z.string().min(1, "Purok is required"),
+                z.array(z.string()).min(1, "At least one purok is required"),
+            ]),
+        },
+        {
+            class: "col-span-full",
+            label: "Household",
+            multiple: false,
+            name: "household",
+            onSearch: searchOptions,
+            options: householdOptions.value,
+            placeholder: "Select Household",
+            searchable: true,
+            type: "combobox",
+            validation: z.union([
+                z.string().min(1, "Household is required"),
+                z
+                    .array(z.string())
+                    .min(1, "At least one household is required"),
+            ]),
+        },
         {
             class: "col-span-full",
             label: "First Name",
@@ -38,31 +68,38 @@ export const schema = ({
             validation: z.string().min(1, "Last name is required"),
         },
         {
-            class: "col-span-6 md:col-span-4",
+            class: "col-span-6",
             label: "Suffix",
             name: "suffix",
             type: "text",
             validation: z.string().optional(),
         },
         {
-            class: "col-span-6 md:col-span-5",
+            class: "col-span-6",
             label: "Birthdate",
             name: "birthdate",
             type: "date",
-            validation: z
-                .date()
-                .max(new Date(), {
+            validation: z.preprocess(
+                (val) => {
+                    if (typeof val === "string" || val instanceof Date) {
+                        const date = new Date(val);
+                        return isNaN(date.getTime()) ? undefined : date;
+                    }
+                    return undefined;
+                },
+                z.date().max(new Date(), {
                     message: "Birthdate cannot be in the future",
-                })
-                .optional(),
+                }),
+            ),
         },
         {
             class: "col-span-6",
             label: "Gender",
             name: "gender",
             options: [
-                { label: "Male", value: Gender.Male },
-                { label: "Female", value: Gender.Female },
+                // TODO: to enums "Gender.Male"
+                { label: "Male", value: "male" },
+                { label: "Female", value: "female" },
             ],
             type: "select",
             validation: z.string().min(1, "Civil status is required"),
@@ -72,10 +109,11 @@ export const schema = ({
             label: "Civil Status",
             name: "civil_status",
             options: [
-                { label: "Single", value: CivilStatus.Single },
-                { label: "Married", value: CivilStatus.Married },
-                { label: "Widowed", value: CivilStatus.Widowed },
-                { label: "Separated", value: CivilStatus.Separated },
+                // TODO: to enums "CivilStatus.Single"
+                { label: "Single", value: "single" },
+                { label: "Married", value: "married" },
+                { label: "Widowed", value: "widowed" },
+                { label: "Separated", value: "separated" },
             ],
             type: "select",
             validation: z.string().min(1, "Civil status is required"),
@@ -98,51 +136,16 @@ export const schema = ({
             label: "Email",
             name: "email",
             type: "email",
-            validation: z.string().email("Invalid email"),
-        },
-        {
-            class: "col-span-full md:col-span-6",
-            label: "Purok",
-            multiple: false,
-            name: "purok",
-            onSearch: searchOptions,
-            options: purokOptions.value,
-            placeholder: "Select Purok",
-            searchable: true,
-            type: "combobox",
-            validation: z.union([
-                z.string().min(1, "Purok is required"),
-                z.array(z.string()).min(1, "At least one purok is required"),
-            ]),
-        },
-        {
-            class: "col-span-full md:col-span-6",
-            label: "Household",
-            multiple: false,
-            name: "household",
-            onSearch: searchOptions,
-            options: householdOptions.value,
-            placeholder: "Select Household",
-            searchable: true,
-            type: "combobox",
-            validation: z.union([
-                z.string().min(1, "Household is required"),
-                z
-                    .array(z.string())
-                    .min(1, "At least one household is required"),
-            ]),
+            validation: z
+                .string()
+                .trim()
+                .optional()
+                .refine(
+                    (val) => !val || z.string().email().safeParse(val).success,
+                    { message: "Invalid email" },
+                ),
         },
     ],
 });
 
 export type Schema = z.infer<ReturnType<typeof formZodSchema>>;
-
-export const formState = reactive<Partial<Schema>>({
-    email: "",
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    password: "",
-    phone: "",
-    roles: [],
-});

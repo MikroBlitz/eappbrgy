@@ -74,6 +74,7 @@
             :on-submit="onSubmit"
             :loading="modalLoading"
             :option-loading="optionLoading"
+            :is-fullscreen="isFormFullscreen"
         />
 
         <!-- View Modal -->
@@ -132,6 +133,7 @@ interface Props<T extends Record<string, unknown>> {
     defaultViewModal: boolean;
     filters?: Array<Record<string, unknown>>;
     formSchema: FormSchema;
+    isFormFullscreen: boolean;
     operations: CrudOperations<T>;
     optionLoading?: Ref<boolean, boolean> | boolean;
     zodSchema: ZodType<any, ZodTypeDef, any> | undefined;
@@ -149,6 +151,7 @@ const props = withDefaults(defineProps<Props<any>>(), {
     defaultViewModal: true,
     filters: () => [],
     hideDefaultActions: false,
+    isFormFullscreen: false,
     maxVisibleActions: 5,
     optionLoading: false,
     useActionDropdown: false,

@@ -85,7 +85,7 @@ export const registerUser = gql`
 `;
 
 export const usersCount = gql`
-    query {
+    query usersCount {
         usersCount
     }
 `;

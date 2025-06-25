@@ -46,7 +46,7 @@ const purokSearch = useSearchQueryOptions(puroksPaginate, {
 });
 const householdSearch = useSearchQueryOptions(householdsPaginate, {
     mapFn: (item: Household) => ({
-        label: item.household_no,
+        label: `${item.household_no} - ${item.address}`,
         value: item.id,
     }),
     queryKey: "householdsPaginate",
@@ -83,18 +83,18 @@ const operations = useCrudOperations<Resident>(
                 purokSearch.initializeOptions();
                 householdSearch.initializeOptions();
                 return {
-                    birthdate: row.birthdate || "",
+                    birthdate: row.birthdate,
                     citizenship: row.citizenship,
                     civil_status: row.civil_status,
                     email: row.email || "",
                     first_name: row.first_name,
                     gender: row.gender || "",
-                    household: row.household || "",
+                    household: row.household?.id,
                     id: row.id,
                     last_name: row.last_name,
                     middle_name: row.middle_name || "",
                     phone: row.phone || "",
-                    purok: row.purok || "",
+                    purok: row.purok?.id,
                     suffix: row.suffix || "",
                 };
             } else {
@@ -108,18 +108,17 @@ const operations = useCrudOperations<Resident>(
                     email: "",
                     first_name: "",
                     gender: "",
-                    household: "",
+                    household: [],
                     id: undefined,
                     last_name: "",
                     middle_name: "",
                     phone: "",
-                    purok: "",
+                    purok: [],
                     suffix: "",
                 };
             }
         },
         prepareSubmitData: (data: any, selectedRow?: Resident) => {
-            console.log(data);
             return {
                 ...data,
                 birthdate: data.birthdate

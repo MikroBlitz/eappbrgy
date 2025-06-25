@@ -130,7 +130,9 @@
                             />
 
                             <template #panel>
-                                <div class="grid grid-cols-1 gap-3 p-2">
+                                <div
+                                    class="grid grid-cols-2 md:grid-cols-3 gap-3 p-2"
+                                >
                                     <template
                                         v-for="(action, index) in actions"
                                         :key="index"

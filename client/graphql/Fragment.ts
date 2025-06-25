@@ -57,6 +57,15 @@ export const residentFragment = gql`
         citizenship
         phone
         email
+        household {
+            id
+            household_no
+            address
+        }
+        purok {
+            id
+            name
+        }
         created_at
         updated_at
     }

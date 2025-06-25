@@ -19,7 +19,7 @@ const documents = {
     "\n    mutation logout {\n        logout {\n            message\n        }\n    }\n": types.LogoutDocument,
     "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        #        messages {\n        #            ...message\n        #        }\n        #        contacts {\n        #            id\n        #        }\n        resident {\n            id\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n": types.UserFragmentDoc,
     "\n    fragment household on Household {\n        id\n        household_no\n        purok {\n            id\n            name\n        }\n        address\n        created_at\n        updated_at\n    }\n": types.HouseholdFragmentDoc,
-    "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        created_at\n        updated_at\n    }\n": types.ResidentFragmentDoc,
+    "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        household {\n            id\n            household_no\n            address\n        }\n        purok {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.ResidentFragmentDoc,
     "\n    fragment message on Message {\n        id\n        message\n        sender {\n            id\n            name\n        }\n        receiver {\n            id\n            name\n        }\n        messagesCount\n        created_at\n        updated_at\n    }\n": types.MessageFragmentDoc,
     "\n    fragment role on Role {\n        id\n        name\n        guard_name\n        users {\n            id\n            name\n        }\n        permissions {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.RoleFragmentDoc,
     "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n": types.PermissionFragmentDoc,
@@ -37,6 +37,7 @@ const documents = {
     "\n    query residentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        residentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...resident\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.ResidentsPaginateDocument,
     "\n    mutation upsertResident($input: ResidentInput!) {\n        upsertResident(input: $input) {\n            ...resident\n        }\n    }\n    \n": types.UpsertResidentDocument,
     "\n    mutation deleteResident($id: [ID!]) {\n        deleteResident(id: $id) {\n            id\n        }\n    }\n": types.DeleteResidentDocument,
+    "\n    query residentsCount {\n        residentsCount\n    }\n": types.ResidentsCountDocument,
     "\n    query rolesPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        rolesPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...role\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.RolesPaginateDocument,
     "\n    mutation upsertRole($input: RoleInput!) {\n        upsertRole(input: $input) {\n            ...role\n        }\n    }\n    \n": types.UpsertRoleDocument,
     "\n    mutation deleteRole($id: [ID!]) {\n        deleteRole(id: $id) {\n            id\n        }\n    }\n": types.DeleteRoleDocument,
@@ -46,6 +47,7 @@ const documents = {
     "\n    mutation restoreUser($id: ID!) {\n        restoreUser(id: $id) {\n            id\n        }\n    }\n": types.RestoreUserDocument,
     "\n    mutation updateUserStatus($id: ID!, $is_active: Boolean!) {\n        updateUserStatus(id: $id, is_active: $is_active) {\n            id\n            is_active\n        }\n    }\n": types.UpdateUserStatusDocument,
     "\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n": types.RegisterUserDocument,
+    "\n    query usersCount {\n        usersCount\n    }\n": types.UsersCountDocument,
 };
 
 /**
@@ -85,7 +87,7 @@ export function graphql(source: "\n    fragment household on Household {\n      
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        created_at\n        updated_at\n    }\n"];
+export function graphql(source: "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        household {\n            id\n            household_no\n            address\n        }\n        purok {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        household {\n            id\n            household_no\n            address\n        }\n        purok {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -157,6 +159,10 @@ export function graphql(source: "\n    mutation deleteResident($id: [ID!]) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n    query residentsCount {\n        residentsCount\n    }\n"): (typeof documents)["\n    query residentsCount {\n        residentsCount\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n    query rolesPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        rolesPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...role\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query rolesPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        rolesPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...role\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -190,6 +196,10 @@ export function graphql(source: "\n    mutation updateUserStatus($id: ID!, $is_a
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n"): (typeof documents)["\n    mutation registerUser($input: RegisterInput!) {\n        registerUser(input: $input) {\n            ...user\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query usersCount {\n        usersCount\n    }\n"): (typeof documents)["\n    query usersCount {\n        usersCount\n    }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

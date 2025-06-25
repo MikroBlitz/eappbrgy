@@ -1,5 +1,5 @@
 <template>
-    <UModal v-model="isModalOpen" :transition="false">
+    <UModal v-model="isModalOpen" :fullscreen="isFullscreen">
         <UCard
             :ui="{
                 ring: '',
@@ -120,6 +120,7 @@ type Props<T> = {
     loading: boolean;
     optionLoading?: Ref<boolean, boolean> | boolean;
     onSubmit: (event: FormSubmitEvent<T>) => void;
+    isFullscreen: boolean;
 };
 
 const props = defineProps<Props<unknown>>();

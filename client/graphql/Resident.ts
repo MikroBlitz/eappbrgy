@@ -45,7 +45,7 @@ export const deleteResident = gql`
 `;
 
 export const residentsCount = gql`
-    query {
+    query residentsCount {
         residentsCount
     }
 `;
