@@ -26,30 +26,61 @@
                             >
                                 Total Residents
                             </p>
-                            <p
-                                class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
+
+                            <!-- Loading State -->
+                            <div
+                                v-if="residentCounterLoading"
+                                class="mt-2 space-y-2"
                             >
-                                {{ residentCounter }}
-                            </p>
-                            <div class="flex items-center mt-2">
-                                <UBadge
-                                    color="green"
-                                    variant="subtle"
-                                    size="sm"
+                                <div
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                />
+                                <div class="flex items-center space-x-2">
+                                    <div
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                    />
+                                    <div
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Loaded Content -->
+                            <div v-else>
+                                <p
+                                    class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                                 >
-                                    +3.2%
-                                </UBadge>
-                                <span
-                                    class="text-gray-500 dark:text-gray-400 text-sm ml-2"
-                                >
-                                    from last month
-                                </span>
+                                    {{ residentCounter }}
+                                </p>
+                                <div class="flex items-center mt-2">
+                                    <UBadge
+                                        color="green"
+                                        variant="subtle"
+                                        size="sm"
+                                    >
+                                        +3.2%
+                                    </UBadge>
+                                    <span
+                                        class="text-gray-500 dark:text-gray-400 text-sm ml-2"
+                                    >
+                                        from last month
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <UIcon
-                            name="i-heroicons-users"
-                            class="w-8 h-8 text-blue-500"
-                        />
+
+                        <!-- Icon with loading state -->
+                        <div class="flex-shrink-0">
+                            <div
+                                v-if="isLoading"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                            />
+                            <UIcon
+                                v-else
+                                name="i-heroicons-users"
+                                class="w-8 h-8 text-blue-500"
+                            />
+                        </div>
                     </div>
                 </UCard>
 
@@ -65,7 +96,7 @@
                             <p
                                 class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                             >
-                                89
+                                0
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
@@ -73,7 +104,7 @@
                                     variant="subtle"
                                     size="sm"
                                 >
-                                    +15
+                                    0
                                 </UBadge>
                                 <span
                                     class="text-gray-500 dark:text-gray-400 text-sm ml-2"
@@ -133,7 +164,7 @@
                             <p
                                 class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                             >
-                                ₱45,230
+                                ₱145,230
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
@@ -181,6 +212,7 @@
                             color="blue"
                             variant="soft"
                             icon="i-heroicons-plus"
+                            @click="navigateTo('/residents')"
                         >
                             Add New Resident
                         </UButton>
@@ -541,8 +573,11 @@ definePageMeta({ layout: "app-layout" });
 
 const residentCounter = ref(0);
 
-const { refetch: refetchResident, result: residentCounts } =
-    useQuery(residentsCount);
+const {
+    loading: residentCounterLoading,
+    refetch: refetchResident,
+    result: residentCounts,
+} = useQuery(residentsCount);
 
 onMounted(async () => {
     await refetchResident();

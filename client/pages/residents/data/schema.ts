@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { FieldOption, FormSchema } from "~/types/fields";
 
 // import { CivilStatus, Gender } from "~/types/codegen/graphql";
+import { CivilStatus, Gender } from "~/types/codegen/graphql";
 import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 
 export const schema = ({
@@ -60,8 +61,8 @@ export const schema = ({
             label: "Gender",
             name: "gender",
             options: [
-                { label: "Male", value: "male" },
-                { label: "Female", value: "female" },
+                { label: "Male", value: Gender.Male },
+                { label: "Female", value: Gender.Female },
             ],
             type: "select",
             validation: z.string().min(1, "Civil status is required"),
@@ -71,10 +72,10 @@ export const schema = ({
             label: "Civil Status",
             name: "civil_status",
             options: [
-                { label: "Single", value: "single" },
-                { label: "Married", value: "married" },
-                { label: "Widowed", value: "widowed" },
-                { label: "Separated", value: "separated" },
+                { label: "Single", value: CivilStatus.Single },
+                { label: "Married", value: CivilStatus.Married },
+                { label: "Widowed", value: CivilStatus.Widowed },
+                { label: "Separated", value: CivilStatus.Separated },
             ],
             type: "select",
             validation: z.string().min(1, "Civil status is required"),

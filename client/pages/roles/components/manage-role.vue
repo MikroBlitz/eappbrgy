@@ -7,6 +7,7 @@
         :zod-schema="zodSchema"
         :operations="operations"
         :option-loading="permissionSearch.loadingOptions"
+        :default-view-modal="false"
     />
 </template>
 

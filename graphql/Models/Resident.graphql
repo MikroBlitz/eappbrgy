@@ -61,7 +61,7 @@ input ConnectResidentsRelation {
     delete: [ID]
 }
 
-extend type Query @guard {
+extend type Query {
     residents: [Resident]! @all
     residentsPaginate(
         first: Int!

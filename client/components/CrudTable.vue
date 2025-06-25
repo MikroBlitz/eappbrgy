@@ -78,6 +78,7 @@
 
         <!-- View Modal -->
         <ModalView
+            v-if="defaultViewModal"
             v-model:is-open="isViewModal"
             :title="`View ${config.singular}`"
             :form-schema="formSchema"
@@ -128,6 +129,7 @@ interface Props<T extends Record<string, unknown>> {
     actions?: TableAction[];
     columns: Array<Record<string, unknown>>;
     config: CrudConfig;
+    defaultViewModal: boolean;
     filters?: Array<Record<string, unknown>>;
     formSchema: FormSchema;
     operations: CrudOperations<T>;
@@ -144,6 +146,7 @@ interface Props<T extends Record<string, unknown>> {
 const props = withDefaults(defineProps<Props<any>>(), {
     actionPosition: "end",
     actions: () => [],
+    defaultViewModal: true,
     filters: () => [],
     hideDefaultActions: false,
     maxVisibleActions: 5,
@@ -248,7 +251,9 @@ const computedActions = computed(() => {
               // View action
               {
                   color: () => "yellow",
-                  condition: () => auth.can(props.config.permissions.view),
+                  condition: () =>
+                      props.defaultViewModal &&
+                      auth.can(props.config.permissions.view),
                   icon: () => "solar:eye-broken",
                   onClick: (row: T) => openViewModal(row),
                   tooltip: (row: T) =>
@@ -276,7 +281,7 @@ const computedActions = computed(() => {
               },
           ];
 
-    const allActions = [...customActions, ...defaultActions];
+    const allActions = [...defaultActions, ...customActions];
 
     return allActions.map((action) => ({
         color: action.color,

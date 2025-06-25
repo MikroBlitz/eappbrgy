@@ -1,7 +1,7 @@
 import type { Column } from "~/components/table/types";
-import type { Household, Resident } from "~/types/codegen/graphql";
+import type { Resident } from "~/types/codegen/graphql";
 
-import { getFriendlyDate } from "~/utils/helpers";
+import { getDateOnly, toTitleCase } from "~/utils/helpers";
 
 export const columns: Column[] = [
     {
@@ -16,47 +16,53 @@ export const columns: Column[] = [
     {
         key: "name",
         label: "Name",
-        render: (row: Resident) => `${row.name} ${row.suffix}`,
         sortable: true,
     },
     {
-        key: "birthdate",
-        label: "Birthdate",
-        render: (row: Resident) => getFriendlyDate(row.birthdate),
+        key: "suffix",
+        label: "Suffix",
         sortable: true,
     },
     {
         key: "gender",
         label: "Gender",
+        render: (row: Resident) => toTitleCase(row.gender),
         sortable: true,
     },
     {
         key: "civil_status",
         label: "Civil Status",
+        render: (row: Resident) => toTitleCase(row.civil_status),
         sortable: true,
     },
     {
-        key: "phone",
-        label: "Phone",
+        key: "birthdate",
+        label: "Birthdate",
+        render: (row: Resident) => getDateOnly(row.birthdate),
         sortable: true,
     },
-    {
-        key: "email",
-        label: "Email",
-        sortable: true,
-    },
-    {
-        key: "purok",
-        label: "Purok",
-        render: (row: Resident) => row.purok?.name ?? "-",
-        sortable: true,
-    },
-    {
-        key: "household",
-        label: "Household",
-        render: (row: Household) => row.household_no ?? "-",
-        sortable: true,
-    },
+    // {
+    //     key: "phone",
+    //     label: "Phone",
+    //     sortable: true,
+    // },
+    // {
+    //     key: "email",
+    //     label: "Email",
+    //     sortable: true,
+    // },
+    // {
+    //     key: "purok",
+    //     label: "Purok",
+    //     render: (row: Resident) => row.purok?.name ?? "-",
+    //     sortable: true,
+    // },
+    // {
+    //     key: "household",
+    //     label: "Household",
+    //     render: (row: Household) => row.household_no ?? "-",
+    //     sortable: true,
+    // },
     {
         key: "updated_at",
         label: "Updated At",

@@ -30,7 +30,7 @@ input ConnectPermissionsRelation {
     delete: [ID]
 }
 
-extend type Query @guard {
+extend type Query {
     permissions: [Permission]! @all
     permissionsPaginate(
         first: Int!

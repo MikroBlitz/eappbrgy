@@ -83,7 +83,7 @@
                                 </ul>
                             </div>
 
-                            <div>
+                            <div v-if="auth.is('Admin')">
                                 <UDivider
                                     label="Admin"
                                     label-class="text-xs font-medium text-gray-500 dark:text-gray-400"

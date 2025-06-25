@@ -42,11 +42,4 @@ export default defineNuxtConfig({
     tailwindcss: {
         configPath: "./tailwind.config.js",
     },
-    vite: {
-        server: {
-            watch: {
-                ignored: ["**/vendor/**"],
-            },
-        },
-    },
 });

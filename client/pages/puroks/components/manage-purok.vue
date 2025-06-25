@@ -6,6 +6,7 @@
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
+        :default-view-modal="false"
     />
 </template>
 

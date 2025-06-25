@@ -52,7 +52,7 @@ input RegisterInput {
     is_active: Boolean
 }
 
-extend type Query @guard {
+extend type Query {
     users: [User]! @all
     usersPaginate(
         first: Int!

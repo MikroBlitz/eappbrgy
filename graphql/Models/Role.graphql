@@ -32,7 +32,7 @@ input ConnectRolesRelation {
     delete: [ID]
 }
 
-extend type Query @guard {
+extend type Query {
     roles: [Role]! @all
     rolesPaginate(
         first: Int!

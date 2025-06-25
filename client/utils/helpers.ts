@@ -63,6 +63,41 @@ export const getFriendlyDate = (datetimeStr: string): string => {
     return date.toLocaleString(undefined, options);
 };
 
+export const getDateOnly = (datetimeStr: string): string => {
+    const date = new Date(datetimeStr.replace(" ", "T"));
+
+    const options: Intl.DateTimeFormatOptions = {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    };
+
+    return date.toLocaleDateString(undefined, options);
+};
+
+export function formatDateTimeForGraphQL(date: string | Date): string {
+    const d = new Date(date);
+
+    const pad = (n: number) => n.toString().padStart(2, "0");
+
+    const year = d.getFullYear();
+    const month = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    const seconds = pad(d.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+export const toTitleCase = (text: string) => {
+    if (!text) return "";
+    return text
+        .split(" ")
+        .map((word) => word[0]?.toUpperCase() + word.slice(1).toLowerCase())
+        .join(" ");
+};
+
 export const formZodSchema = (schema: FormSchema) => {
     return z.object(
         schema.fields.reduce(

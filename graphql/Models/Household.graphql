@@ -30,7 +30,7 @@ input ConnectHouseholdsRelation {
     delete: [ID]
 }
 
-extend type Query @guard {
+extend type Query {
     households: [Household]! @all
     householdsPaginate(
         first: Int!

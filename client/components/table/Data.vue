@@ -121,51 +121,43 @@
                     #actions-data="{ row }"
                 >
                     <div class="flex items-center gap-1">
-                        <UTooltip text="View Actions">
-                            <UPopover>
-                                <UButton
-                                    color="gray"
-                                    trailing-icon="solar:menu-dots-bold-duotone"
-                                    variant="ghost"
-                                    class="hover:scale-125 p-1 transition-all duration-300"
-                                />
+                        <UPopover>
+                            <UButton
+                                color="gray"
+                                trailing-icon="solar:menu-dots-bold-duotone"
+                                variant="ghost"
+                                class="hover:scale-125 p-1 transition-all duration-300"
+                            />
 
-                                <template #panel>
-                                    <div class="grid grid-cols-3 gap-2 p-2">
-                                        <template
-                                            v-for="(action, index) in actions"
-                                            :key="index"
-                                        >
-                                            <template v-if="action.condition()">
-                                                <UTooltip
-                                                    :text="action.tooltip(row)"
+                            <template #panel>
+                                <div class="grid grid-cols-1 gap-3 p-2">
+                                    <template
+                                        v-for="(action, index) in actions"
+                                        :key="index"
+                                    >
+                                        <template v-if="action.condition()">
+                                            <UTooltip
+                                                :text="action.tooltip(row)"
+                                            >
+                                                <UButton
+                                                    size="2xs"
+                                                    :color="action.color(row)"
+                                                    variant="ghost"
+                                                    square
+                                                    @click="action.onClick(row)"
                                                 >
-                                                    <UButton
-                                                        size="2xs"
-                                                        :color="
-                                                            action.color(row)
-                                                        "
-                                                        variant="ghost"
-                                                        square
-                                                        @click="
-                                                            action.onClick(row)
-                                                        "
-                                                    >
-                                                        <Icon
-                                                            :name="
-                                                                action.icon(row)
-                                                            "
-                                                            size="22"
-                                                            class="hover:scale-125 transition-all duration-300"
-                                                        />
-                                                    </UButton>
-                                                </UTooltip>
-                                            </template>
+                                                    <Icon
+                                                        :name="action.icon(row)"
+                                                        size="22"
+                                                        class="hover:scale-125 transition-all duration-300"
+                                                    />
+                                                </UButton>
+                                            </UTooltip>
                                         </template>
-                                    </div>
-                                </template>
-                            </UPopover>
-                        </UTooltip>
+                                    </template>
+                                </div>
+                            </template>
+                        </UPopover>
                     </div>
                 </template>
 

@@ -21,6 +21,7 @@ import {
     deleteResident,
     upsertResident,
 } from "~/graphql/Resident";
+import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
@@ -121,6 +122,9 @@ const operations = useCrudOperations<Resident>(
             console.log(data);
             return {
                 ...data,
+                birthdate: data.birthdate
+                    ? formatDateTimeForGraphQL(data.birthdate)
+                    : null,
                 household: {
                     connect: data.household,
                 },
