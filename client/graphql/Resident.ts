@@ -6,12 +6,14 @@ export const residentsPaginate = gql`
         $page: Int
         $search: String
         $sort: SortInput
+        $filter: [FilterInput]
     ) {
         residentsPaginate(
             first: $first
             page: $page
             search: $search
             sort: $sort
+            filter: $filter
         ) {
             data {
                 ...resident

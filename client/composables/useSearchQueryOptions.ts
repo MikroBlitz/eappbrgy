@@ -21,8 +21,8 @@ export function useSearchQueryOptions<T = any>(
         mapFn = (item: any) => ({
             label: item.name,
             value: item.id,
-        }), // 👈 this covers what useEntitySearchOptions did!
-        pageSize = 50,
+        }),
+        pageSize = 10,
         queryKey,
         variables = {},
     } = options;

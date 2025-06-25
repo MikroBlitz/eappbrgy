@@ -1,3 +1,5 @@
+import type { ButtonColor } from "#ui/types";
+
 export interface Column {
     class?: string;
     key: string;
@@ -20,7 +22,7 @@ export interface Sort {
 export type Row = Record<string, any>;
 
 export interface TableAction {
-    color: (row: any) => string;
+    color: (row: any) => ButtonColor;
     condition: () => boolean;
     icon: (row: any) => string;
     onClick: (row: any) => void;

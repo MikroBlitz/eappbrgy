@@ -2,7 +2,7 @@
     <CrudTable
         :config="crudConfig"
         :columns="columns"
-        :filters="filter"
+        :filters="gender"
         :form-schema="formSchema"
         :zod-schema="zodSchema"
         :operations="operations"
@@ -23,7 +23,7 @@ import {
 } from "~/graphql/Resident";
 import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
-import { columns, filter } from "../data/columns";
+import { columns, gender } from "../data/columns";
 import { schema } from "../data/schema";
 
 const permission = "resident";

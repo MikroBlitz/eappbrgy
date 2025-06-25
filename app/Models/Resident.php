@@ -69,4 +69,39 @@ class Resident extends Model
 
         return $query->orderBy($column, $direction);
     }
+
+    /* Filter function for graphql */
+    public function scopeFilter(Builder $query, ?array $filters): Builder
+    {
+        if (!$filters) {
+            return $query;
+        }
+
+        $booleanFields = ['is_active', 'is_verified'];
+
+        if (isset($filters['key']) && isset($filters['value'])) {
+            $filters = [$filters];
+        }
+
+        foreach ($filters as $filter) {
+            if (isset($filter['key']) && isset($filter['value'])) {
+                $field = $filter['key'];
+                $value = $filter['value'];
+
+                if (in_array($field, $booleanFields)) {
+                    if ($value === 'true') {
+                        $query->where($field, '=', 1);
+                    } else if ($value === 'false') {
+                        $query->where($field, '=', 0);
+                    }
+                } else if ($value === 'null') {
+                    $query->whereNull($field);
+                } else {
+                    $query->where($field, $value);
+                }
+            }
+        }
+
+        return $query;
+    }
 }

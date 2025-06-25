@@ -22,6 +22,7 @@ import { schema } from "../data/schema";
 
 // Permission Search Option
 const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
+    pageSize: 20,
     queryKey: "permissionsPaginate",
 });
 

@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col items-center py-2 justify-center">
+    <div class="flex flex-col items-center p-2 h-[calc(100vh-100px)]">
         <div
-            class="w-full max-w-[1400px] border border-gray-100 dark:border-gray-700 rounded-lg"
+            class="w-full max-w-[1600px] border border-gray-100 dark:border-gray-700 rounded-lg flex flex-col h-[calc(100vh-80px)]"
         >
             <TableData
                 v-model:selected-rows="selectedRows"
@@ -17,11 +17,12 @@
                 :filters="filters"
                 :total-items="pageTotal"
                 :actions="computedActions"
+                class="flex flex-col h-full overflow-auto"
                 @reset-filters="resetFilters"
                 @select="select"
             >
                 <template #header>
-                    <div class="flex w-full items-center justify-between">
+                    <div class="flex w-full items-center justify-between pt-2">
                         <div class="flex items-center gap-2">
                             <Icon
                                 :name="config.icon"
@@ -40,7 +41,7 @@
                             >
                                 <UTooltip :text="`Add ${config.singular}`">
                                     <UButton
-                                        class="group-hover:scale-150 transition-all duration-300 p-1"
+                                        class="hover:bg-transparent hover:scale-110 transition-all duration-300 p-1"
                                         icon="solar:add-square-broken"
                                         variant="ghost"
                                         size="xl"
@@ -50,7 +51,7 @@
                             </template>
                             <UTooltip text="Refetch Data">
                                 <UButton
-                                    class="transition-transform duration-500 group-hover:scale-150 rounded-full p-1"
+                                    class="hover:bg-transparent hover:scale-110 rounded-full transition-all duration-300 p-1"
                                     :style="`transform: rotate(${rotationRefetch}deg);`"
                                     icon="solar:refresh-bold"
                                     variant="ghost"

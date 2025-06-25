@@ -1,6 +1,12 @@
 import type { BadgeColor } from "#ui/types";
 
-import { Briefcase, Shield, User } from "lucide-vue-next";
+import {
+    Briefcase,
+    Shield,
+    User,
+    Mars as Male,
+    Venus as Female,
+} from "lucide-vue-next";
 import { z } from "zod";
 
 import type { FormSchema } from "~/types/fields";
@@ -29,6 +35,16 @@ export const colorMap: Record<string, BadgeColor> = {
     Admin: "emerald",
     Manager: "orange",
     User: "blue",
+};
+
+export const genderIconMap: Record<string, any> = {
+    female: Female,
+    male: Male,
+};
+
+export const genderColorMap: Record<string, BadgeColor> = {
+    female: "pink",
+    male: "blue",
 };
 
 export function parseGraphQLError(e: any): string {
