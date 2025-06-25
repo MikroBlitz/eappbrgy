@@ -4,7 +4,7 @@
     >
         <UCard class="w-full max-w-md">
             <template #header>
-                <div class="text-center mb-4">
+                <div class="text-center">
                     <h1
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
@@ -87,11 +87,11 @@
                     type="submit"
                     block
                     color="primary"
-                    class="mt-6"
+                    class="mt-3 py-2"
                     :loading="isLoading"
                     :disabled="!formState.email || !formState.password"
                 >
-                    Sign up
+                    Create Account
                 </UButton>
             </UForm>
 

@@ -4,7 +4,7 @@
     >
         <UCard class="w-full max-w-md">
             <template #header>
-                <div class="text-center mb-4">
+                <div class="text-center">
                     <h1
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
@@ -29,7 +29,7 @@
                     />
                 </UFormGroup>
 
-                <UFormGroup label="Password" name="password" class="mt-4">
+                <UFormGroup label="Password" name="password" class="mt-2">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
@@ -40,7 +40,7 @@
                     />
                 </UFormGroup>
 
-                <div class="flex items-center justify-between mt-4">
+                <div class="flex items-center justify-between mt-1">
                     <UCheckbox
                         v-model="formState.rememberMe"
                         label="Remember me"
@@ -59,11 +59,11 @@
                     type="submit"
                     block
                     color="primary"
-                    class="mt-6"
+                    class="mt-3 py-2"
                     :loading="isLoading"
                     :disabled="!formState.email || !formState.password"
                 >
-                    Sign in
+                    Log in
                 </UButton>
             </UForm>
 
