@@ -16,7 +16,7 @@ class HouseholdSeeder extends Seeder
     {
         $purokIds = Purok::pluck('id')->toArray();
 
-        for ($i = 1; $i <= 200; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             Household::create([
                 'purok_id' => fake()->randomElement($purokIds),
                 'household_no' => 'HH-' . str_pad($i, 4, '0', STR_PAD_LEFT),

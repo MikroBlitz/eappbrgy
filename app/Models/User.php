@@ -117,6 +117,7 @@ class User extends Authenticatable
         if (empty($search)) return $query;
 
         return $query->where('id', $search)
+            ->orWhere('name', 'like', "%{$search}%")
             ->orWhere('first_name', 'like', "%{$search}%")
             ->orWhere('middle_name', 'like', "%{$search}%")
             ->orWhere('last_name', 'like', "%{$search}%")

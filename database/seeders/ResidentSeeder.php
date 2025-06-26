@@ -18,7 +18,7 @@ class ResidentSeeder extends Seeder
         $householdIds = Household::pluck('id')->toArray();
         $purokIds = Purok::pluck('id')->toArray();
 
-        for ($i = 1; $i <= 970; $i++) {
+        for ($i = 1; $i <= 1500; $i++) {
             $gender = fake()->randomElement(['male', 'female']);
             Resident::create([
                 'household_id' => fake()->randomElement($householdIds),
@@ -28,9 +28,9 @@ class ResidentSeeder extends Seeder
                 'last_name' => fake()->lastName(),
                 'suffix' => fake()->optional()->suffix(),
                 'citizenship' => 'Filipino',
-                'phone' => fake()->optional()->phoneNumber(),
+                'phone' => null,
                 'email' => fake()->optional()->safeEmail(),
-                'birthdate' => fake()->dateTimeBetween('-80 years', '-1 years'),
+                'birthdate' => fake()->dateTimeBetween('-80 years', '-18 years'),
                 'gender' => $gender,
                 'civil_status' => fake()->randomElement(['single', 'married', 'separated', 'widowed']),
             ]);

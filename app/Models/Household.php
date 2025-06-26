@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Household extends Model
 {
+    // Relationships
     public function residents(): HasMany
     {
         return $this->hasMany(Resident::class);

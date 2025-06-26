@@ -72,6 +72,8 @@ class DatabaseSeeder extends Seeder
 
         // Define permissions
         $permissions = [
+            'view dashboard',
+
             'view user',
             'create user',
             'edit user',
@@ -102,6 +104,11 @@ class DatabaseSeeder extends Seeder
             'create resident',
             'edit resident',
             'delete resident',
+
+            'view blotter',
+            'create blotter',
+            'edit blotter',
+            'delete blotter',
         ];
 
         // Create permissions if not exists

@@ -66,6 +66,10 @@ export const residentFragment = gql`
             id
             name
         }
+        #        blotters {
+        #            id
+        #            case_no
+        #        }
         created_at
         updated_at
     }
@@ -112,6 +116,27 @@ export const permissionFragment = gql`
         id
         name
         guard_name
+        created_at
+        updated_at
+    }
+`;
+
+export const blotterFragment = gql`
+    fragment blotter on Blotter {
+        id
+        case_no
+        complaint
+        status
+        details
+        incident_date
+        complainant {
+            id
+            name
+        }
+        respondent {
+            id
+            name
+        }
         created_at
         updated_at
     }

@@ -13,6 +13,7 @@ type Resident {
     email: String
     household: Household @belongsTo
     purok: Purok @belongsTo
+    blotters: Blotter @hasMany
     created_at: DateTime!
     updated_at: DateTime!
 }

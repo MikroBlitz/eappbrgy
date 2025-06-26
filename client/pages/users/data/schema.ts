@@ -1,20 +1,18 @@
 import { z } from "zod";
 
-import type { FieldOption, FormSchema } from "~/types/fields";
+import type { SearchableFieldHandlers } from "~/components/table/types";
+import type { FormSchema } from "~/types/fields";
 
 import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 
-export const schema = (
-    options: Ref<FieldOption[]>,
-    searchOptions: (q: string) => Promise<FieldOption[]>,
-): FormSchema => ({
+export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
             class: "col-span-full",
             label: "Role",
             name: "roles",
-            onSearch: searchOptions,
-            options: options.value,
+            onSearch: handlers.role?.onSearch,
+            options: handlers.role?.options.value ?? [],
             placeholder: "Select a Role",
             searchable: true,
             type: "combobox",

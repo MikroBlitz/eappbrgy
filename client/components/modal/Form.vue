@@ -39,7 +39,11 @@
                             :placeholder="
                                 field.placeholder || `Enter ${field.label}`
                             "
-                            :searchable="field.searchable"
+                            :searchable="
+                                field.searchable === true
+                                    ? (query: string) => field.onSearch?.(query)
+                                    : false
+                            "
                             :value-attribute="
                                 field.valueAttribute ||
                                 (['select', 'combobox'].includes(field.type)
@@ -56,9 +60,6 @@
                                 ['select', 'combobox'].includes(field.type)
                                     ? optionLoading
                                     : undefined
-                            "
-                            @query-change="
-                                (query: string) => field.onSearch?.(query)
                             "
                         >
                             <template

@@ -1,5 +1,7 @@
 import type { ButtonColor } from "#ui/types";
 
+import type { FieldOption } from "~/types/fields";
+
 export interface Column {
     class?: string;
     key: string;
@@ -51,3 +53,10 @@ export interface CrudOperations<T> {
     updateStatus?: any;
     upsert: any;
 }
+
+export type SearchableFieldHandlers = {
+    [key: string]: {
+        options: Ref<FieldOption[]>;
+        onSearch: (q: string) => Promise<FieldOption[]>;
+    };
+};

@@ -72,7 +72,7 @@
                         <!-- Icon with loading state -->
                         <div class="flex-shrink-0">
                             <div
-                                v-if="isLoading"
+                                v-if="residentCounterLoading"
                                 class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
                             />
                             <UIcon
@@ -129,26 +129,60 @@
                             >
                                 Active Cases
                             </p>
-                            <p
-                                class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
+
+                            <!-- Loading State -->
+                            <div
+                                v-if="blotterCounterLoading"
+                                class="mt-2 space-y-2"
                             >
-                                23
-                            </p>
-                            <div class="flex items-center mt-2">
-                                <UBadge color="red" variant="subtle" size="sm">
-                                    -5
-                                </UBadge>
-                                <span
-                                    class="text-gray-500 dark:text-gray-400 text-sm ml-2"
+                                <div
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                />
+                                <div class="flex items-center space-x-2">
+                                    <div
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                    />
+                                    <div
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                    />
+                                </div>
+                            </div>
+
+                            <div v-else>
+                                <p
+                                    class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                                 >
-                                    resolved this week
-                                </span>
+                                    {{ blotterCounter }}
+                                </p>
+                                <div class="flex items-center mt-2">
+                                    <UBadge
+                                        color="red"
+                                        variant="subtle"
+                                        size="sm"
+                                    >
+                                        0
+                                    </UBadge>
+                                    <span
+                                        class="text-gray-500 dark:text-gray-400 text-sm ml-2"
+                                    >
+                                        resolved this week
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <UIcon
-                            name="i-heroicons-exclamation-triangle"
-                            class="w-8 h-8 text-red-500"
-                        />
+
+                        <!-- Icon with loading state -->
+                        <div class="flex-shrink-0">
+                            <div
+                                v-if="blotterCounterLoading"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                            />
+                            <UIcon
+                                v-else
+                                name="i-heroicons-exclamation-triangle"
+                                class="w-8 h-8 text-red-500"
+                            />
+                        </div>
                     </div>
                 </UCard>
 
@@ -566,26 +600,33 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { blottersCount } from "~/graphql/Blotter.js";
 import { residentsCount } from "~/graphql/Resident.js";
 
-definePageMeta({ layout: "app-layout" });
-
 const residentCounter = ref(0);
+const blotterCounter = ref(0);
 
 const {
     loading: residentCounterLoading,
     refetch: refetchResident,
-    result: residentCounts,
+    result: residentResults,
 } = useQuery(residentsCount);
+const {
+    loading: blotterCounterLoading,
+    refetch: refetchBlotter,
+    result: blotterResults,
+} = useQuery(blottersCount);
 
 onMounted(async () => {
-    await refetchResident();
-    if (residentCounts.value) {
-        residentCounter.value = residentCounts.value.residentsCount;
-    }
+    await Promise.all([refetchResident(), refetchBlotter()]);
+    if (residentResults.value)
+        residentCounter.value = residentResults.value.residentsCount;
+    if (blotterResults.value)
+        blotterCounter.value = blotterResults.value.blottersCount;
 });
 
+definePageMeta({ layout: "app-layout", permission: "view dashboard" });
 useHead({
     meta: [
         {

@@ -1,12 +1,10 @@
 import { z } from "zod";
 
-import type { FieldOption, FormSchema } from "~/types/fields";
+import type { SearchableFieldHandlers } from "~/components/table/types";
+import type { FormSchema } from "~/types/fields";
 import type { formZodSchema } from "~/utils/helpers";
 
-export const schema = (
-    options: Ref<FieldOption[]>,
-    searchOptions: (q: string) => Promise<FieldOption[]>,
-): FormSchema => ({
+export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
             class: "col-span-full",
@@ -20,8 +18,8 @@ export const schema = (
             label: "Permissions",
             multiple: true,
             name: "permissions",
-            onSearch: searchOptions,
-            options: options.value,
+            onSearch: handlers.permission?.onSearch,
+            options: handlers.permission?.options.value ?? [],
             placeholder: "Select Permission/s",
             searchable: true,
             type: "combobox",

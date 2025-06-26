@@ -25,11 +25,6 @@ import {
 import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
-// Role Search Option
-const roleSearch = useSearchQueryOptions(rolesPaginate, {
-    queryKey: "rolesPaginate",
-});
-
 const permission = "user";
 const crudConfig = useCrudConfig(
     "Users", // title
@@ -45,8 +40,19 @@ const crudConfig = useCrudConfig(
     },
     true, // is_active button
 );
+
+// Role Search Option
+const roleSearch = useSearchQueryOptions(rolesPaginate, {
+    queryKey: "rolesPaginate",
+});
+
 const formSchema = computed(() =>
-    schema(roleSearch.queryOptions, roleSearch.debouncedSearch),
+    schema({
+        role: {
+            onSearch: roleSearch.debouncedSearch,
+            options: roleSearch.queryOptions,
+        },
+    }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 

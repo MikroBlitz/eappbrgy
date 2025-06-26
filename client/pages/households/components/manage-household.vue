@@ -23,10 +23,6 @@ import { puroksPaginate } from "~/graphql/Purok";
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
 
-const purokSearch = useSearchQueryOptions(puroksPaginate, {
-    queryKey: "puroksPaginate",
-});
-
 const permission = "household";
 const crudConfig = useCrudConfig(
     "Households", // title
@@ -40,11 +36,19 @@ const crudConfig = useCrudConfig(
         view: `view ${permission}`,
     },
 );
+
+const purokSearch = useSearchQueryOptions(puroksPaginate, {
+    queryKey: "puroksPaginate",
+});
 const formSchema = computed(() =>
-    schema(purokSearch.queryOptions, purokSearch.debouncedSearch),
+    schema({
+        purok: {
+            onSearch: purokSearch.debouncedSearch,
+            options: purokSearch.queryOptions,
+        },
+    }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-
 const operations = useCrudOperations<Household>(
     {
         delete: deleteHousehold,

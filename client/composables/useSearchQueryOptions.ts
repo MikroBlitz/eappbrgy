@@ -3,10 +3,10 @@ import { useDebounceFn } from "@vueuse/shared";
 import type { FieldOption } from "~/types/fields";
 
 interface SearchQueryOptions<T = any> {
-    dataKey?: string; // default: "data"
-    debounceMs?: number; // default: 700
-    mapFn?: (item: T) => FieldOption; // default: map to { label, value }
-    pageSize?: number; // default: 50
+    dataKey?: string;
+    debounceMs?: number;
+    mapFn?: (item: T) => FieldOption;
+    pageSize?: number;
     queryKey: string;
     variables?: Record<string, any>;
 }
@@ -22,7 +22,7 @@ export function useSearchQueryOptions<T = any>(
             label: item.name,
             value: item.id,
         }),
-        pageSize = 10,
+        pageSize = 20,
         queryKey,
         variables = {},
     } = options;

@@ -38,9 +38,7 @@ export const columns: Column[] = [
     {
         key: "purok",
         label: "Purok",
-        render: (row: Household) => {
-            return row.purok?.name;
-        },
+        render: (row: Household) => row.purok?.name,
         sortable: true,
     },
     {

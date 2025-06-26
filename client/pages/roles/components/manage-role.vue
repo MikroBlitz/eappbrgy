@@ -20,12 +20,6 @@ import { rolesPaginate, upsertRole, deleteRole } from "~/graphql/Role";
 import { columns, status } from "../data/columns";
 import { schema } from "../data/schema";
 
-// Permission Search Option
-const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
-    pageSize: 20,
-    queryKey: "permissionsPaginate",
-});
-
 const permissionName = "role";
 const crudConfig = useCrudConfig(
     "Roles", // title
@@ -39,11 +33,20 @@ const crudConfig = useCrudConfig(
         view: `view ${permissionName}`,
     },
 );
+
+// Permission Search Option
+const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
+    queryKey: "permissionsPaginate",
+});
 const formSchema = computed(() =>
-    schema(permissionSearch.queryOptions, permissionSearch.debouncedSearch),
+    schema({
+        permission: {
+            onSearch: permissionSearch.debouncedSearch,
+            options: permissionSearch.queryOptions,
+        },
+    }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-
 const operations = useCrudOperations<Role>(
     {
         delete: deleteRole,

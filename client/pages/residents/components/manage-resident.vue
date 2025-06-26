@@ -56,20 +56,21 @@ const loadingOptions = computed(
         purokSearch.loadingOptions.value ||
         householdSearch.loadingOptions.value,
 );
-const debouncedSearch = computed(
-    () => purokSearch.debouncedSearch || householdSearch.debouncedSearch,
-);
 
 const formSchema = computed(() =>
     schema({
-        householdOptions: householdSearch.queryOptions,
-        purokOptions: purokSearch.queryOptions,
-        searchOptions: debouncedSearch.value,
+        household: {
+            onSearch: householdSearch.debouncedSearch,
+            options: householdSearch.queryOptions,
+        },
+        purok: {
+            onSearch: purokSearch.debouncedSearch,
+            options: purokSearch.queryOptions,
+        },
     }),
 );
 
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-
 const operations = useCrudOperations<Resident>(
     {
         delete: deleteResident,

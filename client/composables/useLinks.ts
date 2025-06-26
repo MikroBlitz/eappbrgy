@@ -30,6 +30,12 @@ export const useLinks = () => {
             to: "/residents",
         },
         {
+            icon: "solar:document-add-broken",
+            label: "Blotters",
+            permission: auth.can("view blotter"),
+            to: "/blotters",
+        },
+        {
             icon: "solar:chat-round-dots-outline",
             label: "Messages",
             permission: auth.can("view message"),

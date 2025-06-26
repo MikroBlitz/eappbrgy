@@ -1,26 +1,19 @@
 import { z } from "zod";
 
-import type { FieldOption, FormSchema } from "~/types/fields";
+import type { SearchableFieldHandlers } from "~/components/table/types";
+import type { FormSchema } from "~/types/fields";
 
 import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 
-export const schema = ({
-    householdOptions,
-    purokOptions,
-    searchOptions,
-}: {
-    purokOptions: Ref<FieldOption[]>;
-    householdOptions: Ref<FieldOption[]>;
-    searchOptions: (q: string) => Promise<FieldOption[]>;
-}): FormSchema => ({
+export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
             class: "col-span-full",
             label: "Purok",
             multiple: false,
             name: "purok",
-            onSearch: searchOptions,
-            options: purokOptions.value,
+            onSearch: handlers.purok?.onSearch,
+            options: handlers.purok?.options.value ?? [],
             placeholder: "Select Purok",
             searchable: true,
             type: "combobox",
@@ -34,8 +27,8 @@ export const schema = ({
             label: "Household",
             multiple: false,
             name: "household",
-            onSearch: searchOptions,
-            options: householdOptions.value,
+            onSearch: handlers.household?.onSearch,
+            options: handlers.household?.options.value ?? [],
             placeholder: "Select Household",
             searchable: true,
             type: "combobox",

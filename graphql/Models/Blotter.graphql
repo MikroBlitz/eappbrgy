@@ -1,0 +1,61 @@
+type Blotter {
+    id: ID!
+    case_no: String!
+    complaint: String!
+    status: String!
+    details: String!
+    incident_date: DateTime!
+    complainant: Resident @belongsTo
+    respondent: Resident @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input BlotterInput {
+    case_no: String!
+    complaint: String!
+    status: String
+    details: String!
+    incident_date: DateTime!
+    complainant: ConnectResidentRelation
+    respondent: ConnectResidentRelation
+}
+
+enum BloterStatus {
+    OPEN @enum(value: "open")
+    RESOLVED @enum(value: "resolved")
+    DISMISSED @enum(value: "dismissed")
+}
+
+input ConnectBlotterRelation {
+    id: ID
+    connect: ID
+    upsert: BlotterInput
+    delete: ID
+}
+
+input ConnectBlottersRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [BlotterInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    blotters: [Blotter]! @all
+    blottersPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Blotter]! @paginate
+    blottersCount: Int! @count(model: "Blotter")
+}
+
+extend type Mutation @guard {
+    upsertBlotter(input: BlotterInput! @spread): Blotter! @upsert
+    deleteBlotter(id: [ID!] @eq): [Blotter] @delete
+}
