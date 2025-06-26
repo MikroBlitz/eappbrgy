@@ -55,6 +55,7 @@ export type BlotterInput = {
   complainant?: InputMaybe<ConnectResidentRelation>;
   complaint: Scalars['String']['input'];
   details: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
   incident_date: Scalars['DateTime']['input'];
   respondent?: InputMaybe<ConnectResidentRelation>;
   status?: InputMaybe<Scalars['String']['input']>;

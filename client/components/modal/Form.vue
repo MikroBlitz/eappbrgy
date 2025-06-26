@@ -33,6 +33,8 @@
                         <component
                             :is="resolveComponent(field.type)"
                             v-model="state[field.name]"
+                            :disabled="field.disabled"
+                            :hidden="field.hidden"
                             :type="field.type"
                             :options="field.options"
                             :multiple="field.multiple || false"
@@ -102,7 +104,7 @@
 import type { FormSubmitEvent } from "#ui/types";
 import type { ZodSchema } from "zod";
 
-import { UInput, USelectMenu } from "#components";
+import { UInput, USelectMenu, UTextarea } from "#components";
 
 import type { FieldType, FormSchema } from "~/types/fields";
 
@@ -140,6 +142,7 @@ const componentMap: Record<FieldType, Component> = {
     select: USelectMenu,
     tel: UInput,
     text: UInput,
+    textarea: UTextarea,
 };
 
 function resolveComponent(type: FieldType): Component {

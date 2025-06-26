@@ -115,6 +115,7 @@ const operations = useCrudOperations<Blotter>(
                 respondent: {
                     connect: data.respondent,
                 },
+                status: data.status || "open",
             };
         },
     },

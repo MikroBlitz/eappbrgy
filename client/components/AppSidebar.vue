@@ -47,76 +47,34 @@
                     </div>
 
                     <div class="flex-1 overflow-y-auto p-4">
-                        <nav class="space-y-3">
-                            <div>
-                                <UDivider
-                                    label="Menu"
-                                    label-class="text-xs font-medium text-gray-500 dark:text-gray-400"
-                                />
-                                <ul class="mt-2 space-y-1">
-                                    <li
-                                        v-for="(item, index) in mainMenuItems"
-                                        :key="index"
+                        <nav>
+                            <ul class="space-y-1">
+                                <li
+                                    v-for="(item, index) in mainMenuItems"
+                                    :key="index"
+                                >
+                                    <UButton
+                                        v-if="item.permission"
+                                        :icon="item.icon"
+                                        :to="item.to"
+                                        :color="
+                                            isActive(item.to) ? 'green' : 'gray'
+                                        "
+                                        :variant="
+                                            isActive(item.to) ? 'soft' : 'ghost'
+                                        "
+                                        :class="
+                                            isActive(item.to) ? 'scale-105' : ''
+                                        "
+                                        class="w-full justify-start py-2 px-3 hover:scale-105 transition-all duration-300"
+                                        square
+                                        padded
+                                        @click="isOpen = false"
                                     >
-                                        <UButton
-                                            v-if="item.permission"
-                                            :icon="item.icon"
-                                            :to="item.to"
-                                            :color="
-                                                isActive(item.to)
-                                                    ? 'green'
-                                                    : 'gray'
-                                            "
-                                            :variant="
-                                                isActive(item.to)
-                                                    ? 'soft'
-                                                    : 'ghost'
-                                            "
-                                            class="w-full justify-start"
-                                            square
-                                            padded
-                                            @click="isOpen = false"
-                                        >
-                                            {{ item.label }}
-                                        </UButton>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div v-if="auth.is('Admin')">
-                                <UDivider
-                                    label="Admin"
-                                    label-class="text-xs font-medium text-gray-500 dark:text-gray-400"
-                                />
-                                <ul class="mt-2 space-y-1">
-                                    <li
-                                        v-for="(item, index) in adminItems"
-                                        :key="index"
-                                    >
-                                        <UButton
-                                            v-if="item.permission"
-                                            :icon="item.icon"
-                                            :to="item.to"
-                                            :color="
-                                                isActive(item.to)
-                                                    ? 'green'
-                                                    : 'gray'
-                                            "
-                                            :variant="
-                                                isActive(item.to)
-                                                    ? 'soft'
-                                                    : 'ghost'
-                                            "
-                                            class="w-full justify-start"
-                                            square
-                                            padded
-                                            @click="isOpen = false"
-                                        >
-                                            {{ item.label }}
-                                        </UButton>
-                                    </li>
-                                </ul>
-                            </div>
+                                        {{ item.label }}
+                                    </UButton>
+                                </li>
+                            </ul>
                         </nav>
                     </div>
 
@@ -161,11 +119,9 @@
 const isOpen = ref(false);
 const route = useRoute();
 const auth = useAuthStore();
-const { adminItems, mainMenuItems, userMenuItems } = useLinks();
+const { mainMenuItems, userMenuItems } = useLinks();
 
 const isActive = (path: string) => {
     return route.path === path;
 };
-
-const isDark = inject("isDark");
 </script>

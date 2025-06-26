@@ -11,32 +11,7 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             label: "Case no.",
             name: "case_no",
             type: "text",
-            validation: z.string().min(1, "Case no is required"),
-        },
-        {
-            class: "col-span-full md:col-span-6",
-            label: "Complaint",
-            name: "complaint",
-            type: "text",
-            validation: z.string().min(1, "Complaint is required"),
-        },
-        {
-            class: "col-span-6",
-            label: "Incident Date",
-            name: "incident_date",
-            type: "date",
-            validation: z.preprocess(
-                (val) => {
-                    if (typeof val === "string" || val instanceof Date) {
-                        const date = new Date(val);
-                        return isNaN(date.getTime()) ? undefined : date;
-                    }
-                    return undefined;
-                },
-                z.date().max(new Date(), {
-                    message: "Incident cannot be in the future",
-                }),
-            ),
+            validation: z.string().min(1, "Case number is required"),
         },
         {
             class: "col-span-full md:col-span-6",
@@ -62,10 +37,46 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
         },
         {
             class: "col-span-full",
+            label: "Complaint",
+            name: "complaint",
+            type: "text",
+            validation: z.string().min(1, "Complaint is required"),
+        },
+        {
+            class: "col-span-full",
             label: "Details",
             name: "details",
-            type: "text",
+            type: "textarea",
             validation: z.string().min(1, "Details is required"),
+        },
+        {
+            class: "col-span-6",
+            label: "Incident Date",
+            name: "incident_date",
+            type: "date",
+            validation: z.preprocess(
+                (val) => {
+                    if (typeof val === "string" || val instanceof Date) {
+                        const date = new Date(val);
+                        return isNaN(date.getTime()) ? undefined : date;
+                    }
+                    return undefined;
+                },
+                z.date().max(new Date(), {
+                    message: "Incident cannot be in the future",
+                }),
+            ),
+        },
+        {
+            class: "col-span-6",
+            label: "Status",
+            name: "status",
+            options: [
+                { label: "Open", value: "open" },
+                { label: "Resolved", value: "resolved" },
+                { label: "Dismissed", value: "dismissed" },
+            ],
+            type: "select",
         },
     ],
 });

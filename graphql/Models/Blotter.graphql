@@ -12,6 +12,7 @@ type Blotter {
 }
 
 input BlotterInput {
+    id: ID
     case_no: String!
     complaint: String!
     status: String

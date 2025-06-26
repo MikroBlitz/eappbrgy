@@ -8,7 +8,8 @@ export type FieldType =
     | "combobox"
     | "tel"
     | "number"
-    | "date";
+    | "date"
+    | "textarea";
 
 export interface FieldOption {
     label: string;
@@ -17,6 +18,8 @@ export interface FieldOption {
 
 export interface FormField {
     class?: string;
+    disabled?: boolean | (() => boolean) | undefined;
+    hidden?: boolean | (() => boolean) | undefined;
     label: string;
     multiple?: boolean;
     name: string;

@@ -26,13 +26,13 @@ const emit = defineEmits<{
     (e: "update:modelValue", value: Date | null): void;
 }>();
 
-const date = ref<Date | null>(props.modelValue);
+const date = ref<Date | null>(props.modelValue || new Date());
 
 watch(
     () => props.modelValue,
     (val) => {
         if (val !== date.value) {
-            date.value = val;
+            date.value = val ?? new Date();
         }
     },
 );
