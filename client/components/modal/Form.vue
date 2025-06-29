@@ -6,17 +6,19 @@
                 divide: 'divide-y divide-gray-100 dark:divide-gray-800',
             }"
         >
-            <div class="flex items-center mb-4">
-                <UIcon
-                    name="i-heroicons-pencil-square"
-                    class="mr-3 text-emerald-500 text-xl"
-                />
-                <span
-                    class="text-lg text-gray-900 dark:text-gray-100 font-medium"
-                >
-                    {{ title }}
-                </span>
-            </div>
+            <template #header>
+                <div class="flex items-center">
+                    <UIcon
+                        name="i-heroicons-pencil-square"
+                        class="mr-3 text-emerald-500 text-xl"
+                    />
+                    <span
+                        class="text-lg text-gray-900 dark:text-gray-100 font-medium"
+                    >
+                        {{ title }}
+                    </span>
+                </div>
+            </template>
 
             <UForm
                 :schema="zodSchema"

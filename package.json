@@ -7,7 +7,7 @@
         "dev": "nuxt dev --host",
         "start": "concurrently \"nuxt dev\" \"php artisan serve\"",
         "octane": "php artisan octane:start --server=swoole --workers=8 --task-workers=8 --max-requests=300",
-        "octane-host": "php artisan octane:start --server=swoole --workers=8 --task-workers=8 --max-requests=300 --host=192.168.1.30 --port=8000",
+        "octane-host": "php artisan octane:start --server=swoole --workers=8 --task-workers=8 --max-requests=300 --host=192.168.254.112 --port=8000",
         "api:test": "wrk -c 100 -t 4 -d 5 http://127.0.0.1:8000/graphql",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
