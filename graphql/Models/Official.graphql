@@ -1,0 +1,50 @@
+type Official {
+    id: ID!
+    position: String!
+    term_start: DateTime!
+    term_end: DateTime
+    resident: Resident @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input OfficialInput {
+    id: ID
+    position: String
+    term_start: DateTime!
+    term_end: DateTime
+    resident: ConnectResidentRelation
+}
+
+input ConnectOfficialRelation {
+    id: ID
+    connect: ID
+    upsert: ResidentInput
+    delete: ID
+}
+
+input ConnectOfficialsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [OfficialInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    officials: [Official]! @all
+    officialsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Official]! @paginate
+    officialsCount: Int! @count(model: "Official")
+}
+
+extend type Mutation @guard {
+    upsertOfficial(input: OfficialInput! @spread): Official! @upsert
+    deleteOfficial(id: [ID!] @eq): [Official] @delete
+}

@@ -3,58 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Resident extends Model
+class Official extends Model
 {
-    protected static function boot(): void
+    public function resident(): BelongsTo
     {
-        parent::boot();
-
-        static::saving(function ($resident) {
-            $resident->name = $resident->generateFullName();
-        });
-    }
-
-    public function generateFullName(): string
-    {
-        $parts = [
-            trim((string) $this->first_name),
-            trim((string) $this->middle_name),
-            trim((string) $this->last_name),
-        ];
-
-        return implode(' ', array_filter($parts));
-    }
-
-    // Relationships
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class);
-    }
-
-    public function household(): BelongsTo
-    {
-        return $this->belongsTo(Household::class);
-    }
-
-    public function purok(): BelongsTo
-    {
-        return $this->belongsTo(Purok::class);
-    }
-
-    public function blotters(): HasMany
-    {
-        return $this->hasMany(Blotter::class);
-    }
-
-    public function officials(): HasMany
-    {
-        return $this->hasMany(Official::class);
+        return $this->belongsTo(Resident::class);
     }
 
     /* Search function for graphql */
@@ -63,11 +19,7 @@ class Resident extends Model
         if (empty($search)) return $query;
 
         return $query->where('id', $search)
-            ->orWhere('name', 'like', "%{$search}%")
-            ->orWhere('first_name', 'like', "%{$search}%")
-            ->orWhere('middle_name', 'like', "%{$search}%")
-            ->orWhere('last_name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%");
+            ->orWhere('position', 'like', "%{$search}%");
     }
 
     /* Sort function for graphql */

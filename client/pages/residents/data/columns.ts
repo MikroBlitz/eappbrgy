@@ -5,12 +5,7 @@ import { h } from "vue";
 import type { Column } from "~/components/table/types";
 import type { Resident } from "~/types/codegen/graphql";
 
-import {
-    genderColorMap,
-    genderIconMap,
-    getDateOnly,
-    toTitleCase,
-} from "~/utils/helpers";
+import { genderColorMap, genderIconMap, toTitleCase } from "~/utils/helpers";
 
 export const columns: Column[] = [
     {

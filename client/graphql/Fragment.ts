@@ -66,10 +66,6 @@ export const residentFragment = gql`
             id
             name
         }
-        #        blotters {
-        #            id
-        #            case_no
-        #        }
         created_at
         updated_at
     }
@@ -139,5 +135,18 @@ export const blotterFragment = gql`
         }
         created_at
         updated_at
+    }
+`;
+
+export const officialFragment = gql`
+    fragment official on Official {
+        id
+        position
+        term_start
+        term_end
+        resident {
+            id
+            name
+        }
     }
 `;
