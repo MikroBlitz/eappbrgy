@@ -25,7 +25,7 @@ export type Row = Record<string, any>;
 
 export interface TableAction {
     color: (row: any) => ButtonColor;
-    condition: () => boolean;
+    condition: (row: any) => boolean | undefined;
     icon: (row: any) => string;
     onClick: (row: any) => void;
     tooltip: (row: any) => string;

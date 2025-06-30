@@ -26,6 +26,7 @@ class Blotter extends Model
 
         return $query->where('id', $search)
             ->orWhere('case_no', 'like', "%{$search}%")
+            ->orWhere('complaint', 'like', "%{$search}%")
             ->orWhere('details', 'like', "%{$search}%");
     }
 

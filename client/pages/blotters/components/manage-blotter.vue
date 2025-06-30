@@ -1,16 +1,32 @@
 <template>
-    <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="filter"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
-        :option-loading="loadingOptions"
-    />
+    <div>
+        <CrudTable
+            :config="crudConfig"
+            :columns="columns"
+            :filters="filter"
+            :form-schema="formSchema"
+            :zod-schema="zodSchema"
+            :operations="operations"
+            :option-loading="loadingOptions"
+            :actions="customActions"
+        />
+
+        <ModalConfirm
+            v-model:is-open="isConfirmModal"
+            :loading="modalLoading"
+            label="Update"
+            :description="`Confirm blotter's status to ${selectedStatus}?`"
+            icon="i-heroicons-exclamation-triangle"
+            :action="confirmUpdateStatus"
+            color="blue"
+        />
+    </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from "#ui/composables/useToast";
+
+import type { TableAction } from "~/components/table/types";
 import type { Blotter } from "~/types/codegen/graphql";
 
 import {
@@ -24,6 +40,7 @@ import { formatDateTimeForGraphQL } from "~/utils/helpers";
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
 
+const toast = useToast();
 const permission = "blotter";
 const crudConfig = useCrudConfig(
     "Blotters", // title
@@ -115,9 +132,88 @@ const operations = useCrudOperations<Blotter>(
                 respondent: {
                     connect: data.respondent,
                 },
-                status: data.status || "open",
             };
         },
     },
 );
+
+const selectedRow = ref();
+const selectedStatus = ref("");
+const isConfirmModal = ref(false);
+const modalLoading = ref(false);
+
+const customActions: TableAction[] = [
+    {
+        color: () => "blue",
+        condition: () => true,
+        icon: () => "solar:file-broken",
+        onClick: (row: Blotter) => {
+            selectedRow.value = row;
+            selectedStatus.value = "open";
+            isConfirmModal.value = true;
+        },
+        tooltip: () => "Open this blotter",
+    },
+    {
+        color: () => "emerald",
+        condition: () => true,
+        icon: () => "solar:file-check-broken",
+        onClick: (row: Blotter) => {
+            selectedRow.value = row;
+            selectedStatus.value = "resolved";
+            isConfirmModal.value = true;
+        },
+        tooltip: () => "Resolve this blotter",
+    },
+    {
+        color: () => "red",
+        condition: () => true,
+        icon: () => "solar:file-remove-broken",
+        onClick: (row: Blotter) => {
+            selectedRow.value = row;
+            selectedStatus.value = "dismissed";
+            isConfirmModal.value = true;
+        },
+        tooltip: () => "Dismiss this blotter",
+    },
+];
+
+async function confirmUpdateStatus() {
+    const { mutate } = useMutation(upsertBlotter);
+    if (!selectedRow.value || !selectedStatus.value) return;
+    if (selectedRow.value.status === selectedStatus.value) {
+        isConfirmModal.value = false;
+        toast.add({
+            color: "yellow",
+            icon: "i-mdi-information-outline",
+            title: "Status is already set — no changes made.",
+        });
+        return;
+    }
+
+    modalLoading.value = true;
+    try {
+        await mutate({
+            input: {
+                id: selectedRow.value.id,
+                status: selectedStatus.value,
+            },
+        });
+        isConfirmModal.value = false;
+        toast.add({
+            color: "green",
+            icon: "i-mdi-check-circle-outline",
+            title: `Status has been updated to ${selectedStatus.value}`,
+        });
+    } catch (error) {
+        console.error(error);
+        toast.add({
+            color: "red",
+            icon: "i-mdi-alert-circle-outline",
+            title: "Something went wrong, please try again.",
+        });
+    } finally {
+        modalLoading.value = false;
+    }
+}
 </script>

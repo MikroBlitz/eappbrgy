@@ -51,12 +51,12 @@ export type Blotter = {
 };
 
 export type BlotterInput = {
-  case_no: Scalars['String']['input'];
+  case_no?: InputMaybe<Scalars['String']['input']>;
   complainant?: InputMaybe<ConnectResidentRelation>;
-  complaint: Scalars['String']['input'];
-  details: Scalars['String']['input'];
+  complaint?: InputMaybe<Scalars['String']['input']>;
+  details?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
-  incident_date: Scalars['DateTime']['input'];
+  incident_date?: InputMaybe<Scalars['DateTime']['input']>;
   respondent?: InputMaybe<ConnectResidentRelation>;
   status?: InputMaybe<Scalars['String']['input']>;
 };

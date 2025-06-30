@@ -41,6 +41,24 @@ export const columns: Column[] = [
         sortable: false,
     },
     {
+        key: "complainant",
+        label: "Complainant",
+        render: (row: Blotter) => row.complainant?.name,
+        sortable: true,
+    },
+    {
+        key: "respondent",
+        label: "Respondent",
+        render: (row: Blotter) => row.respondent?.name,
+        sortable: true,
+    },
+    {
+        key: "incident_date",
+        label: "Incident Date",
+        render: (row) => h("div", getDateOnly(row.incident_date)),
+        sortable: true,
+    },
+    {
         key: "status",
         label: "Status",
         render: (row: Blotter) =>
@@ -62,26 +80,8 @@ export const columns: Column[] = [
                             ? "Dismissed"
                             : "Unknown",
                 size: "sm",
-                variant: "subtle",
+                variant: "solid",
             }),
-        sortable: true,
-    },
-    {
-        key: "incident_date",
-        label: "Incident Date",
-        render: (row) => h("div", getDateOnly(row.incident_date)),
-        sortable: true,
-    },
-    {
-        key: "complainant",
-        label: "Complainant",
-        render: (row: Blotter) => row.complainant?.name,
-        sortable: true,
-    },
-    {
-        key: "respondent",
-        label: "Respondent",
-        render: (row: Blotter) => row.respondent?.name,
         sortable: true,
     },
     // {

@@ -67,17 +67,17 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
                 }),
             ),
         },
-        {
-            class: "col-span-6",
-            label: "Status",
-            name: "status",
-            options: [
-                { label: "Open", value: "open" },
-                { label: "Resolved", value: "resolved" },
-                { label: "Dismissed", value: "dismissed" },
-            ],
-            type: "select",
-        },
+        // {
+        //     class: "col-span-6",
+        //     label: "Status",
+        //     name: "status",
+        //     options: [
+        //         { label: "Open", value: "open" },
+        //         { label: "Resolved", value: "resolved" },
+        //         { label: "Dismissed", value: "dismissed" },
+        //     ],
+        //     type: "select",
+        // },
     ],
 });
 

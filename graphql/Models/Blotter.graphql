@@ -13,11 +13,11 @@ type Blotter {
 
 input BlotterInput {
     id: ID
-    case_no: String!
-    complaint: String!
+    case_no: String
+    complaint: String
     status: String
-    details: String!
-    incident_date: DateTime!
+    details: String
+    incident_date: DateTime
     complainant: ConnectResidentRelation
     respondent: ConnectResidentRelation
 }

@@ -285,7 +285,7 @@ const computedActions = computed(() => {
               },
           ];
 
-    const allActions = [...defaultActions, ...customActions];
+    const allActions = [...customActions, ...defaultActions];
 
     return allActions.map((action) => ({
         color: action.color,
