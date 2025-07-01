@@ -16,6 +16,7 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-52",
         key: "roles",
         label: "Role",
         render: (row) => {

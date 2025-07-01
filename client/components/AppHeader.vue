@@ -7,14 +7,8 @@
                 <AppSidebar />
             </div>
 
-            <div class="flex items-center gap-2 pr-2">
-                <UButton
-                    icon="solar:bell-broken"
-                    variant="ghost"
-                    :trailing="false"
-                    class="hover:bg-transparent hover:scale-110 transition-all duration-300 p-1"
-                    size="xl"
-                />
+            <div class="flex items-center gap-3 pr-2">
+                <Notification />
 
                 <ClientOnly>
                     <UButton

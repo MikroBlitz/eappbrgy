@@ -1,9 +1,10 @@
 import { UBadge } from "#components";
+import { User } from "lucide-vue-next";
 
 import type { Column } from "~/components/table/types";
 import type { Official } from "~/types/codegen/graphql";
 
-import { toTitleCase } from "~/utils/helpers";
+import { colorMap, roleIconMap, toTitleCase } from "~/utils/helpers";
 
 export const columns: Column[] = [
     {
@@ -18,22 +19,27 @@ export const columns: Column[] = [
     {
         key: "position",
         label: "Positions",
-        render: (row) => {
-            return h(
-                UBadge,
-                {
-                    color: "gray",
-                    label: row.name,
-                    size: "sm",
-                    variant: "solid",
-                },
-                {
-                    default: () =>
-                        h("div", { class: "flex items-center space-x-1" }, [
-                            h("span", null, toTitleCase(row.position)),
-                        ]),
-                },
-            );
+        render: (row: Official) => {
+            const Icon = roleIconMap[row.position] || User;
+
+            return h("div", { class: "flex items-center space-x-2" }, [
+                h(
+                    UBadge,
+                    {
+                        color: colorMap[row.position] || "gray",
+                        label: row.position,
+                        size: "sm",
+                        variant: "solid",
+                    },
+                    {
+                        default: () =>
+                            h("div", { class: "flex items-center space-x-1" }, [
+                                h(Icon, { class: "w-3 h-3" }),
+                                h("span", null, toTitleCase(row.position)),
+                            ]),
+                    },
+                ),
+            ]);
         },
         sortable: true,
     },

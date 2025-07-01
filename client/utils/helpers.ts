@@ -1,9 +1,23 @@
 import type { BadgeColor } from "#ui/types";
 
 import {
-    Briefcase,
     Shield,
-    User,
+    Briefcase,
+    User as UserIcon,
+    Users,
+    Gavel,
+    Clipboard,
+    FileText,
+    Medal,
+    Heart,
+    ShieldCheck,
+    Handshake,
+    Smile,
+    Eye,
+    Settings,
+    Database,
+    LifeBuoy,
+    AlertCircle,
     Mars as Male,
     Venus as Female,
 } from "lucide-vue-next";
@@ -27,14 +41,50 @@ export const authContext = () => {
 
 export const roleIconMap: Record<string, any> = {
     Admin: Shield,
+    "Barangay Captain": Gavel,
+    "Barangay Councilor": Medal,
+
+    "Barangay Health Worker": Heart,
+    "Barangay Secretary": Clipboard,
+    "Barangay Tanod": ShieldCheck,
+    "Barangay Treasurer": FileText,
+    "Barangay Volunteer": Handshake,
+    "Data Encoder": Database,
+    Guest: AlertCircle,
     Manager: Briefcase,
-    User: User,
+    "PWD Representative": LifeBuoy,
+    Resident: Smile,
+    "Senior Citizen": Eye,
+    "SK Chairperson": Users,
+    "SK Councilor": Users,
+    "Social Welfare Officer": Heart,
+    "System Administrator": Settings,
+    User: UserIcon,
+    "Youth Representative": Smile,
 };
 
 export const colorMap: Record<string, BadgeColor> = {
     Admin: "emerald",
+    "Barangay Captain": "red",
+    "Barangay Councilor": "amber",
+
+    "Barangay Health Worker": "green",
+    "Barangay Secretary": "indigo",
+    "Barangay Tanod": "gray",
+    "Barangay Treasurer": "yellow",
+    "Barangay Volunteer": "teal",
+    "Data Encoder": "blue",
+    Guest: "gray",
     Manager: "orange",
+    "PWD Representative": "pink",
+    Resident: "sky",
+    "Senior Citizen": "lime",
+    "SK Chairperson": "purple",
+    "SK Councilor": "purple",
+    "Social Welfare Officer": "rose",
+    "System Administrator": "emerald",
     User: "blue",
+    "Youth Representative": "cyan",
 };
 
 export const genderIconMap: Record<string, any> = {
@@ -89,6 +139,25 @@ export const getDateOnly = (datetimeStr: string): string => {
     };
 
     return date.toLocaleDateString(undefined, options);
+};
+
+export const formatDateAgo = (dateString: string) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) return "Today";
+    if (diffInDays === 1) return "Yesterday";
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+
+    return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
 };
 
 export function formatDateTimeForGraphQL(date: string | Date): string {

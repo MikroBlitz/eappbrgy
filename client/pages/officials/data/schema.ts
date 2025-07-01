@@ -13,18 +13,39 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             options: [
                 {
                     label: "Punong Barangay (Barangay Captain)",
-                    value: "punong_barangay",
+                    value: "Barangay Captain",
                 },
-                { label: "Barangay Kagawad (Councilor) 1", value: "kagawad_1" },
-                { label: "Barangay Kagawad (Councilor) 2", value: "kagawad_2" },
-                { label: "Barangay Kagawad (Councilor) 3", value: "kagawad_3" },
-                { label: "Barangay Kagawad (Councilor) 4", value: "kagawad_4" },
-                { label: "Barangay Kagawad (Councilor) 5", value: "kagawad_5" },
-                { label: "Barangay Kagawad (Councilor) 6", value: "kagawad_6" },
-                { label: "Barangay Kagawad (Councilor) 7", value: "kagawad_7" },
-                { label: "Barangay Secretary", value: "barangay_secretary" },
-                { label: "Barangay Treasurer", value: "barangay_treasurer" },
-                { label: "SK Chairperson", value: "sk_chairperson" },
+                {
+                    label: "Barangay Kagawad (Councilor) 1",
+                    value: "Barangay Councilor 1",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 2",
+                    value: "Barangay Councilor 2",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 3",
+                    value: "Barangay Councilor 3",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 4",
+                    value: "Barangay Councilor 4",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 5",
+                    value: "Barangay Councilor 5",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 6",
+                    value: "Barangay Councilor 6",
+                },
+                {
+                    label: "Barangay Kagawad (Councilor) 7",
+                    value: "Barangay Councilor 7",
+                },
+                { label: "Barangay Secretary", value: "Barangay Secretary" },
+                { label: "Barangay Treasurer", value: "Barangay Treasurer" },
+                { label: "SK Chairperson", value: "SK Chairperson" },
             ],
             type: "select",
             validation: z.string().min(1, "Position is required"),

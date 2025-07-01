@@ -22,7 +22,7 @@ export function useSearchQueryOptions<T = any>(
             label: item.name,
             value: item.id,
         }),
-        pageSize = 20,
+        pageSize = 50,
         queryKey,
         variables = {},
     } = options;
