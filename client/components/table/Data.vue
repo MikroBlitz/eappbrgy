@@ -165,7 +165,7 @@
                                                 :key="index"
                                             >
                                                 <template
-                                                    v-if="action.condition()"
+                                                    v-if="action.condition(row)"
                                                 >
                                                     <UTooltip
                                                         :text="

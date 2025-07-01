@@ -14,6 +14,7 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-52",
         key: "case_no",
         label: "Case no.",
         render: (row: Blotter) => {
@@ -80,7 +81,7 @@ export const columns: Column[] = [
                             ? "Dismissed"
                             : "Unknown",
                 size: "sm",
-                variant: "solid",
+                variant: "subtle",
             }),
         sortable: true,
     },
