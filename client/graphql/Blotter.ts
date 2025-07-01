@@ -7,14 +7,17 @@ export const blottersPaginate = gql`
         $search: String
         $sort: SortInput
         $filter: [FilterInput]
-    ) {
+    ) #        $whereValue: String
+    {
         blottersPaginate(
             first: $first
             page: $page
             search: $search
             sort: $sort
-            filter: $filter
-        ) {
+            filter: $filter #            where: {
+        ) #                OR: [{ column: STATUS, operator: EQ, value: $whereValue }]
+        #            }
+        {
             data {
                 ...blotter
             }
@@ -49,5 +52,11 @@ export const deleteBlotter = gql`
 export const blottersCount = gql`
     query blottersCount {
         blottersCount
+    }
+`;
+
+export const blottersThisWeekCount = gql`
+    query blottersThisWeekCount {
+        blottersThisWeekCount
     }
 `;

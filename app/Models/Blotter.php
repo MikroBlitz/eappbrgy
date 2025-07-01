@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,17 @@ class Blotter extends Model
     public function respondent(): BelongsTo
     {
         return $this->belongsTo(Resident::class);
+    }
+
+    public function resolvedThisWeekCount($root, array $args): int
+    {
+        // Get start and end of the current week (Monday-Sunday)
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        return Blotter::where('status', 'resolved')
+            ->whereBetween('updated_at', [$startOfWeek, $endOfWeek])
+            ->count();
     }
 
     /* Search function for graphql */

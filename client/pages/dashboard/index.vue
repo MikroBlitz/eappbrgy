@@ -160,7 +160,7 @@
                                         variant="subtle"
                                         size="sm"
                                     >
-                                        0
+                                        {{ blotterResolvedCounter }}
                                     </UBadge>
                                     <span
                                         class="text-gray-500 dark:text-gray-400 text-sm ml-2"
@@ -601,11 +601,12 @@
 </template>
 
 <script setup lang="ts">
-import { blottersCount } from "~/graphql/Blotter.js";
+import { blottersCount, blottersThisWeekCount } from "~/graphql/Blotter.js";
 import { residentsCount } from "~/graphql/Resident.js";
 
 const residentCounter = ref(0);
 const blotterCounter = ref(0);
+const blotterResolvedCounter = ref(0);
 
 const {
     loading: residentCounterLoading,
@@ -617,13 +618,22 @@ const {
     refetch: refetchBlotter,
     result: blotterResults,
 } = useQuery(blottersCount);
+const { refetch: refetchblottersThisWeek, result: blottersThisWeekResults } =
+    useQuery(blottersThisWeekCount);
 
 onMounted(async () => {
-    await Promise.all([refetchResident(), refetchBlotter()]);
+    await Promise.all([
+        refetchResident(),
+        refetchBlotter(),
+        refetchblottersThisWeek(),
+    ]);
     if (residentResults.value)
         residentCounter.value = residentResults.value.residentsCount;
     if (blotterResults.value)
         blotterCounter.value = blotterResults.value.blottersCount;
+    if (blottersThisWeekResults.value)
+        blotterResolvedCounter.value =
+            blottersThisWeekResults.value.blottersThisWeekCount;
 });
 
 definePageMeta({ layout: "app-layout", permission: "view dashboard" });

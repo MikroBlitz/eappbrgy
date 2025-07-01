@@ -52,8 +52,10 @@ extend type Query {
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
+#        where: _ @whereConditions(columns: ["status"])
     ): [Blotter]! @paginate
     blottersCount: Int! @count(model: "Blotter")
+    blottersThisWeekCount: Int! @field(resolver: "App\\GraphQL\\Resolvers\\BlotterResolver@resolvedThisWeekCount")
 }
 
 extend type Mutation @guard {
