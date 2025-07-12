@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default.vue' => env('CACHE_STORE', 'database'),
+    'default' => env('CACHE_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------

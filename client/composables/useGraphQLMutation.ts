@@ -32,7 +32,7 @@ export async function useGraphQLMutation<
             await action.mutation?.(input);
             toast.add({
                 color: "green",
-                icon: "i-mdi-check-circle-outline",
+                icon: "solar:check-circle-broken",
                 title: `${text} has been ${actionText}.`,
             });
         } else {

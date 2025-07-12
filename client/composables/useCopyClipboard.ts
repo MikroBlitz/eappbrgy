@@ -4,7 +4,7 @@ export function copyToClipboard(text: string, row: string) {
     navigator.clipboard.writeText(row);
     toast.add({
         color: "blue",
-        icon: "i-mdi-check-circle-outline",
+        icon: "solar:check-circle-broken",
         title: `Copied ${row} to clipboard`,
     });
 }

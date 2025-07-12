@@ -188,7 +188,7 @@ const onSubmit = async () => {
         toast.add({
             color: "green",
             description: "Successfully registered",
-            icon: "i-mdi-check-circle-outline",
+            icon: "solar:check-circle-broken",
             title: "Success",
         });
     } catch (error) {

@@ -334,6 +334,7 @@ export type Mutation = {
   login: AuthPayload;
   logout?: Maybe<LogoutResponse>;
   registerUser?: Maybe<User>;
+  requestOtp?: Maybe<OtpResponse>;
   restoreUser: User;
   updateUserStatus?: Maybe<User>;
   upsertBlotter: Blotter;
@@ -346,6 +347,7 @@ export type Mutation = {
   upsertResident: Resident;
   upsertRole: Role;
   upsertUser: User;
+  verifyOtp?: Maybe<OtpResponse>;
 };
 
 
@@ -410,6 +412,12 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRequestOtpArgs = {
+  generated_session_key: Scalars['String']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+
 export type MutationRestoreUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -470,6 +478,13 @@ export type MutationUpsertUserArgs = {
   input: UserInput;
 };
 
+
+export type MutationVerifyOtpArgs = {
+  generated_session_key: Scalars['String']['input'];
+  hashed_otp: Scalars['String']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
 export type Official = {
   __typename?: 'Official';
   created_at: Scalars['DateTime']['output'];
@@ -525,6 +540,14 @@ export enum OrderByRelationWithColumnAggregateFunction {
   /** Sum. */
   Sum = 'SUM'
 }
+
+export type OtpResponse = {
+  __typename?: 'OtpResponse';
+  error?: Maybe<Scalars['String']['output']>;
+  expiry?: Maybe<Scalars['Int']['output']>;
+  remarks?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['Boolean']['output']>;
+};
 
 /** Information about pagination using a fully featured paginator. */
 export type PaginatorInfo = {

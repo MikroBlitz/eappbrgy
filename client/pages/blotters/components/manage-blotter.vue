@@ -20,6 +20,12 @@
             :action="confirmUpdateStatus"
             color="blue"
         />
+
+        <ModalOtp
+            v-model:is-open="isOtpModal"
+            :on-confirm="handleOtpConfirm"
+            :loading="otpLoading"
+        />
     </div>
 </template>
 
@@ -29,6 +35,7 @@ import { useToast } from "#ui/composables/useToast";
 import type { TableAction } from "~/components/table/types";
 import type { Blotter } from "~/types/codegen/graphql";
 
+import { requestOtp, verifyOtp } from "~/graphql/Auth";
 import {
     blottersPaginate,
     deleteBlotter,
@@ -41,6 +48,17 @@ import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
 
 const toast = useToast();
+const auth = useAuthStore();
+const currentUserId = auth.user?.id;
+
+const selectedRow = ref();
+const selectedStatus = ref("");
+const isConfirmModal = ref(false);
+const isOtpModal = ref(false);
+const modalLoading = ref(false);
+const otpLoading = ref(false);
+const sessionKey = ref("");
+
 const permission = "blotter";
 const crudConfig = useCrudConfig(
     "Blotters", // title
@@ -137,11 +155,6 @@ const operations = useCrudOperations<Blotter>(
     },
 );
 
-const selectedRow = ref();
-const selectedStatus = ref("");
-const isConfirmModal = ref(false);
-const modalLoading = ref(false);
-
 const customActions: TableAction[] = [
     {
         color: () => "blue",
@@ -179,41 +192,105 @@ const customActions: TableAction[] = [
 ];
 
 async function confirmUpdateStatus() {
-    const { mutate } = useMutation(upsertBlotter);
-    if (!selectedRow.value || !selectedStatus.value) return;
-    if (selectedRow.value.status === selectedStatus.value) {
-        isConfirmModal.value = false;
+    modalLoading.value = true;
+
+    try {
+        const { mutate: requestOtpMutate } = useMutation(requestOtp);
+        sessionKey.value = `otp:session:${currentUserId}`;
+
+        const { data } = (await requestOtpMutate({
+            sessionKey: sessionKey.value,
+            userId: currentUserId,
+        })) as {
+            data: {
+                requestOtp: {
+                    status: boolean;
+                    remarks?: string;
+                    error?: string;
+                    expiry?: number;
+                };
+            };
+        };
+
+        if (data?.requestOtp?.status) {
+            isConfirmModal.value = false;
+            await nextTick();
+            isOtpModal.value = true;
+            toast.add({
+                color: "green",
+                icon: "solar:mailbox-broken",
+                title: "OTP sent to your email.",
+            });
+        } else {
+            throw new Error(data?.requestOtp?.error || "OTP request failed");
+        }
+    } catch (e: any) {
+        console.error("OTP request error:", e);
         toast.add({
-            color: "yellow",
-            icon: "i-mdi-information-outline",
-            title: "Status is already set — no changes made.",
+            color: "red",
+            icon: "solar:mailbox-broken",
+            title: e?.message || "Failed to send OTP. Please try again.",
         });
+        isConfirmModal.value = true;
+    } finally {
+        modalLoading.value = false;
+    }
+}
+
+async function handleOtpConfirm(rawOtp: string) {
+    if (!rawOtp) {
+        console.error("Missing OTP");
         return;
     }
+    otpLoading.value = true;
 
-    modalLoading.value = true;
     try {
-        await mutate({
+        const config = useRuntimeConfig();
+        const secret = config.public.OTP_SECRET_KEY;
+        const hashedOtp = await hmacSHA256(rawOtp, secret);
+
+        const { mutate: verifyOtpMutate } = useMutation(verifyOtp);
+        const verifyResponse = await verifyOtpMutate({
+            otp: hashedOtp,
+            sessionKey: sessionKey.value,
+            userId: currentUserId,
+        });
+
+        const verification = verifyResponse?.data?.verifyOtp;
+
+        if (!verification?.status) {
+            toast.add({
+                color: "red",
+                icon: "solar:mailbox-broken",
+                title: verification?.error || "Invalid OTP",
+            });
+            return;
+        }
+
+        const { mutate: upsertBlotterMutate } = useMutation(upsertBlotter);
+        await upsertBlotterMutate({
             input: {
                 id: selectedRow.value.id,
                 status: selectedStatus.value,
             },
         });
-        isConfirmModal.value = false;
+
         toast.add({
             color: "green",
-            icon: "i-mdi-check-circle-outline",
+            icon: "solar:check-circle-broken",
             title: `Status has been updated to ${selectedStatus.value}`,
         });
+
+        isOtpModal.value = false;
     } catch (error) {
-        console.error(error);
+        console.error("OTP verification/update error:", error);
         toast.add({
             color: "red",
-            icon: "i-mdi-alert-circle-outline",
-            title: "Something went wrong, please try again.",
+            icon: "solar:mailbox-broken",
+            title: "OTP verified, but status update failed.",
         });
     } finally {
-        modalLoading.value = false;
+        otpLoading.value = false;
     }
 }
 </script>

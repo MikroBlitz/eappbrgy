@@ -11,10 +11,21 @@ type Query {
     me: User! @auth(guards: ["sanctum"])
 }
 
+type OtpResponse {
+    status: Boolean
+    remarks: String
+    error: String
+    expiry: Int
+}
+
 type Mutation {
+#    Authentication
     login(
         email: String!
         password: String!
     ): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\LoginMutator@login")
     logout: LogoutResponse @field(resolver: "App\\GraphQL\\Mutations\\LogoutMutator@resolve")
+#   OTP
+    requestOtp(user_id: ID!, generated_session_key: String!): OtpResponse @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@requestOtp")
+    verifyOtp(user_id: ID!, generated_session_key: String!, hashed_otp: String!): OtpResponse @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@verifyOtp")
 }

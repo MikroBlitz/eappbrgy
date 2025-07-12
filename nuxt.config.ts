@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             API_URL: import.meta.env.API_URL,
+            OTP_SECRET_KEY: import.meta.env.OTP_SECRET_KEY,
         },
     },
     srcDir: "client/",

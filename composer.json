@@ -17,6 +17,7 @@
         "mll-lab/graphql-php-scalars": "^6.4",
         "mll-lab/laravel-graphiql": "^3.2",
         "nuwave/lighthouse": "^6.54",
+        "predis/predis": "^3.0",
         "spatie/laravel-permission": "^6.16",
         "spiral/roadrunner": "^2024.3",
         "spiral/roadrunner-cli": "^2.6.0",
