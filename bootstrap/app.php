@@ -18,4 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withCommands([
+        \App\Console\Commands\UpdateExpiredPermits::class,
+    ])
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->command('permits:expire-check')->daily();
+    })
+    ->create();

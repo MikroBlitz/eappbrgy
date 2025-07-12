@@ -150,3 +150,19 @@ export const officialFragment = gql`
         }
     }
 `;
+
+export const permitFragment = gql`
+    fragment permit on Permit {
+        id
+        type
+        status
+        issued_at
+        valid_until
+        created_at
+        updated_at
+        resident {
+            id
+            name
+        }
+    }
+`;

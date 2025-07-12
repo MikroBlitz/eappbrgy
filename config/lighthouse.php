@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Controls the HTTP route that your GraphQL server responds to.
-    | You may set `route` => false, to disable the default.vue route
+    | You may set `route` => false, to disable the default route
     | registration and take full control.
     |
     */
@@ -57,7 +57,7 @@ return [
     |
     | The guards to use for authenticating GraphQL requests, if needed.
     | Used in directives such as `@guard` or the `AttemptAuthentication` middleware.
-    | Falls back to the Laravel default.vue if `null`.
+    | Falls back to the Laravel default if `null`.
     |
     */
 
@@ -124,7 +124,7 @@ return [
         'enable' => env('LIGHTHOUSE_QUERY_CACHE_ENABLE', true),
 
         /*
-         * Allows using a specific cache store, uses the app's default.vue if set to null.
+         * Allows using a specific cache store, uses the app's default if set to null.
          */
         'store' => env('LIGHTHOUSE_QUERY_CACHE_STORE', null),
 
@@ -150,7 +150,7 @@ return [
         'enable' => env('LIGHTHOUSE_VALIDATION_CACHE_ENABLE', false),
 
         /*
-         * Allows using a specific cache store, uses the app's default.vue if set to null.
+         * Allows using a specific cache store, uses the app's default if set to null.
          */
         'store' => env('LIGHTHOUSE_VALIDATION_CACHE_STORE', null),
 
@@ -178,7 +178,7 @@ return [
     | Namespaces
     |--------------------------------------------------------------------------
     |
-    | These are the default.vue namespaces where Lighthouse looks for classes to
+    | These are the default namespaces where Lighthouse looks for classes to
     | extend functionality of the schema. You may pass in either a string
     | or an array, they are tried in order and the first match is used.
     |
@@ -398,7 +398,7 @@ return [
 
     'subscriptions' => [
         /*
-         * Determines if broadcasts should be queued by default.vue.
+         * Determines if broadcasts should be queued by default.
          */
         'queue_broadcasts' => env('LIGHTHOUSE_QUEUE_BROADCASTS', true),
 
@@ -437,7 +437,7 @@ return [
             ],
             'echo' => [
                 'driver' => 'echo',
-                'connection' => env('LIGHTHOUSE_SUBSCRIPTION_REDIS_CONNECTION', 'default.vue'),
+                'connection' => env('LIGHTHOUSE_SUBSCRIPTION_REDIS_CONNECTION', 'default'),
                 'routes' => Nuwave\Lighthouse\Subscriptions\SubscriptionRouter::class . '@echoRoutes',
             ],
             'pusher' => [
@@ -518,7 +518,7 @@ return [
          * - Nuwave\Lighthouse\Tracing\ApolloTracing\ApolloTracing::class
          * - Nuwave\Lighthouse\Tracing\FederatedTracing\FederatedTracing::class
          *
-         * In Lighthouse v7 the default.vue will be changed to 'Nuwave\Lighthouse\Tracing\FederatedTracing\FederatedTracing::class'.
+         * In Lighthouse v7 the default will be changed to 'Nuwave\Lighthouse\Tracing\FederatedTracing\FederatedTracing::class'.
          */
         'driver' => Nuwave\Lighthouse\Tracing\ApolloTracing\ApolloTracing::class,
     ],

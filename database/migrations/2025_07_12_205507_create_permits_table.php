@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
             $table->string('type'); // e.g., Business, Residency
-            $table->date('issued_at');
-            $table->date('valid_until')->nullable();
-            $table->enum('status', ['active', 'expired', 'revoked'])->default('open');
+            $table->dateTime('issued_at');
+            $table->dateTime('valid_until')->nullable();
+            $table->enum('status', ['active', 'expired', 'revoked'])->default('active');
             $table->timestamps();
         });
     }

@@ -48,6 +48,12 @@ export const useLinks = () => {
             to: "/residents",
         },
         {
+            icon: "solar:documents-broken",
+            label: "Permits",
+            permission: auth.can("view permit"),
+            to: "/permits",
+        },
+        {
             icon: "solar:crown-star-broken",
             label: "Officials",
             permission: auth.can("view official"),

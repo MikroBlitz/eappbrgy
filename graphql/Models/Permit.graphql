@@ -1,0 +1,58 @@
+type Permit {
+    id: ID!
+    resident: Resident! @belongsTo
+    type: String!
+    issued_at: DateTime!
+    valid_until: DateTime
+    status: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input PermitInput {
+    id: ID
+    resident: ConnectResidentRelation
+    type: String
+    issued_at: DateTime
+    valid_until: DateTime
+    status: String
+}
+
+enum PermitStatus {
+    ACTIVE @enum(value: "active")
+    EXPIRED @enum(value: "expired")
+    REVOKED @enum(value: "revoked")
+}
+
+input ConnectPermitRelation {
+    id: ID
+    connect: ID
+    upsert: PermitInput
+    delete: ID
+}
+
+input ConnectPermitsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [PermitInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    permits: [Permit]! @all
+    permitsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Permit]! @paginate
+    permitsCount: Int! @count(model: "Permit")
+}
+
+extend type Mutation @guard {
+    upsertPermit(input: PermitInput! @spread): Permit! @upsert
+    deletePermit(id: [ID!] @eq): [Permit] @delete
+}

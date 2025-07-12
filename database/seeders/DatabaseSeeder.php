@@ -105,6 +105,11 @@ class DatabaseSeeder extends Seeder
             'create official',
             'edit official',
             'delete official',
+
+            'view permit',
+            'create permit',
+            'edit permit',
+            'delete permit',
         ];
 
         // Create permissions if not exists

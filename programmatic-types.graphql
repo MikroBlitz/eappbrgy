@@ -189,7 +189,7 @@ type __Field {
   deprecationReason: String
 }
 
-"Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default.vue value."
+"Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value."
 type __InputValue {
   name: String!
   description: String

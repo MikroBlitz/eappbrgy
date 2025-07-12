@@ -92,36 +92,19 @@ Make sure you have the following software installed on your system:
 
 8. Open your browser and navigate to `http://localhost:3000` & `http://localhost:8000` for the front-end and back-end respectively
 
-9. Docker (Optional) Build/Run
-   ```bash
-    docker compose down
-    docker compose up -d --build
-    docker-compose up -d
+9. To run cron job:
+
+    ```bash
+    php artisan schedule:run
     ```
 
-## Resetting Docker Desktop on Debian
+   For production, add the following to your system's crontab to run the scheduler every minute:
 
-#### 1. Quit Docker Desktop
-Stop Docker Desktop and terminate any running processes:
-```sh
-  systemctl --user stop docker-desktop
-  pkill Docker
-```
+    ```bash
+    * * * * * cd /path-to-app && php artisan schedule:run >> /dev/null 2>&1
+    ```
 
-#### 2. Remove Docker Desktop Configurations
-```sh
-  rm -rf ~/.docker ~/.config/Docker ~/.local/share/docker
-```
-
-#### 3. Clear Docker Socket & Data (If Needed)
-```sh
-  sudo rm -rf /var/lib/docker /etc/docker
-```
-
-#### 4. Restart Docker Desktop
-```sh
-  systemctl --user start docker-desktop
-```
+   This ensures all scheduled tasks (e.g., auto-expiring permits) run automatically based on their defined schedule.
 
 ### Testing API performance
 

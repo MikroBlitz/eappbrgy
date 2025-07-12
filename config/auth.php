@@ -7,7 +7,7 @@ return [
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
-    | This option defines the default.vue authentication "guard" and password
+    | This option defines the default authentication "guard" and password
     | reset "broker" for your application. You may change these values
     | as required, but they're a perfect start for most applications.
     |
@@ -24,7 +24,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Next, you may define every authentication guard for your application.
-    | Of course, a great default.vue configuration has been defined for you
+    | Of course, a great default configuration has been defined for you
     | which utilizes session storage plus the Eloquent user provider.
     |
     | All authentication guards have a user provider, which defines how the
@@ -106,7 +106,7 @@ return [
     |
     | Here you may define the amount of seconds before a password confirmation
     | window expires and users are asked to re-enter their password via the
-    | confirmation screen. By default.vue, the timeout lasts for three hours.
+    | confirmation screen. By default, the timeout lasts for three hours.
     |
     */
 

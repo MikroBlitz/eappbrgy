@@ -9,7 +9,7 @@ return [
     | Default Cache Store
     |--------------------------------------------------------------------------
     |
-    | This option controls the default.vue cache store that will be used by the
+    | This option controls the default cache store that will be used by the
     | framework. This connection is utilized if another isn't explicitly
     | specified when running a cache operation inside the application.
     |
@@ -74,7 +74,7 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
-            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default.vue'),
+            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
         'dynamodb' => [

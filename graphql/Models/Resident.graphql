@@ -15,6 +15,7 @@ type Resident {
     purok: Purok @belongsTo
     blotters: Blotter @hasMany
     officials: Official @hasMany
+    permits: Permit @hasMany
     created_at: DateTime!
     updated_at: DateTime!
 }
