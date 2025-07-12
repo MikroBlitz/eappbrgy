@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Traits\HasGraphQLScopes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +11,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Resident extends Model
 {
+    use HasGraphQLScopes;
+
+    protected array $searchable = [
+        'id',
+        'name',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+    ];
+
     protected static function boot(): void
     {
         parent::boot();
@@ -57,64 +68,8 @@ class Resident extends Model
         return $this->hasMany(Official::class);
     }
 
-    /* Search function for graphql */
-    public function scopeSearch(Builder $query, ?string $search): Builder
+    public function permits(): HasMany
     {
-        if (empty($search)) return $query;
-
-        return $query->where('id', $search)
-            ->orWhere('name', 'like', "%{$search}%")
-            ->orWhere('first_name', 'like', "%{$search}%")
-            ->orWhere('middle_name', 'like', "%{$search}%")
-            ->orWhere('last_name', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%");
-    }
-
-    /* Sort function for graphql */
-    public function scopeSort(Builder $query, ?array $sort): Builder
-    {
-        if (empty($sort['column']) || empty($sort['direction'])) {
-            return $query;
-        }
-
-        $column = $sort['column'];
-        $direction = strtolower($sort['direction']) === 'desc' ? 'desc' : 'asc';
-
-        return $query->orderBy($column, $direction);
-    }
-
-    /* Filter function for graphql */
-    public function scopeFilter(Builder $query, ?array $filters): Builder
-    {
-        if (!$filters) {
-            return $query;
-        }
-
-        $booleanFields = ['is_active', 'is_verified'];
-
-        if (isset($filters['key']) && isset($filters['value'])) {
-            $filters = [$filters];
-        }
-
-        foreach ($filters as $filter) {
-            if (isset($filter['key']) && isset($filter['value'])) {
-                $field = $filter['key'];
-                $value = $filter['value'];
-
-                if (in_array($field, $booleanFields)) {
-                    if ($value === 'true') {
-                        $query->where($field, '=', 1);
-                    } else if ($value === 'false') {
-                        $query->where($field, '=', 0);
-                    }
-                } else if ($value === 'null') {
-                    $query->whereNull($field);
-                } else {
-                    $query->where($field, $value);
-                }
-            }
-        }
-
-        return $query;
+        return $this->hasMany(Permit::class);
     }
 }

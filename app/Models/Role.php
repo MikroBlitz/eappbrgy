@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasGraphQLScopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +11,10 @@ use Spatie\Permission\Models\Role as SpatieRole;
 
 class Role extends SpatieRole
 {
+    use HasGraphQLScopes;
+
+    protected array $searchable = ['id', 'name'];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -18,24 +23,5 @@ class Role extends SpatieRole
             'role_id',
             'model_id'
         );
-    }
-
-    public function scopeSearch(Builder $query, ?string $search): Builder
-    {
-        if (empty($search)) return $query;
-
-        return $query->where('name', 'like', "%{$search}%");
-    }
-
-    public function scopeSort(Builder $query, ?array $sort): Builder
-    {
-        if (empty($sort['column']) || empty($sort['direction'])) {
-            return $query;
-        }
-
-        $column = $sort['column'];
-        $direction = strtolower($sort['direction']) === 'desc' ? 'desc' : 'asc';
-
-        return $query->orderBy($column, $direction);
     }
 }

@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Official extends Model
+class Permit extends Model
 {
     use HasGraphQLScopes;
 
-    protected array $searchable = ['id', 'position'];
+    protected array $searchable = ['id'];
 
     public function resident(): BelongsTo
     {
