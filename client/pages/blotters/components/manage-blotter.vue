@@ -23,8 +23,12 @@
 
         <ModalOtp
             v-model:is-open="isOtpModal"
-            :on-confirm="handleOtpConfirm"
-            :loading="otpLoading"
+            :user-id="currentUserId"
+            session-prefix="otp:blotter"
+            title="Confirm OTP"
+            description="A verification code has been sent to your email"
+            icon="solar:shield-check-broken"
+            :on-verified="updateBlotterStatus"
         />
     </div>
 </template>
@@ -35,14 +39,12 @@ import { useToast } from "#ui/composables/useToast";
 import type { TableAction } from "~/components/table/types";
 import type { Blotter } from "~/types/codegen/graphql";
 
-import { requestOtp, verifyOtp } from "~/graphql/Auth";
 import {
+    upsertBlotter,
     blottersPaginate,
     deleteBlotter,
-    upsertBlotter,
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
-import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
 import { columns, filter } from "../data/columns";
 import { schema } from "../data/schema";
@@ -51,13 +53,11 @@ const toast = useToast();
 const auth = useAuthStore();
 const currentUserId = auth.user?.id;
 
-const selectedRow = ref();
+const selectedRow = ref<Blotter | null>(null);
 const selectedStatus = ref("");
 const isConfirmModal = ref(false);
 const isOtpModal = ref(false);
 const modalLoading = ref(false);
-const otpLoading = ref(false);
-const sessionKey = ref("");
 
 const permission = "blotter";
 const crudConfig = useCrudConfig(
@@ -136,22 +136,15 @@ const operations = useCrudOperations<Blotter>(
                 };
             }
         },
-        prepareSubmitData: (data: any, selectedRow?: Blotter) => {
-            console.log(data);
-            return {
-                ...data,
-                complainant: {
-                    connect: data.complainant,
-                },
-                id: selectedRow?.id || undefined,
-                incident_date: data.incident_date
-                    ? formatDateTimeForGraphQL(data.incident_date)
-                    : null,
-                respondent: {
-                    connect: data.respondent,
-                },
-            };
-        },
+        prepareSubmitData: (data: any, row?: Blotter) => ({
+            ...data,
+            complainant: { connect: data.complainant },
+            id: row?.id,
+            incident_date: data.incident_date
+                ? formatDateTimeForGraphQL(data.incident_date)
+                : null,
+            respondent: { connect: data.respondent },
+        }),
     },
 );
 
@@ -160,137 +153,62 @@ const customActions: TableAction[] = [
         color: () => "blue",
         condition: () => true,
         icon: () => "solar:file-broken",
-        onClick: (row: Blotter) => {
-            selectedRow.value = row;
-            selectedStatus.value = "open";
-            isConfirmModal.value = true;
-        },
+        onClick: (row: Blotter) => openOtpWith(row, "open"),
         tooltip: () => "Open this blotter",
     },
     {
         color: () => "emerald",
         condition: () => true,
         icon: () => "solar:file-check-broken",
-        onClick: (row: Blotter) => {
-            selectedRow.value = row;
-            selectedStatus.value = "resolved";
-            isConfirmModal.value = true;
-        },
+        onClick: (row: Blotter) => openOtpWith(row, "resolved"),
         tooltip: () => "Resolve this blotter",
     },
     {
         color: () => "red",
         condition: () => true,
         icon: () => "solar:file-remove-broken",
-        onClick: (row: Blotter) => {
-            selectedRow.value = row;
-            selectedStatus.value = "dismissed";
-            isConfirmModal.value = true;
-        },
+        onClick: (row: Blotter) => openOtpWith(row, "dismissed"),
         tooltip: () => "Dismiss this blotter",
     },
 ];
 
-async function confirmUpdateStatus() {
-    modalLoading.value = true;
-
-    try {
-        const { mutate: requestOtpMutate } = useMutation(requestOtp);
-        sessionKey.value = `otp:session:${currentUserId}`;
-
-        const { data } = (await requestOtpMutate({
-            sessionKey: sessionKey.value,
-            userId: currentUserId,
-        })) as {
-            data: {
-                requestOtp: {
-                    status: boolean;
-                    remarks?: string;
-                    error?: string;
-                    expiry?: number;
-                };
-            };
-        };
-
-        if (data?.requestOtp?.status) {
-            isConfirmModal.value = false;
-            await nextTick();
-            isOtpModal.value = true;
-            toast.add({
-                color: "green",
-                icon: "solar:mailbox-broken",
-                title: "OTP sent to your email.",
-            });
-        } else {
-            throw new Error(data?.requestOtp?.error || "OTP request failed");
-        }
-    } catch (e: any) {
-        console.error("OTP request error:", e);
-        toast.add({
-            color: "red",
-            icon: "solar:mailbox-broken",
-            title: e?.message || "Failed to send OTP. Please try again.",
-        });
-        isConfirmModal.value = true;
-    } finally {
-        modalLoading.value = false;
-    }
+function openOtpWith(row: Blotter, status: string) {
+    selectedRow.value = row;
+    selectedStatus.value = status;
+    isConfirmModal.value = true;
 }
 
-async function handleOtpConfirm(rawOtp: string) {
-    if (!rawOtp) {
-        console.error("Missing OTP");
-        return;
-    }
-    otpLoading.value = true;
+async function confirmUpdateStatus() {
+    isConfirmModal.value = false;
+    await nextTick();
+    isOtpModal.value = true;
+}
+
+async function updateBlotterStatus() {
+    if (!selectedRow.value || !selectedStatus.value) return;
 
     try {
-        const config = useRuntimeConfig();
-        const secret = config.public.OTP_SECRET_KEY;
-        const hashedOtp = await hmacSHA256(rawOtp, secret);
-
-        const { mutate: verifyOtpMutate } = useMutation(verifyOtp);
-        const verifyResponse = await verifyOtpMutate({
-            otp: hashedOtp,
-            sessionKey: sessionKey.value,
-            userId: currentUserId,
-        });
-
-        const verification = verifyResponse?.data?.verifyOtp;
-
-        if (!verification?.status) {
-            toast.add({
-                color: "red",
-                icon: "solar:mailbox-broken",
-                title: verification?.error || "Invalid OTP",
-            });
-            return;
-        }
-
-        const { mutate: upsertBlotterMutate } = useMutation(upsertBlotter);
-        await upsertBlotterMutate({
+        const { mutate } = useMutation(upsertBlotter);
+        await mutate({
             input: {
                 id: selectedRow.value.id,
                 status: selectedStatus.value,
             },
         });
-
         toast.add({
             color: "green",
             icon: "solar:check-circle-broken",
-            title: `Status has been updated to ${selectedStatus.value}`,
+            title: `Status updated to ${selectedStatus.value}`,
         });
-
-        isOtpModal.value = false;
-    } catch (error) {
-        console.error("OTP verification/update error:", error);
+    } catch (e) {
         toast.add({
             color: "red",
-            icon: "solar:mailbox-broken",
-            title: "OTP verified, but status update failed.",
+            icon: "solar:close-circle-broken",
+            title: "Failed to update status.",
         });
+        console.error(e);
     } finally {
-        otpLoading.value = false;
+        isOtpModal.value = false;
     }
 }
 </script>

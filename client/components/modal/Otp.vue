@@ -8,22 +8,15 @@
             <!-- Header -->
             <div class="text-center space-y-2">
                 <div
-                    class="mx-auto w-16 h-16 dark:bg-primary-900 bg-primary-100 rounded-full flex items-center justify-center"
+                    class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
                 >
-                    <Icon
-                        name="solar:shield-check-broken"
-                        class="w-8 h-8 text-primary"
-                    />
+                    <Icon :name="icon" class="w-8 h-8 text-primary" />
                 </div>
-                <h3 class="text-xl font-bold text-primary">
-                    Enter Verification Code
-                </h3>
-                <p class="text-sm text-gray-600">
-                    We've sent a 6-digit code to your email
-                </p>
+                <h3 class="text-xl font-bold text-primary">{{ title }}</h3>
+                <p class="text-sm text-gray-500">{{ description }}</p>
             </div>
 
-            <!-- Pin Input -->
+            <!-- OTP Inputs -->
             <div class="space-y-4">
                 <div class="flex justify-center gap-3">
                     <input
@@ -33,67 +26,60 @@
                         v-model="otpDigits[index]"
                         type="text"
                         inputmode="numeric"
-                        pattern="[0-9]"
                         maxlength="1"
-                        class="w-12 h-12 text-center text-lg text-primary font-bold border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                        class="w-12 h-12 text-center bg-primary/10 text-lg font-bold text-primary border rounded-lg transition-colors"
                         :class="{
-                            'border-red-500 focus:ring-red-500 focus:border-red-500':
-                                hasError,
+                            'border-red-500 focus:ring-red-500': hasError,
                             'border-green-500 bg-green-50 dark:bg-green-900':
                                 digit && !hasError,
-                            'bg-gray-50': loading,
+                            'bg-gray-500': loading,
                         }"
                         :disabled="loading"
                         @input="handleInput(index, $event)"
                         @keydown="handleKeydown(index, $event)"
                         @paste="handlePaste"
-                    />>
+                    />
                 </div>
 
-                <!-- Error message -->
-                <div v-if="hasError" class="text-center">
-                    <p class="text-sm text-red-600">{{ errorMessage }}</p>
+                <div v-if="hasError" class="text-center text-sm text-red-600">
+                    {{ errorMessage }}
                 </div>
 
-                <!-- Timer -->
-                <div v-if="showTimer" class="text-center">
-                    <p class="text-sm text-gray-500">
-                        Code expires in
-                        <span class="font-mono font-bold text-green-600">{{
-                            formatTime(timeLeft)
-                        }}</span>
-                    </p>
+                <div v-if="showTimer" class="text-center text-sm text-gray-500">
+                    Code expires in
+                    <span class="font-mono font-bold text-green-600">{{
+                        formatTime(timeLeft)
+                    }}</span>
                 </div>
             </div>
 
-            <!-- Actions -->
+            <!-- Buttons -->
             <div class="flex flex-col gap-3">
                 <UButton
-                    :loading="loading"
-                    :disabled="!isOtpComplete || loading"
                     size="lg"
                     class="justify-center"
-                    @click="submitOtp"
+                    :disabled="!isOtpComplete || loading"
+                    :loading="loading"
+                    @click="verifyOtpMethod"
                 >
-                    {{ loading ? "Verifying..." : "Verify Code" }}
+                    {{ loading ? "Loading..." : "Verify Code" }}
                 </UButton>
 
                 <div class="flex justify-between items-center">
                     <UButton
-                        color="gray"
                         variant="ghost"
+                        color="gray"
                         :disabled="loading"
                         @click="emitClose(false)"
                     >
                         Cancel
                     </UButton>
-
                     <UButton
-                        color="gray"
                         variant="ghost"
-                        :disabled="loading || !canResend"
                         size="sm"
-                        @click="resendOtp"
+                        color="gray"
+                        :disabled="!canResend || loading"
+                        @click="sendOtp"
                     >
                         {{
                             canResend
@@ -108,256 +94,196 @@
 </template>
 
 <script setup lang="ts">
+import { useTimeoutFn } from "@vueuse/shared";
+
+import { requestOtp, verifyOtp } from "~/graphql/Auth";
+import { formatTime, hmacSHA256 } from "~/utils/helpers";
+
 const props = defineProps<{
     isOpen: boolean;
-    loading: boolean;
-    onConfirm: (otp: string) => void;
-    onResend?: () => void;
-    expiryTime?: number; // in seconds, default 300 (5 minutes)
-    resendDelay?: number; // in seconds, default 60
+    userId?: string | number;
+    sessionPrefix?: string;
+    title?: string;
+    description?: string;
+    icon?: string;
+    expiryTime?: number; // default 300s
+    resendDelay?: number; // default 60s
+    onVerified?: () => void;
 }>();
 
 const emit = defineEmits<{
     (e: "update:isOpen", value: boolean): void;
 }>();
 
-// Reactive state
+const toast = useToast();
+
 const otpDigits = ref<string[]>(Array(6).fill(""));
 const inputRefs = ref<HTMLInputElement[]>([]);
 const hasError = ref(false);
 const errorMessage = ref("");
-const timeLeft = ref(props.expiryTime || 300);
-const resendTimer = ref(props.resendDelay || 60);
+const timeLeft = ref(props.expiryTime ?? 300);
+const resendTimer = ref(props.resendDelay ?? 60);
 const canResend = ref(false);
+const loading = ref(false);
 
-// Computed
-const isOtpComplete = computed(
-    () =>
-        otpDigits.value.every((digit) => digit !== "") &&
-        otpDigits.value.length === 6,
+const sessionKey = computed(
+    () => `${props.sessionPrefix || "otp"}:${props.userId}`,
 );
-
+const otpValue = computed(() => otpDigits.value.join(""));
+const isOtpComplete = computed(() => otpDigits.value.every((d) => d !== ""));
 const showTimer = computed(() => timeLeft.value > 0);
 
-const otpValue = computed(() => otpDigits.value.join(""));
-
-// Set input ref
+// OTP Input Handling
 function setInputRef(el: HTMLInputElement | null, index: number) {
-    if (el) {
-        inputRefs.value[index] = el;
-    }
+    if (el) inputRefs.value[index] = el;
 }
-
-// Handle input
 function handleInput(index: number, event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = target.value;
-
-    // Only allow digits
-    if (!/^\d*$/.test(value)) {
-        target.value = otpDigits.value[index];
-        return;
-    }
-
-    // Update the digit
+    const value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
     otpDigits.value[index] = value;
-
-    // Clear error when user starts typing
-    if (hasError.value) {
-        hasError.value = false;
-        errorMessage.value = "";
-    }
-
-    // Move to next input if current is filled
-    if (value && index < 5) {
-        inputRefs.value[index + 1]?.focus();
-    }
-
-    // Auto-submit when all digits are filled
-    if (isOtpComplete.value && !props.loading) {
-        // Small delay to allow user to see the completed input
-        setTimeout(() => {
-            if (isOtpComplete.value) {
-                submitOtp();
-            }
-        }, 100);
-    }
+    if (value && index < 5) inputRefs.value[index + 1]?.focus();
+    if (hasError.value) clearError();
+    if (isOtpComplete.value) useTimeoutFn(() => verifyOtpMethod(), 150);
 }
-
-// Handle keydown
 function handleKeydown(index: number, event: KeyboardEvent) {
-    if (event.key === "Backspace" && !otpDigits.value[index] && index > 0) {
-        // Move to previous input on backspace if current is empty
+    if (event.key === "Backspace" && !otpDigits.value[index] && index > 0)
         inputRefs.value[index - 1]?.focus();
-    } else if (event.key === "ArrowLeft" && index > 0) {
+    if (event.key === "ArrowLeft" && index > 0)
         inputRefs.value[index - 1]?.focus();
-    } else if (event.key === "ArrowRight" && index < 5) {
+    if (event.key === "ArrowRight" && index < 5)
         inputRefs.value[index + 1]?.focus();
-    }
 }
-
-// Handle paste
 function handlePaste(event: ClipboardEvent) {
     event.preventDefault();
-    const pastedData = event.clipboardData?.getData("text") || "";
-    const digits = pastedData.replace(/\D/g, "").slice(0, 6);
+    const digits = event.clipboardData
+        ?.getData("text")
+        ?.replace(/\D/g, "")
+        .slice(0, 6);
+    if (!digits) return;
+    digits.split("").forEach((d, i) => (otpDigits.value[i] = d));
+    const next = digits.length < 6 ? digits.length : 5;
+    inputRefs.value[next]?.focus();
+}
 
-    if (digits.length > 0) {
-        // Fill the digits
-        for (let i = 0; i < 6; i++) {
-            otpDigits.value[i] = digits[i] || "";
-        }
+// OTP Logic
+async function sendOtp() {
+    try {
+        loading.value = true;
+        const { mutate } = useMutation(requestOtp);
+        const { data } = await mutate({
+            sessionKey: sessionKey.value,
+            userId: props.userId,
+        });
+        if (!data?.requestOtp?.status)
+            throw new Error(data?.requestOtp?.error || "OTP request failed");
 
-        // Focus the next empty input or the last one
-        const nextEmptyIndex = otpDigits.value.findIndex(
-            (digit) => digit === "",
+        toast.add({ color: "green", title: "OTP sent to your email" });
+        resetTimers();
+    } catch (e: any) {
+        showError(e?.message || "Failed to send OTP");
+    } finally {
+        loading.value = false;
+    }
+}
+
+async function verifyOtpMethod() {
+    if (!isOtpComplete.value) return showError("Please enter all 6 digits");
+
+    try {
+        loading.value = true;
+        const config = useRuntimeConfig();
+        const hashed = await hmacSHA256(
+            otpValue.value,
+            config.public.OTP_SECRET_KEY,
         );
-        const focusIndex = nextEmptyIndex === -1 ? 5 : nextEmptyIndex;
-        inputRefs.value[focusIndex]?.focus();
 
-        // Auto-submit if complete
-        if (digits.length === 6) {
-            setTimeout(() => {
-                if (isOtpComplete.value) {
-                    submitOtp();
-                }
-            }, 100);
-        }
-    }
-}
+        const { mutate } = useMutation(verifyOtp);
+        const { data } = await mutate({
+            otp: hashed,
+            sessionKey: sessionKey.value,
+            userId: props.userId,
+        });
 
-// Submit OTP
-function submitOtp() {
-    if (!isOtpComplete.value) {
-        showError("Please enter all 6 digits");
-        return;
-    }
-
-    props.onConfirm(otpValue.value);
-}
-
-// Show error
-function showError(message: string) {
-    hasError.value = true;
-    errorMessage.value = message;
-
-    // Focus first empty input
-    const firstEmptyIndex = otpDigits.value.findIndex((digit) => digit === "");
-    if (firstEmptyIndex !== -1) {
-        inputRefs.value[firstEmptyIndex]?.focus();
-    }
-
-    setTimeout(() => {
+        if (!data?.verifyOtp?.status)
+            throw new Error(data?.verifyOtp?.error || "Invalid code");
         emitClose(false);
-    }, 2000);
-}
-
-// Resend OTP
-function resendOtp() {
-    if (props.onResend && canResend.value) {
-        props.onResend();
-        startResendTimer();
-        resetTimer();
+        props.onVerified?.();
+    } catch (e: any) {
+        showError(e?.message || "Verification failed");
+    } finally {
+        loading.value = false;
     }
 }
 
-// Format time
-function formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
+// Helpers
+function resetTimers() {
+    timeLeft.value = props.expiryTime || 300;
+    resendTimer.value = props.resendDelay || 60;
+    canResend.value = false;
 
-// Start expiry timer
-function startExpiryTimer() {
-    const timer = setInterval(() => {
+    const expiryInterval = setInterval(() => {
         timeLeft.value--;
         if (timeLeft.value <= 0) {
-            clearInterval(timer);
-            showError("Code has expired. Please request a new one.");
+            clearInterval(expiryInterval);
+            showError("Code expired. Please request a new one.");
         }
     }, 1000);
 
-    // Clear timer when modal closes
+    const resendInterval = setInterval(() => {
+        resendTimer.value--;
+        if (resendTimer.value <= 0) {
+            clearInterval(resendInterval);
+            canResend.value = true;
+        }
+    }, 1000);
+
     watch(
         () => props.isOpen,
-        (isOpen) => {
-            if (!isOpen) {
-                clearInterval(timer);
+        (val) => {
+            if (!val) {
+                clearInterval(expiryInterval);
+                clearInterval(resendInterval);
             }
         },
+        { immediate: true },
     );
 }
 
-// Start resend timer
-function startResendTimer() {
-    canResend.value = false;
-    resendTimer.value = props.resendDelay || 60;
-
-    const timer = setInterval(() => {
-        resendTimer.value--;
-        if (resendTimer.value <= 0) {
-            canResend.value = true;
-            clearInterval(timer);
-        }
-    }, 1000);
+function showError(message: string) {
+    hasError.value = true;
+    errorMessage.value = message;
+    inputRefs.value[0]?.focus();
 }
 
-// Reset timer
-function resetTimer() {
-    timeLeft.value = props.expiryTime || 300;
-}
-
-// Clear OTP
-function clearOtp() {
-    otpDigits.value = Array(6).fill("");
+function clearError() {
     hasError.value = false;
     errorMessage.value = "";
 }
 
-// Emit close
+function clearOtp() {
+    otpDigits.value = Array(6).fill("");
+}
+
 function emitClose(value: boolean) {
-    if (!props.loading) {
-        emit("update:isOpen", value);
-        if (!value) {
-            clearOtp();
-        }
+    emit("update:isOpen", value);
+    if (!value) {
+        clearOtp();
+        clearError();
     }
 }
 
-// Watch for external error handling
-watch(
-    () => props.loading,
-    (loading, wasLoading) => {
-        if (wasLoading && !loading) {
-            // If loading just finished, check if we need to show an error
-            // This would be handled by parent component calling a method or prop
-        }
-    },
-);
-
-// Initialize when modal opens
+// Open watcher
 watch(
     () => props.isOpen,
-    (isOpen) => {
-        if (isOpen) {
+    async (val) => {
+        if (val) {
             clearOtp();
-            resetTimer();
-            startExpiryTimer();
-            startResendTimer();
-
-            nextTick(() => {
-                inputRefs.value[0]?.focus();
-            });
-        } else {
-            resetTimer();
+            await nextTick();
+            await sendOtp();
+            useTimeoutFn(() => {
+                inputRefs.value[0]?.focus?.();
+            }, 50);
         }
     },
+    { immediate: true },
 );
-
-// Expose methods for parent component
-defineExpose({
-    clearOtp,
-    showError,
-});
 </script>

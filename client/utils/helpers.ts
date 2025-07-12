@@ -214,6 +214,12 @@ export function toGraphQLDateTime(input: Date | string | null): string | null {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+export function formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
 export const phoneRegex = /^(?:\+63|0)?9\d{9}$/;
 
 // used for OTP
