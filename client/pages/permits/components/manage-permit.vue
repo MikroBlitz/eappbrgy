@@ -39,7 +39,7 @@ import { schema } from "../data/schema";
 const toast = useToast();
 
 const selectedRow = ref<Permit | null>(null);
-const selectedStatus = ref("");
+const selectedStatus = ref<string | null>(null);
 const isConfirmModal = ref(false);
 const modalLoading = ref(false);
 
@@ -100,7 +100,7 @@ const operations = useCrudOperations<Permit>(
             }
         },
         prepareSubmitData: (data: any, selectedRow?: Permit) => {
-            console.log(data);
+            const isRevoked = selectedRow?.status === "revoked";
             return {
                 ...data,
                 id: selectedRow?.id || undefined,
@@ -110,6 +110,11 @@ const operations = useCrudOperations<Permit>(
                 resident: {
                     connect: data.resident,
                 },
+                status: isRevoked
+                    ? "revoked"
+                    : new Date(data.valid_until).getTime() > Date.now()
+                      ? "active"
+                      : "expired",
                 valid_until: data.valid_until
                     ? formatDateTimeForGraphQL(data.valid_until)
                     : null,
@@ -122,7 +127,7 @@ const customActions: TableAction[] = [
     {
         color: () => "orange",
         condition: () => true,
-        icon: () => "solar:file-remove-broken",
+        icon: () => "solar:close-square-broken",
         onClick: (row: Permit) => confirmUpdateStatus(row, "revoked"),
         tooltip: () => "Revoke this permit",
     },
@@ -159,6 +164,7 @@ async function updatePermitStatus() {
         console.error(e);
     } finally {
         isConfirmModal.value = false;
+        selectedStatus.value = null;
     }
 }
 </script>

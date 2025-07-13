@@ -27,10 +27,10 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
                     value: "certificate_of_solo_parent",
                 },
                 {
-                    label: "Barangay Permit for Construction",
+                    label: "Permit for Construction",
                     value: "permit_construction",
                 },
-                { label: "Barangay Permit for Events", value: "permit_events" },
+                { label: "Permit for Events", value: "permit_events" },
                 {
                     label: "Certificate of Good Moral",
                     value: "certificate_good_moral",

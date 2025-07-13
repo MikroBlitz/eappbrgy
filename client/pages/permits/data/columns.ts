@@ -56,7 +56,7 @@ export const columns: Column[] = [
                     row.resident?.name,
                 ),
             ]),
-        sortable: true,
+        sortable: false,
     },
     {
         key: "issued_at",
