@@ -12,6 +12,7 @@ export type FieldType =
     | "textarea";
 
 export interface FieldOption {
+    [key: string]: any;
     label: string;
     value: string | number;
 }

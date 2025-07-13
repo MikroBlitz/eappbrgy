@@ -68,8 +68,8 @@ class Resident extends Model
         return $this->hasMany(Official::class);
     }
 
-    public function permits(): HasMany
+    public function documents(): HasMany
     {
-        return $this->hasMany(Permit::class);
+        return $this->hasMany(Document::class);
     }
 }

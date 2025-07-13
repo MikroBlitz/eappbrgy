@@ -1,58 +1,64 @@
-type Permit {
+type Document {
     id: ID!
     resident: Resident! @belongsTo
     type: String!
-    issued_at: DateTime!
+    category: String!
+    requested_at: DateTime
+    issued_at: DateTime
     valid_until: DateTime
     status: String!
     created_at: DateTime!
     updated_at: DateTime!
 }
 
-input PermitInput {
+input DocumentInput {
     id: ID
     resident: ConnectResidentRelation
     type: String
+    category: String
+    requested_at: DateTime
     issued_at: DateTime
     valid_until: DateTime
     status: String
 }
 
-enum PermitStatus {
-    ACTIVE @enum(value: "active")
+enum DocumentStatus {
+    PENDING @enum(value: "pending")
+    APPROVED @enum(value: "approved")
+    RELEASED @enum(value: "released")
     EXPIRED @enum(value: "expired")
     REVOKED @enum(value: "revoked")
 }
 
-input ConnectPermitRelation {
+input ConnectDocumentRelation {
     id: ID
     connect: ID
-    upsert: PermitInput
+    upsert: DocumentInput
     delete: ID
 }
 
-input ConnectPermitsRelation {
+input ConnectDocumentsRelation {
     id: [ID]
     connect: [ID]
     sync: [ID]
-    upsert: [PermitInput]
+    upsert: [DocumentInput]
     update: [ID]
     delete: [ID]
 }
 
 extend type Query {
-    permits: [Permit]! @all
-    permitsPaginate(
+    documents: [Document]! @all
+    documentsPaginate(
         first: Int!
         page: Int
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
-    ): [Permit]! @paginate
-    permitsCount: Int! @count(model: "Permit")
+    ): [Document]! @paginate
+    documentsCount: Int! @count(model: "Document")
 }
 
 extend type Mutation @guard {
-    upsertPermit(input: PermitInput! @spread): Permit! @upsert
-    deletePermit(id: [ID!] @eq): [Permit] @delete
+    upsertDocument(input: DocumentInput! @spread): Document! @upsert
+    deleteDocument(id: [ID!] @eq): [Document] @delete
 }

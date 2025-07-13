@@ -151,11 +151,13 @@ export const officialFragment = gql`
     }
 `;
 
-export const permitFragment = gql`
-    fragment permit on Permit {
+export const documentFragment = gql`
+    fragment document on Document {
         id
         type
+        category
         status
+        requested_at
         issued_at
         valid_until
         created_at

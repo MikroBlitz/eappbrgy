@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permits', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
             $table->string('type'); // e.g., Business, Residency
-            $table->dateTime('issued_at');
+            $table->string('category'); // e.g. 'permit', 'certificate', 'indigency'
+            $table->dateTime('requested_at')->nullable();
+            $table->dateTime('issued_at')->nullable();
             $table->dateTime('valid_until')->nullable();
-            $table->enum('status', ['active', 'expired', 'revoked'])->default('active');
+            $table->enum('status', ['pending', 'approved', 'released', 'expired', 'revoked'])->default('pending');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permits');
+        Schema::dropIfExists('documents');
     }
 };

@@ -26,7 +26,7 @@ const emit = defineEmits<{
     (e: "update:modelValue", value: Date | null): void;
 }>();
 
-const date = ref<Date | null>(props.modelValue || new Date());
+const date = ref<Date | null>(props.modelValue || null);
 
 watch(
     () => props.modelValue,

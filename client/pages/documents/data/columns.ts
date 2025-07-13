@@ -1,7 +1,7 @@
 import { UBadge } from "#components";
 
 import type { Column } from "~/components/table/types";
-import type { Permit } from "~/types/codegen/graphql";
+import type { Document } from "~/types/codegen/graphql";
 
 import { toTitleCase } from "~/utils/helpers";
 
@@ -11,14 +11,41 @@ export const columns: Column[] = [
         key: "select",
     },
     {
+        class: "w-2",
         key: "id",
         label: "#",
         sortable: true,
     },
     {
+        class: "w-2",
+        key: "category",
+        label: "Category",
+        render: (row: Document) => {
+            return h("div", { class: "flex items-center space-x-2" }, [
+                h(
+                    UBadge,
+                    {
+                        color: "gray",
+                        label: row.category,
+                        size: "sm",
+                        variant: "solid",
+                    },
+                    {
+                        default: () =>
+                            h("div", { class: "flex items-center space-x-1" }, [
+                                h("span", null, toTitleCase(row.category)),
+                            ]),
+                    },
+                ),
+            ]);
+        },
+        sortable: true,
+    },
+    {
+        class: "w-[250px]",
         key: "type",
         label: "Type",
-        render: (row: Permit) => {
+        render: (row: Document) => {
             return h("div", { class: "flex items-center space-x-2" }, [
                 h(
                     UBadge,
@@ -59,9 +86,16 @@ export const columns: Column[] = [
         sortable: false,
     },
     {
+        key: "requested_at",
+        label: "Requested at",
+        render: (row) => h("div", getDateOnly(row.requested_at)),
+        sortable: true,
+    },
+    {
         key: "issued_at",
         label: "Issued at",
-        render: (row) => h("div", getDateOnly(row.issued_at)),
+        render: (row) =>
+            h("div", row.issued_at ? getDateOnly(row.issued_at) : ""),
         sortable: true,
     },
     {
@@ -73,24 +107,28 @@ export const columns: Column[] = [
     {
         key: "status",
         label: "Status",
-        render: (row: Permit) =>
+        render: (row: Document) =>
             h(UBadge, {
                 color:
-                    row.status === "active"
+                    row.status === "approved"
                         ? "green"
-                        : row.status === "expired"
-                          ? "red"
-                          : row.status === "revoked"
-                            ? "amber"
-                            : "gray",
+                        : row.status === "released"
+                          ? "emerald"
+                          : row.status === "expired"
+                            ? "red"
+                            : row.status === "revoked"
+                              ? "amber"
+                              : "gray",
                 label:
-                    row.status === "active"
-                        ? "Active"
-                        : row.status === "expired"
-                          ? "Expired"
-                          : row.status === "revoked"
-                            ? "Revoked"
-                            : "-",
+                    row.status === "approved"
+                        ? "Approved"
+                        : row.status === "released"
+                          ? "Released"
+                          : row.status === "expired"
+                            ? "Expired"
+                            : row.status === "revoked"
+                              ? "Revoked"
+                              : "Pending",
                 size: "sm",
                 variant: "subtle",
             }),

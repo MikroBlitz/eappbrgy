@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Permit;
+use App\Models\Document;
 use Illuminate\Console\Command;
 
 class UpdateExpiredPermits extends Command
@@ -27,13 +27,13 @@ class UpdateExpiredPermits extends Command
     public function handle(): void
     {
         // Expire permits with past valid_until dates
-        $expiredCount = Permit::where('status', 'active')
+        $expiredCount = Document::where('status', 'active')
             ->whereNotNull('valid_until')
             ->where('valid_until', '<', now())
             ->update(['status' => 'expired']);
 
         // Reactivate permits with future valid_until dates
-        $reactivatedCount = Permit::where('status', '!=', 'active')
+        $reactivatedCount = Document::where('status', '!=', 'active')
             ->whereNotNull('valid_until')
             ->where('valid_until', '>=', now())
             ->update(['status' => 'active']);

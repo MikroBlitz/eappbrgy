@@ -1,11 +1,11 @@
 <template>
-    <ManagePermit />
+    <ManageDocument />
 </template>
 
 <script setup lang="ts">
-import ManagePermit from "./components/manage-permit.vue";
+import ManageDocument from "./components/manage-document.vue";
 
-definePageMeta({ layout: "app-layout", permission: "view permit" });
+definePageMeta({ layout: "app-layout", permission: "view document" });
 useHead({
     meta: [
         {
@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Permits",
+    title: "BarangayConnect - Documents",
 });
 </script>

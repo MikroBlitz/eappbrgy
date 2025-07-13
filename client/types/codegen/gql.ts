@@ -24,6 +24,10 @@ const documents = {
     "\n    mutation deleteBlotter($id: [ID!]) {\n        deleteBlotter(id: $id) {\n            id\n        }\n    }\n": types.DeleteBlotterDocument,
     "\n    query blottersCount {\n        blottersCount\n    }\n": types.BlottersCountDocument,
     "\n    query blottersThisWeekCount {\n        blottersThisWeekCount\n    }\n": types.BlottersThisWeekCountDocument,
+    "\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.DocumentsPaginateDocument,
+    "\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n": types.UpsertDocumentDocument,
+    "\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n": types.DeleteDocumentDocument,
+    "\n    query documentsCount {\n        documentsCount\n    }\n": types.DocumentsCountDocument,
     "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        #        messages {\n        #            ...message\n        #        }\n        #        contacts {\n        #            id\n        #        }\n        resident {\n            id\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n": types.UserFragmentDoc,
     "\n    fragment household on Household {\n        id\n        household_no\n        purok {\n            id\n            name\n        }\n        address\n        created_at\n        updated_at\n    }\n": types.HouseholdFragmentDoc,
     "\n    fragment resident on Resident {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        suffix\n        birthdate\n        gender\n        civil_status\n        citizenship\n        phone\n        email\n        household {\n            id\n            household_no\n            address\n        }\n        purok {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.ResidentFragmentDoc,
@@ -32,7 +36,7 @@ const documents = {
     "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n": types.PermissionFragmentDoc,
     "\n    fragment blotter on Blotter {\n        id\n        case_no\n        complaint\n        status\n        details\n        incident_date\n        complainant {\n            id\n            name\n        }\n        respondent {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.BlotterFragmentDoc,
     "\n    fragment official on Official {\n        id\n        position\n        term_start\n        term_end\n        resident {\n            id\n            name\n        }\n    }\n": types.OfficialFragmentDoc,
-    "\n    fragment permit on Permit {\n        id\n        type\n        status\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n": types.PermitFragmentDoc,
+    "\n    fragment document on Document {\n        id\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n": types.DocumentFragmentDoc,
     "\n    query householdsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        householdsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...household\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.HouseholdsPaginateDocument,
     "\n    mutation upsertHousehold($input: HouseholdInput!) {\n        upsertHousehold(input: $input) {\n            ...household\n        }\n    }\n    \n": types.UpsertHouseholdDocument,
     "\n    mutation deleteHousehold($id: [ID!]) {\n        deleteHousehold(id: $id) {\n            id\n        }\n    }\n": types.DeleteHouseholdDocument,
@@ -44,10 +48,6 @@ const documents = {
     "\n    query permissionsPaginate(\n            $first: Int!\n            $page: Int\n            $search: String\n            $sort: SortInput\n        ) {\n            permissionsPaginate(\n                first: $first\n                page: $page\n                search: $search\n                sort: $sort\n            ) {\n                data {\n                    ...permission\n                }\n                paginatorInfo {\n                    currentPage\n                    lastPage\n                    perPage\n                    total\n                    \n                }\n            }\n        }\n        \n": types.PermissionsPaginateDocument,
     "\n    mutation upsertPermission($input: PermissionInput!){\n        upsertPermission(input: $input){\n            ...permission\n        }\n    }\n    \n": types.UpsertPermissionDocument,
     "\n    mutation deletePermission($id: [ID!]) {\n        deletePermission(id: $id) {\n            id\n        }\n    }\n": types.DeletePermissionDocument,
-    "\n    query permitsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        permitsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...permit\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.PermitsPaginateDocument,
-    "\n    mutation upsertPermit($input: PermitInput!) {\n        upsertPermit(input: $input) {\n            ...permit\n        }\n    }\n    \n": types.UpsertPermitDocument,
-    "\n    mutation deletePermit($id: [ID!]) {\n        deletePermit(id: $id) {\n            id\n        }\n    }\n": types.DeletePermitDocument,
-    "\n    query permitsCount {\n        permitsCount\n    }\n": types.PermitsCountDocument,
     "\n    query puroksPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        puroksPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                id\n                name\n                created_at\n                updated_at\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n": types.PuroksPaginateDocument,
     "\n    mutation upsertPurok($input: PurokInput!) {\n        upsertPurok(input: $input) {\n            id\n            name\n            created_at\n            updated_at\n        }\n    }\n": types.UpsertPurokDocument,
     "\n    mutation deletePurok($id: [ID!]) {\n        deletePurok(id: $id) {\n            id\n        }\n    }\n": types.DeletePurokDocument,
@@ -124,6 +124,22 @@ export function graphql(source: "\n    query blottersThisWeekCount {\n        bl
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n"): (typeof documents)["\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query documentsCount {\n        documentsCount\n    }\n"): (typeof documents)["\n    query documentsCount {\n        documentsCount\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        #        messages {\n        #            ...message\n        #        }\n        #        contacts {\n        #            id\n        #        }\n        resident {\n            id\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n"): (typeof documents)["\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        #        messages {\n        #            ...message\n        #        }\n        #        contacts {\n        #            id\n        #        }\n        resident {\n            id\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -156,7 +172,7 @@ export function graphql(source: "\n    fragment official on Official {\n        
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    fragment permit on Permit {\n        id\n        type\n        status\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n"): (typeof documents)["\n    fragment permit on Permit {\n        id\n        type\n        status\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n"];
+export function graphql(source: "\n    fragment document on Document {\n        id\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n"): (typeof documents)["\n    fragment document on Document {\n        id\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        created_at\n        updated_at\n        resident {\n            id\n            name\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -201,22 +217,6 @@ export function graphql(source: "\n    mutation upsertPermission($input: Permiss
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation deletePermission($id: [ID!]) {\n        deletePermission(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deletePermission($id: [ID!]) {\n        deletePermission(id: $id) {\n            id\n        }\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query permitsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        permitsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...permit\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query permitsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        permitsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...permit\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    mutation upsertPermit($input: PermitInput!) {\n        upsertPermit(input: $input) {\n            ...permit\n        }\n    }\n    \n"): (typeof documents)["\n    mutation upsertPermit($input: PermitInput!) {\n        upsertPermit(input: $input) {\n            ...permit\n        }\n    }\n    \n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    mutation deletePermit($id: [ID!]) {\n        deletePermit(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deletePermit($id: [ID!]) {\n        deletePermit(id: $id) {\n            id\n        }\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query permitsCount {\n        permitsCount\n    }\n"): (typeof documents)["\n    query permitsCount {\n        permitsCount\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

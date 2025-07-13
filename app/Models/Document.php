@@ -6,7 +6,7 @@ use App\Traits\HasGraphQLScopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Permit extends Model
+class Document extends Model
 {
     use HasGraphQLScopes;
 

@@ -15,9 +15,9 @@
             v-model:is-open="isConfirmModal"
             :loading="modalLoading"
             label="Update"
-            :description="`Confirm blotter's status to ${selectedStatus}?`"
+            :description="`Confirm document's status to ${selectedStatus}?`"
             icon="i-heroicons-exclamation-triangle"
-            :action="updatePermitStatus"
+            :action="updateDocumentStatus"
             color="blue"
         />
     </div>
@@ -27,9 +27,13 @@
 import { useToast } from "#ui/composables/useToast";
 
 import type { TableAction } from "~/components/table/types";
-import type { Permit } from "~/types/codegen/graphql";
+import type { Document } from "~/types/codegen/graphql";
 
-import { deletePermit, permitsPaginate, upsertPermit } from "~/graphql/Permit";
+import {
+    deleteDocument,
+    documentsPaginate,
+    upsertDocument,
+} from "~/graphql/Document";
 import { residentsPaginate } from "~/graphql/Resident";
 import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
@@ -38,15 +42,15 @@ import { schema } from "../data/schema";
 
 const toast = useToast();
 
-const selectedRow = ref<Permit | null>(null);
+const selectedRow = ref<Document | null>(null);
 const selectedStatus = ref<string | null>(null);
 const isConfirmModal = ref(false);
 const modalLoading = ref(false);
 
-const permission = "permit";
+const permission = "document";
 const crudConfig = useCrudConfig(
-    "Permits", // title
-    "Permit", // subtitle
+    "Documents", // title
+    "Document", // subtitle
     "solar:documents-broken", // icon
     {
         // permissions
@@ -69,19 +73,21 @@ const formSchema = computed(() =>
     }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Permit>(
+const operations = useCrudOperations<Document>(
     {
-        delete: deletePermit,
-        paginate: permitsPaginate,
-        upsert: upsertPermit,
+        delete: deleteDocument,
+        paginate: documentsPaginate,
+        upsert: upsertDocument,
     },
     {
-        getFormState: (row?: Permit) => {
+        getFormState: (row?: Document) => {
             if (row) {
                 residentSearch.initializeOptions();
                 return {
+                    category: row.category,
                     id: row.id,
                     issued_at: row.issued_at,
+                    requested_at: row.requested_at,
                     resident: row.resident?.id,
                     status: row.status,
                     type: row.type,
@@ -90,8 +96,10 @@ const operations = useCrudOperations<Permit>(
             } else {
                 residentSearch.initializeOptions();
                 return {
+                    category: "",
                     id: undefined,
                     issued_at: "",
+                    requested_at: "",
                     resident: "",
                     status: "",
                     type: "",
@@ -99,7 +107,7 @@ const operations = useCrudOperations<Permit>(
                 };
             }
         },
-        prepareSubmitData: (data: any, selectedRow?: Permit) => {
+        prepareSubmitData: (data: any, selectedRow?: Document) => {
             const isRevoked = selectedRow?.status === "revoked";
             return {
                 ...data,
@@ -107,13 +115,16 @@ const operations = useCrudOperations<Permit>(
                 issued_at: data.issued_at
                     ? formatDateTimeForGraphQL(data.issued_at)
                     : null,
+                requested_at: data.requested_at
+                    ? formatDateTimeForGraphQL(data.requested_at)
+                    : null,
                 resident: {
                     connect: data.resident,
                 },
                 status: isRevoked
                     ? "revoked"
                     : new Date(data.valid_until).getTime() > Date.now()
-                      ? "active"
+                      ? data.status
                       : "expired",
                 valid_until: data.valid_until
                     ? formatDateTimeForGraphQL(data.valid_until)
@@ -125,28 +136,58 @@ const operations = useCrudOperations<Permit>(
 
 const customActions: TableAction[] = [
     {
+        color: () => "green",
+        condition: () => true,
+        icon: () => "solar:check-square-broken",
+        onClick: (row: Document) => confirmUpdateStatus(row, "approved"),
+        tooltip: () => "Approve this document",
+    },
+    {
+        color: () => "emerald",
+        condition: () => true,
+        icon: () => "solar:square-arrow-right-up-broken",
+        onClick: (row: Document) => confirmUpdateStatus(row, "released"),
+        tooltip: () => "Release this document",
+    },
+    {
         color: () => "orange",
         condition: () => true,
         icon: () => "solar:close-square-broken",
-        onClick: (row: Permit) => confirmUpdateStatus(row, "revoked"),
-        tooltip: () => "Revoke this permit",
+        onClick: (row: Document) => confirmUpdateStatus(row, "revoked"),
+        tooltip: () => "Revoke this document",
     },
 ];
 
-function confirmUpdateStatus(row: Permit, status: string) {
+function confirmUpdateStatus(row: Document, status: string) {
     selectedRow.value = row;
     selectedStatus.value = status;
     isConfirmModal.value = true;
 }
 
-async function updatePermitStatus() {
+async function updateDocumentStatus() {
     if (!selectedRow.value || !selectedStatus.value) return;
 
+    if (
+        selectedRow.value.status === "expired" ||
+        selectedRow.value.status === "revoked"
+    ) {
+        toast.add({
+            color: "amber",
+            icon: "solar:close-circle-broken",
+            title: "Status update is not allowed for revoked or expired documents.",
+        });
+        return;
+    }
+
     try {
-        const { mutate } = useMutation(upsertPermit);
+        const { mutate } = useMutation(upsertDocument);
         await mutate({
             input: {
                 id: selectedRow.value.id,
+                issued_at:
+                    selectedStatus.value === "released"
+                        ? formatDateTimeForGraphQL(new Date())
+                        : selectedRow.value.issued_at,
                 status: selectedStatus.value,
             },
         });
