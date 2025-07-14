@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarangayConnect - OTP Verification</title>
+    <title>Govana - OTP Verification</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -304,7 +304,7 @@
         <div class="header">
             <div class="header-content">
 {{--                <div class="logo"></div>--}}
-                <h1>BarangayConnect</h1>
+                <h1>GovanaApp</h1>
                 <p>OTP Verification</p>
             </div>
         </div>
@@ -329,11 +329,11 @@
             </div>
 
             <div class="security-notice">
-                <p><span class="icon">🔒</span>If you didn't request this OTP, you can safely ignore this email. For your security, never share this code with anyone.</p>
+                <p>If you didn't request this OTP, you can safely ignore this email. For your security, never share this code with anyone.</p>
             </div>
 
             <div class="app-info">
-                <p>BarangayConnect - Bridging communities through digital innovation</p>
+                <p>Govana - Bridging communities through digital innovation</p>
             </div>
         </div>
 
@@ -343,13 +343,13 @@
                 <p>Need assistance? Our community support team is ready to help you.</p>
 
                 <div class="contact-info">
-                    <a href="mailto:support@barangayconnect.app" class="contact-link">support@barangayconnect.app</a>
+                    <a href="mailto:support@govana.app" class="contact-link">support@govana.app</a>
                     <span class="divider">•</span>
                     <a href="tel:+639876543210" class="contact-link">+639876543210</a>
                 </div>
 
                 <p style="margin-top: 1.5rem;">
-                    Thanks,<br><strong>BarangayConnect Team</strong>
+                    Thanks,<br><strong>Govana Dev Team</strong>
                 </p>
             </div>
         </div>

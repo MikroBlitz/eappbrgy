@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Blotters",
+    title: "Govana - Blotters",
 });
 </script>

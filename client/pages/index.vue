@@ -7,8 +7,8 @@
         >
             <div class="flex items-center">
                 <span class="text-blue-500 font-bold text-xl"
-                    >Barangay<span class="text-slate-900 dark:text-white"
-                        >Connect</span
+                    >Govana<span class="text-slate-900 dark:text-white"
+                        >App</span
                     ></span
                 >
             </div>
@@ -46,15 +46,15 @@
                     <span
                         class="bg-gradient-to-r from-blue-400 to-indigo-400 text-white text-xs px-3 py-1 rounded-lg"
                     >
-                        Digital Barangay Services
+                        Digital Services
                     </span>
                 </div>
 
                 <h1
                     class="text-4xl md:text-5xl font-bold pb-4 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent"
                 >
-                    Barangay Services
-                    <span class="text-blue-500 dark:text-blue-400">Online</span>
+                    Govana
+                    <span class="text-blue-500 dark:text-blue-400">App</span>
                 </h1>
 
                 <p
@@ -164,8 +164,7 @@
                 </a>
             </div>
             <p class="text-xs text-slate-500 dark:text-gray-500">
-                © {{ getYear() }} BarangayConnect. Serving our community
-                digitally.
+                © {{ getYear() }} Govana. Serving our community digitally.
             </p>
         </footer>
     </div>
@@ -191,6 +190,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Digital Barangay Services",
+    title: "Govana - Digital Barangay Services",
 });
 </script>

@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Puroks",
+    title: "Govana - Puroks",
 });
 </script>

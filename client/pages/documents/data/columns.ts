@@ -16,31 +16,31 @@ export const columns: Column[] = [
         label: "#",
         sortable: true,
     },
-    {
-        class: "w-2",
-        key: "category",
-        label: "Category",
-        render: (row: Document) => {
-            return h("div", { class: "flex items-center space-x-2" }, [
-                h(
-                    UBadge,
-                    {
-                        color: "gray",
-                        label: row.category,
-                        size: "sm",
-                        variant: "solid",
-                    },
-                    {
-                        default: () =>
-                            h("div", { class: "flex items-center space-x-1" }, [
-                                h("span", null, toTitleCase(row.category)),
-                            ]),
-                    },
-                ),
-            ]);
-        },
-        sortable: true,
-    },
+    // {
+    //     class: "w-2",
+    //     key: "category",
+    //     label: "Category",
+    //     render: (row: Document) => {
+    //         return h("div", { class: "flex items-center space-x-2" }, [
+    //             h(
+    //                 UBadge,
+    //                 {
+    //                     color: "gray",
+    //                     label: row.category,
+    //                     size: "sm",
+    //                     variant: "solid",
+    //                 },
+    //                 {
+    //                     default: () =>
+    //                         h("div", { class: "flex items-center space-x-1" }, [
+    //                             h("span", null, toTitleCase(row.category)),
+    //                         ]),
+    //                 },
+    //             ),
+    //         ]);
+    //     },
+    //     sortable: true,
+    // },
     {
         class: "w-[250px]",
         key: "type",
@@ -50,7 +50,16 @@ export const columns: Column[] = [
                 h(
                     UBadge,
                     {
-                        color: "gray",
+                        color:
+                            row.status === "approved"
+                                ? "green"
+                                : row.status === "released"
+                                  ? "emerald"
+                                  : row.status === "expired"
+                                    ? "red"
+                                    : row.status === "revoked"
+                                      ? "amber"
+                                      : "gray",
                         label: row.type,
                         size: "sm",
                         variant: "solid",
@@ -67,6 +76,7 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-[250px]",
         key: "resident",
         label: "Resident",
         render: (row) =>
@@ -88,7 +98,8 @@ export const columns: Column[] = [
     {
         key: "requested_at",
         label: "Requested at",
-        render: (row) => h("div", getDateOnly(row.requested_at)),
+        render: (row) =>
+            h("div", row.requested_at ? getDateOnly(row.requested_at) : ""),
         sortable: true,
     },
     {
@@ -101,7 +112,8 @@ export const columns: Column[] = [
     {
         key: "valid_until",
         label: "Valid until",
-        render: (row) => h("div", getDateOnly(row.valid_until)),
+        render: (row) =>
+            h("div", row.valid_until ? getDateOnly(row.valid_until) : ""),
         sortable: true,
     },
     {
@@ -156,8 +168,18 @@ export const columns: Column[] = [
 export const filter = [
     {
         key: "status",
-        label: "Active",
-        value: "active",
+        label: "Pending",
+        value: "pending",
+    },
+    {
+        key: "status",
+        label: "Approved",
+        value: "approved",
+    },
+    {
+        key: "status",
+        label: "Released",
+        value: "released",
     },
     {
         key: "status",

@@ -1,5 +1,5 @@
 export const useConstants = () => {
-    const appTitle = "BarangayConnect";
+    const appTitle = "Govana";
 
     return {
         appTitle,

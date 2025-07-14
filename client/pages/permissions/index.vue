@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Permissions",
+    title: "Govana - Permissions",
 });
 </script>

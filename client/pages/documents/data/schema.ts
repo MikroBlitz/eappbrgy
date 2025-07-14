@@ -6,18 +6,18 @@ import type { formZodSchema } from "~/utils/helpers";
 
 export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
-        {
-            class: "col-span-full",
-            label: "Category",
-            name: "category",
-            options: [
-                { label: "Permit", value: "permit" },
-                { label: "Certificate", value: "certificate" },
-                { label: "ID", value: "id" },
-            ],
-            type: "select",
-            validation: z.string().min(1, "Category is required"),
-        },
+        // {
+        //     class: "col-span-full",
+        //     label: "Category",
+        //     name: "category",
+        //     options: [
+        //         { label: "Permit", value: "permit" },
+        //         { label: "Certificate", value: "certificate" },
+        //         { label: "ID", value: "id" },
+        //     ],
+        //     type: "select",
+        //     validation: z.string().min(1, "Category is required"),
+        // },
         {
             class: "col-span-full",
             label: "Document Type",
@@ -125,7 +125,7 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
                     return isNaN(date.getTime()) ? undefined : date;
                 }
                 return undefined;
-            }, z.date()),
+            }, z.date().optional()),
         },
     ],
 });

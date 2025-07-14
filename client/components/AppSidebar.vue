@@ -31,7 +31,7 @@
                                 <h2
                                     class="ml-2 text-xl font-bold text-gray-800 dark:text-gray-100"
                                 >
-                                    BarangayConnect
+                                    Govana
                                 </h2>
                             </div>
                             <UButton

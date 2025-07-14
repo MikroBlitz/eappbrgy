@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
             $table->string('type'); // e.g., Business, Residency
-            $table->string('category'); // e.g. 'permit', 'certificate', 'indigency'
+            $table->string('category')->default('document'); // e.g. 'permit', 'certificate', 'indigency'
             $table->dateTime('requested_at')->nullable();
             $table->dateTime('issued_at')->nullable();
             $table->dateTime('valid_until')->nullable();

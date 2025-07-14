@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarangayConnect - Account Status Update</title>
+    <title>Govana - Account Status Update</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -343,7 +343,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header-content">
-                <h1>BarangayConnect</h1>
+                <h1>GovanaApp</h1>
                 <p>Your Community Connection Platform</p>
             </div>
         </div>
@@ -359,9 +359,9 @@
                 </h2>
                 <p class="status-description">
                     @if ($user->is_active)
-                        Your BarangayConnect account is now active and ready to use. You can access all community features and connect with your barangay services.
+                        Your Govana account is now active and ready to use. You can access all community features and connect with your barangay services.
                     @else
-                        Your BarangayConnect account has been temporarily disabled. Please contact our support team for assistance with reactivation.
+                        Your Govana account has been temporarily disabled. Please contact our support team for assistance with reactivation.
                     @endif
                 </p>
             </div>
@@ -369,14 +369,14 @@
             <!-- CTA Section -->
             @if ($user->is_active)
                 <div class="cta-section">
-                    <a href="https://barangayconnect.app/login" target="_blank" class="cta-button">
-                        Access BarangayConnect
+                    <a href="https://govana.app/login" target="_blank" class="cta-button">
+                        Access Govana
                     </a>
                 </div>
             @endif
 
             <div class="app-info">
-                <p>BarangayConnect - Bridging communities through digital innovation</p>
+                <p>Govana - Bridging communities through digital innovation</p>
             </div>
         </div>
 
@@ -386,14 +386,13 @@
                 <p>Need assistance? Our community support team is ready to help you.</p>
 
                 <div class="contact-info">
-                    <a href="mailto:support@barangayconnect.app" class="contact-link">support@barangayconnect.app</a>
+                    <a href="mailto:support@govana.app" class="contact-link">support@govana.app</a>
                     <span class="divider">•</span>
                     <a href="tel:+639876543210" class="contact-link">+639876543210</a>
                 </div>
 
                 <p style="margin-top: 1.5rem;">
-                    This email was sent from BarangayConnect. If you have any questions about your account status,
-                    please don't hesitate to reach out to our support team.
+                    Thanks,<br><strong>Govana Dev Team</strong>
                 </p>
             </div>
         </div>

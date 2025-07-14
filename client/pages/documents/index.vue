@@ -14,6 +14,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Documents",
+    title: "Govana - Documents",
 });
 </script>

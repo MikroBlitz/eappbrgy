@@ -6,10 +6,10 @@
                 <h1
                     class="text-3xl font-bold text-gray-900 dark:text-white mb-2"
                 >
-                    Barangay Connect
+                    Govana
                 </h1>
                 <p class="text-gray-600 dark:text-gray-400">
-                    Welcome to the Barangay Management System
+                    Welcome to the Govana
                 </p>
             </div>
 
@@ -255,6 +255,7 @@
                             color="green"
                             variant="soft"
                             icon="i-heroicons-document-plus"
+                            @click="navigateTo('/documents')"
                         >
                             Issue Certificate
                         </UButton>
@@ -645,6 +646,6 @@ useHead({
             name: "description",
         },
     ],
-    title: "BarangayConnect - Dashboard",
+    title: "Govana - Dashboard",
 });
 </script>

@@ -24,8 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { useToast } from "#ui/composables/useToast";
-
 import type { TableAction } from "~/components/table/types";
 import type { Document } from "~/types/codegen/graphql";
 
@@ -108,7 +106,6 @@ const operations = useCrudOperations<Document>(
             }
         },
         prepareSubmitData: (data: any, selectedRow?: Document) => {
-            const isRevoked = selectedRow?.status === "revoked";
             return {
                 ...data,
                 id: selectedRow?.id || undefined,
@@ -121,11 +118,14 @@ const operations = useCrudOperations<Document>(
                 resident: {
                     connect: data.resident,
                 },
-                status: isRevoked
-                    ? "revoked"
-                    : new Date(data.valid_until).getTime() > Date.now()
-                      ? data.status
-                      : "expired",
+                status:
+                    selectedRow?.status === "revoked"
+                        ? "revoked"
+                        : !data.valid_until
+                          ? undefined
+                          : new Date(data.valid_until).getTime() > Date.now()
+                            ? data.status
+                            : "expired",
                 valid_until: data.valid_until
                     ? formatDateTimeForGraphQL(data.valid_until)
                     : null,
@@ -167,14 +167,11 @@ function confirmUpdateStatus(row: Document, status: string) {
 async function updateDocumentStatus() {
     if (!selectedRow.value || !selectedStatus.value) return;
 
-    if (
-        selectedRow.value.status === "expired" ||
-        selectedRow.value.status === "revoked"
-    ) {
+    if (["expired", "revoked", "released"].includes(selectedRow.value.status)) {
         toast.add({
             color: "amber",
             icon: "solar:close-circle-broken",
-            title: "Status update is not allowed for revoked or expired documents.",
+            title: "Status update is not allowed for released, revoked or expired docs",
         });
         return;
     }
