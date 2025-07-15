@@ -1,3 +1,4 @@
+import { useIdle } from "@vueuse/core";
 import { defineStore } from "pinia";
 
 import type { User } from "~/types/codegen/graphql";
@@ -12,6 +13,14 @@ export const useAuthStore = defineStore(
         const token = ref<string | null>(null);
         const user = ref<User | null>(null);
         const { onLogin } = useApollo();
+        const { idle, reset } = useIdle(60 * 60 * 1000);
+
+        watch(idle, (isIdle) => {
+            if (isIdle && token.value)
+                logout().then(() =>
+                    console.log("User inactive for 1 hour -> auto logout."),
+                );
+        });
 
         async function login(formState: FormState) {
             const { mutate } = useMutation(LoginAuth);
@@ -24,6 +33,7 @@ export const useAuthStore = defineStore(
                 if (result) {
                     setUser(result.user, result.token);
                     await onLogin(result.token);
+                    reset();
                     navigateTo("/dashboard");
                 } else {
                     throw new Error("Invalid response from server");
@@ -35,21 +45,23 @@ export const useAuthStore = defineStore(
         }
 
         async function logout() {
-            try {
-                const { mutate } = useMutation(LogoutAuth, authContext());
-                const response = await mutate();
-                if (response?.data?.logout?.message) {
-                    resetUser();
-                    navigateTo("/");
+            if (token.value) {
+                try {
+                    const { mutate } = useMutation(LogoutAuth, authContext());
+                    await mutate();
+                } catch (e) {
+                    console.error(parseGraphQLError(e));
                 }
-            } catch (e) {
-                throw new Error(parseGraphQLError(e));
             }
+
+            resetUser();
+            navigateTo("/");
         }
 
         function setUser(userData: User, userToken: string) {
             user.value = { ...userData };
             token.value = userToken;
+            reset();
         }
 
         function resetUser() {
@@ -59,14 +71,10 @@ export const useAuthStore = defineStore(
 
         const isAuthenticated = computed(() => !!token.value);
 
-        const is = (roleName: string) => {
-            return (
-                user.value?.roles?.some(
-                    (role) =>
-                        role?.name.toLowerCase() === roleName.toLowerCase(),
-                ) ?? false
-            );
-        };
+        const is = (roleName: string) =>
+            user.value?.roles?.some(
+                (role) => role?.name.toLowerCase() === roleName.toLowerCase(),
+            ) ?? false;
 
         const can = (permissionName: string) => {
             if (is("Admin")) return true;
@@ -90,7 +98,5 @@ export const useAuthStore = defineStore(
             user,
         };
     },
-    {
-        persist: true,
-    },
+    { persist: true },
 );

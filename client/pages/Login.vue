@@ -196,7 +196,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/authStore";
 import { useTimeoutFn } from "@vueuse/shared";
 import { ref, reactive } from "vue";
 import { z } from "zod";
