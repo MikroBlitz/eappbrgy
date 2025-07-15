@@ -29,6 +29,25 @@ export const documentsPaginate = gql`
     ${documentFragment}
 `;
 
+export const recentDocuments = gql`
+    query recentDocuments {
+        documentsPaginate(
+            first: 20
+            sort: { column: "UPDATED_AT", direction: "DESC" }
+        ) {
+            data {
+                id
+                resident {
+                    name
+                }
+                type
+                status
+                updated_at
+            }
+        }
+    }
+`;
+
 export const upsertDocument = gql`
     mutation upsertDocument($input: DocumentInput!) {
         upsertDocument(input: $input) {
@@ -49,5 +68,17 @@ export const deleteDocument = gql`
 export const documentsCount = gql`
     query documentsCount {
         documentsCount
+    }
+`;
+
+export const totalPendingDocuments = gql`
+    query {
+        totalPendingDocuments
+    }
+`;
+
+export const totalPendingNewToday = gql`
+    query {
+        totalPendingNewToday
     }
 `;

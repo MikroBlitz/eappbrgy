@@ -93,30 +93,61 @@
                             >
                                 Pending Documents
                             </p>
-                            <p
-                                class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
+
+                            <!-- Loading State -->
+                            <div
+                                v-if="pendingDocsLoading"
+                                class="mt-2 space-y-2"
                             >
-                                0
-                            </p>
-                            <div class="flex items-center mt-2">
-                                <UBadge
-                                    color="yellow"
-                                    variant="subtle"
-                                    size="sm"
+                                <div
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                />
+                                <div class="flex items-center space-x-2">
+                                    <div
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                    />
+                                    <div
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Loaded Content -->
+                            <div v-else>
+                                <p
+                                    class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                                 >
-                                    0
-                                </UBadge>
-                                <span
-                                    class="text-gray-500 dark:text-gray-400 text-sm ml-2"
-                                >
-                                    new today
-                                </span>
+                                    {{ totalPendingDocs }}
+                                </p>
+                                <div class="flex items-center mt-2">
+                                    <UBadge
+                                        color="yellow"
+                                        variant="subtle"
+                                        size="sm"
+                                    >
+                                        {{ totalPendingDocsToday }}
+                                    </UBadge>
+                                    <span
+                                        class="text-gray-500 dark:text-gray-400 text-sm ml-2"
+                                    >
+                                        new today
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <UIcon
-                            name="i-heroicons-document-text"
-                            class="w-8 h-8 text-yellow-500"
-                        />
+
+                        <!-- Icon with loading state -->
+                        <div class="flex-shrink-0">
+                            <div
+                                v-if="pendingDocsLoading"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                            />
+                            <UIcon
+                                v-else
+                                name="i-heroicons-document-text"
+                                class="w-8 h-8 text-yellow-500"
+                            />
+                        </div>
                     </div>
                 </UCard>
 
@@ -156,7 +187,11 @@
                                 </p>
                                 <div class="flex items-center mt-2">
                                     <UBadge
-                                        color="red"
+                                        :color="
+                                            blotterResolvedCounter > 0
+                                                ? 'green'
+                                                : 'red'
+                                        "
                                         variant="subtle"
                                         size="sm"
                                     >
@@ -198,7 +233,7 @@
                             <p
                                 class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                             >
-                                ₱145,230
+                                ₱ -----
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
@@ -206,7 +241,7 @@
                                     variant="subtle"
                                     size="sm"
                                 >
-                                    +8.5%
+                                    +0%
                                 </UBadge>
                                 <span
                                     class="text-gray-500 dark:text-gray-400 text-sm ml-2"
@@ -417,32 +452,42 @@
                             <h3
                                 class="text-lg font-semibold text-gray-900 dark:text-white"
                             >
-                                Recent Document Requests
+                                Recent Document Updates
                             </h3>
-                            <UButton color="gray" variant="ghost" size="sm">
+                            <UButton
+                                color="gray"
+                                variant="ghost"
+                                size="sm"
+                                @click="navigateTo('/documents')"
+                            >
                                 View All
                             </UButton>
                         </div>
                     </template>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto overflow-y-auto max-h-[300px]">
                         <table
                             class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
                         >
                             <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
+                                        #
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
                                         Resident
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
                                         Document
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
                                         Status
                                     </th>
@@ -451,55 +496,112 @@
                             <tbody
                                 class="divide-y divide-gray-200 dark:divide-gray-700"
                             >
-                                <tr>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                                    >
-                                        Juan Dela Cruz
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                    >
-                                        Barangay Certificate
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <UBadge color="yellow" variant="subtle"
-                                            >Pending</UBadge
+                                <!-- Skeleton Loading State -->
+                                <template v-if="documentsLoading">
+                                    <tr v-for="n in 5" :key="`skeleton-${n}`">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <USkeleton class="h-4 w-32" />
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <USkeleton class="h-4 w-24" />
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <USkeleton
+                                                class="h-6 w-20 rounded-full"
+                                            />
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <!-- Empty State -->
+                                <tr v-else-if="recentDocs.length === 0">
+                                    <td colspan="3" class="text-center py-8">
+                                        <div
+                                            class="flex flex-col items-center justify-center space-y-3"
                                         >
+                                            <UIcon
+                                                name="i-heroicons-document-text"
+                                                class="w-12 h-12 text-gray-400 dark:text-gray-500"
+                                            />
+                                            <div
+                                                class="text-sm text-gray-500 dark:text-gray-400"
+                                            >
+                                                No recent document requests
+                                                found.
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                                    >
-                                        Maria Santos
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                    >
-                                        Clearance
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <UBadge color="green" variant="subtle"
-                                            >Approved</UBadge
+
+                                <!-- Data Rows -->
+                                <tr
+                                    v-for="doc in recentDocs"
+                                    v-else
+                                    :key="doc.id"
+                                    class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                                >
+                                    <td class="px-2 py-3">
+                                        <div
+                                            class="flex items-center space-x-2"
                                         >
+                                            <span
+                                                class="text-sm text-gray-500 dark:text-gray-400"
+                                            >
+                                                <UButton
+                                                    variant="ghost"
+                                                    @click="
+                                                        copyClipboard(doc.id)
+                                                    "
+                                                >
+                                                    {{ doc.id }}
+                                                </UButton>
+                                            </span>
+                                        </div>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                                    >
-                                        Pedro Garcia
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                    >
-                                        Residency Certificate
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <UBadge color="blue" variant="subtle"
-                                            >Processing</UBadge
+                                    <td class="px-2 py-3 whitespace-nowrap">
+                                        <div
+                                            class="flex items-center space-x-3"
                                         >
+                                            <div>
+                                                <div
+                                                    class="text-sm font-medium text-gray-900 dark:text-white"
+                                                >
+                                                    {{
+                                                        doc.resident?.name ||
+                                                        "Unknown"
+                                                    }}
+                                                </div>
+                                                <div
+                                                    class="text-xs text-gray-500 dark:text-gray-400"
+                                                >
+                                                    {{ doc.created_at }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 py-3 whitespace-nowrap">
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <span
+                                                class="text-sm text-gray-500 dark:text-gray-400"
+                                            >
+                                                {{ toTitleCase(doc.type) }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 py-3 whitespace-nowrap">
+                                        <UBadge
+                                            :color="
+                                                getDocumentStatusColor(
+                                                    doc.status,
+                                                ).color
+                                            "
+                                            variant="subtle"
+                                            size="sm"
+                                        >
+                                            {{ toTitleCase(doc.status) }}
+                                        </UBadge>
                                     </td>
                                 </tr>
                             </tbody>
@@ -602,12 +704,23 @@
 </template>
 
 <script setup lang="ts">
-import { blottersCount, blottersThisWeekCount } from "~/graphql/Blotter.js";
-import { residentsCount } from "~/graphql/Resident.js";
+import type { Document } from "~/types/codegen/graphql";
+
+import { blottersCount, blottersThisWeekCount } from "~/graphql/Blotter";
+import {
+    recentDocuments,
+    totalPendingDocuments,
+    totalPendingNewToday,
+} from "~/graphql/Document";
+import { residentsCount } from "~/graphql/Resident";
+import { getDocumentStatusColor } from "~/utils/helpers";
 
 const residentCounter = ref(0);
 const blotterCounter = ref(0);
 const blotterResolvedCounter = ref(0);
+const recentDocs: Ref<Document[]> = ref([]);
+const totalPendingDocs = ref(0);
+const totalPendingDocsToday = ref(0);
 
 const {
     loading: residentCounterLoading,
@@ -621,12 +734,27 @@ const {
 } = useQuery(blottersCount);
 const { refetch: refetchblottersThisWeek, result: blottersThisWeekResults } =
     useQuery(blottersThisWeekCount);
+const {
+    loading: documentsLoading,
+    refetch: refetchDocuments,
+    result: documentsResult,
+} = useQuery(recentDocuments);
+const {
+    loading: pendingDocsLoading,
+    refetch: refetchDocsPending,
+    result: docsPendingResult,
+} = useQuery(totalPendingDocuments);
+const { refetch: refetchPendingDocsToday, result: pendingDocsTodayResult } =
+    useQuery(totalPendingNewToday);
 
 onMounted(async () => {
     await Promise.all([
         refetchResident(),
         refetchBlotter(),
         refetchblottersThisWeek(),
+        refetchDocuments(),
+        refetchDocsPending(),
+        refetchPendingDocsToday(),
     ]);
     if (residentResults.value)
         residentCounter.value = residentResults.value.residentsCount;
@@ -635,7 +763,16 @@ onMounted(async () => {
     if (blottersThisWeekResults.value)
         blotterResolvedCounter.value =
             blottersThisWeekResults.value.blottersThisWeekCount;
+    if (documentsResult.value)
+        recentDocs.value = documentsResult.value.documentsPaginate.data;
+    if (docsPendingResult.value)
+        totalPendingDocs.value = docsPendingResult.value.totalPendingDocuments;
+    if (pendingDocsTodayResult.value)
+        totalPendingDocsToday.value =
+            pendingDocsTodayResult.value.totalPendingNewToday;
 });
+
+const copyClipboard = (id: string) => copyToClipboard("Doc Id", id);
 
 definePageMeta({ layout: "app-layout", permission: "view dashboard" });
 useHead({

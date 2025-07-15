@@ -56,9 +56,11 @@ extend type Query {
         filter: [FilterInput] @scope(name: "filter")
     ): [Document]! @paginate
     documentsCount: Int! @count(model: "Document")
+    totalPendingDocuments: Int! @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@totalPendingDocuments")
+    totalPendingNewToday: Int! @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@totalPendingNewToday")
 }
 
-extend type Mutation {
+extend type Mutation @guard {
     upsertDocument(input: DocumentInput!): Document @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@upsertDocument")
     deleteDocument(id: [ID!] @eq): [Document] @delete
 }

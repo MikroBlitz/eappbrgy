@@ -108,7 +108,6 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
-        class: "w-2",
         key: "status",
         label: "Status",
         render: (row: Document) =>

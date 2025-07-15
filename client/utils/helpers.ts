@@ -97,6 +97,23 @@ export const genderColorMap: Record<string, BadgeColor> = {
     male: "blue",
 };
 
+export function getDocumentStatusColor(
+    status: string,
+): Record<string, BadgeColor> {
+    switch (status?.toLowerCase()) {
+        case "approved":
+            return { color: "emerald" };
+        case "released":
+            return { color: "blue" };
+        case "expired":
+            return { color: "red" };
+        case "revoked":
+            return { color: "amber" };
+        default:
+            return { color: "gray" };
+    }
+}
+
 export function parseGraphQLError(e: any): string {
     const graphQLErrors = e?.graphQLErrors || e?.response?.errors;
     if (Array.isArray(graphQLErrors)) {

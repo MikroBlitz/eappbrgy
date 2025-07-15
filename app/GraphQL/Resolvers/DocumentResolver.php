@@ -3,6 +3,7 @@
 namespace App\GraphQL\Resolvers;
 
 use App\Models\Document;
+use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -50,5 +51,21 @@ class DocumentResolver
         }
 
         return $document;
+    }
+
+    public function totalPendingDocuments($_, array $args): int
+    {
+        return Document::where('status', 'pending')
+            ->count();
+    }
+
+    public function totalPendingNewToday($_, array $args): int
+    {
+        $startOfDay = Carbon::now()->startOfDay();
+        $endOfDay = Carbon::now()->endOfDay();
+
+        return Document::where('status', 'pending')
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
+            ->count();
     }
 }
