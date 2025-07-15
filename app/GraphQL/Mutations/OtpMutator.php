@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class OtpMutator
 {
-    public function requestOtp(null $_, array $args)
+    public function requestOtp(null $_, array $args): array
     {
         $userId = $args['user_id'];
         $sessionKey = $args['generated_session_key'];

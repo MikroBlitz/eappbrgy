@@ -50,16 +50,7 @@ export const columns: Column[] = [
                 h(
                     UBadge,
                     {
-                        color:
-                            row.status === "approved"
-                                ? "green"
-                                : row.status === "released"
-                                  ? "emerald"
-                                  : row.status === "expired"
-                                    ? "red"
-                                    : row.status === "revoked"
-                                      ? "amber"
-                                      : "gray",
+                        color: "gray",
                         label: row.type,
                         size: "sm",
                         variant: "solid",
@@ -117,15 +108,16 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-2",
         key: "status",
         label: "Status",
         render: (row: Document) =>
             h(UBadge, {
                 color:
                     row.status === "approved"
-                        ? "green"
+                        ? "emerald"
                         : row.status === "released"
-                          ? "emerald"
+                          ? "blue"
                           : row.status === "expired"
                             ? "red"
                             : row.status === "revoked"

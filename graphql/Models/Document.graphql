@@ -58,7 +58,7 @@ extend type Query {
     documentsCount: Int! @count(model: "Document")
 }
 
-extend type Mutation @guard {
-    upsertDocument(input: DocumentInput! @spread): Document! @upsert
+extend type Mutation {
+    upsertDocument(input: DocumentInput!): Document @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@upsertDocument")
     deleteDocument(id: [ID!] @eq): [Document] @delete
 }

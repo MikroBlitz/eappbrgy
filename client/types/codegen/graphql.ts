@@ -301,8 +301,10 @@ export type DocumentPaginator = {
 };
 
 export enum DocumentStatus {
-  Active = 'ACTIVE',
+  Approved = 'APPROVED',
   Expired = 'EXPIRED',
+  Pending = 'PENDING',
+  Released = 'RELEASED',
   Revoked = 'REVOKED'
 }
 
@@ -396,7 +398,7 @@ export type Mutation = {
   updateUserStatus?: Maybe<User>;
   upsertBlotter: Blotter;
   upsertContact: Contact;
-  upsertDocument: Document;
+  upsertDocument?: Maybe<Document>;
   upsertHousehold: Household;
   upsertMessage: Message;
   upsertOfficial: Official;
@@ -1174,10 +1176,10 @@ export type UpsertDocumentMutationVariables = Exact<{
 }>;
 
 
-export type UpsertDocumentMutation = { __typename?: 'Mutation', upsertDocument: (
+export type UpsertDocumentMutation = { __typename?: 'Mutation', upsertDocument?: (
     { __typename?: 'Document' }
     & { ' $fragmentRefs'?: { 'DocumentFragment': DocumentFragment } }
-  ) };
+  ) | null };
 
 export type DeleteDocumentMutationVariables = Exact<{
   id?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;

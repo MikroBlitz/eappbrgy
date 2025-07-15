@@ -1,0 +1,54 @@
+<?php
+
+namespace App\GraphQL\Resolvers;
+
+use App\Models\Document;
+use Illuminate\Validation\ValidationException;
+use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use GraphQL\Type\Definition\ResolveInfo;
+
+class DocumentResolver
+{
+    public function upsertDocument($_, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): Document
+    {
+        $input = $args['input'];
+        if (isset($input['resident']['connect'])) {
+            $input['resident_id'] = $input['resident']['connect'];
+            unset($input['resident']);
+        }
+
+        $isUpdating = isset($input['id']) && !empty($input['id']);
+
+        if ($isUpdating) {
+            $document = Document::find($input['id']);
+
+            if (!$document) {
+                throw ValidationException::withMessages(['id' => ['Document not found.']]);
+            }
+
+            // Prevent updates if already finalized
+            if (in_array($document->status, ['released', 'revoked', 'expired'])) {
+                throw ValidationException::withMessages([
+                    'status' => [
+                        "Cannot update '{$document->status}' document. Only pending or approved can be updated."
+                    ]
+                ]);
+            }
+
+            // Prevent releasing pending docs
+            if (($input['status'] ?? null) === 'released' && $document->status === 'pending') {
+                throw ValidationException::withMessages(['status' => ['Cannot release a document until it is approved.']]);
+            }
+
+            $document->fill($input);
+            $document->save();
+
+        } else {
+            $input['category'] = 'Document';
+            $input['status'] = 'pending';
+            $document = Document::create($input);
+        }
+
+        return $document;
+    }
+}

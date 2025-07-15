@@ -12,6 +12,17 @@ class Document extends Model
 
     protected array $searchable = ['id'];
 
+    protected $fillable = [
+        'id',
+        'resident_id',
+        'type',
+        'category',
+        'requested_at',
+        'issued_at',
+        'valid_until',
+        'status'
+    ];
+
     public function resident(): BelongsTo
     {
         return $this->belongsTo(Resident::class);

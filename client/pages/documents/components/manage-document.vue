@@ -166,16 +166,6 @@ function confirmUpdateStatus(row: Document, status: string) {
 
 async function updateDocumentStatus() {
     if (!selectedRow.value || !selectedStatus.value) return;
-
-    if (["expired", "revoked", "released"].includes(selectedRow.value.status)) {
-        toast.add({
-            color: "amber",
-            icon: "solar:close-circle-broken",
-            title: "Status update is not allowed for released, revoked or expired docs",
-        });
-        return;
-    }
-
     try {
         const { mutate } = useMutation(upsertDocument);
         await mutate({
@@ -197,7 +187,7 @@ async function updateDocumentStatus() {
         toast.add({
             color: "red",
             icon: "solar:close-circle-broken",
-            title: "Failed to update status.",
+            title: e.message || "Failed to update status.",
         });
         console.error(e);
     } finally {
