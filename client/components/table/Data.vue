@@ -431,10 +431,10 @@
                             :ui="{
                                 wrapper: 'flex items-center gap-1',
                                 rounded:
-                                    '!rounded-full min-w-[32px] justify-center',
+                                    'rounded-full! min-w-[32px] justify-center',
                                 default: {
                                     activeButton: {
-                                        variant: 'outline',
+                                        variant: 'outline-solid',
                                     },
                                 },
                             }"

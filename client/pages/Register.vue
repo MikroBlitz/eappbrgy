@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden"
+        class="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden"
     >
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-5 dark:opacity-10">
@@ -33,7 +33,7 @@
 
             <!-- Center accent -->
             <div
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-full opacity-10 blur-3xl"
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-full opacity-10 blur-3xl"
             />
         </div>
 
@@ -92,7 +92,7 @@
         </div>
 
         <UCard
-            class="w-full max-w-md relative z-10 backdrop-blur-sm bg-white/80 dark:bg-slate-800/80 shadow-xl border-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50"
+            class="w-full max-w-md relative z-10 backdrop-blur-xs bg-white/80 dark:bg-slate-800/80 shadow-xl border-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50"
         >
             <template #header>
                 <div class="text-center">
@@ -114,75 +114,88 @@
                 class="gap-y-2 flex flex-col"
                 @submit="onSubmit"
             >
-                <UFormGroup label="First Name" name="first_name">
+                <UFormField label="First Name" name="first_name" class="w-full">
                     <UInput
                         v-model="formState.first_name"
                         placeholder="Enter first name"
                         type="text"
                         autocomplete="first_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Middle Name" name="middle_name">
+                <UFormField
+                    label="Middle Name"
+                    name="middle_name"
+                    class="w-full"
+                >
                     <UInput
                         v-model="formState.middle_name"
                         placeholder="Enter middle name"
                         type="text"
                         autocomplete="middle_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Last Name" name="last_name">
+                <UFormField label="Last Name" name="last_name" class="w-full">
                     <UInput
                         v-model="formState.last_name"
                         placeholder="Enter last name"
                         type="text"
                         autocomplete="last_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Phone" name="phone">
+                <UFormField label="Phone" name="phone" class="w-full">
                     <UInput
                         v-model="formState.phone"
                         placeholder="Enter your phone"
                         type="phone"
                         autocomplete="phone"
                         icon="i-heroicons-phone"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Email" name="email">
+                <UFormField label="Email" name="email" class="w-full">
                     <UInput
                         v-model="formState.email"
                         placeholder="Enter your email"
                         type="email"
                         autocomplete="email"
                         icon="i-heroicons-envelope"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Password" name="password">
+                <UFormField label="Password" name="password" class="w-full">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
                         type="password"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
                 <UButton
                     type="submit"
                     block
                     color="primary"
-                    class="mt-3 py-2"
+                    class="mt-4 py-2"
                     :loading="isLoading"
                     :disabled="!formState.email || !formState.password"
                 >
-                    Create Account
+                    <span v-if="isLoading" class="animate-pulse"
+                        >Creating Account...</span
+                    >
+                    <span v-else>Create Account</span>
                 </UButton>
             </UForm>
 
@@ -195,23 +208,23 @@
                         </UButton>
                     </p>
 
-                    <UDivider label="Or continue with" class="my-4" />
+                    <USeparator label="Or continue with" class="my-4" />
 
                     <div class="flex justify-center space-x-4 mt-4">
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-google"
                             aria-label="Continue with Google"
                         />
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-facebook"
                             aria-label="Continue with Facebook"
                         />
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-apple"
                             aria-label="Continue with Apple"
@@ -277,7 +290,7 @@ const onSubmit = async () => {
 
         console.log(response);
         toast.add({
-            color: "green",
+            color: "success",
             description: "Successfully registered",
             icon: "solar:check-circle-broken",
             title: "Success",

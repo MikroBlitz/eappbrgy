@@ -67,7 +67,7 @@
                                             >
                                                 <UIcon
                                                     :name="getFieldIcon(field)"
-                                                    class="text-gray-400 text-xs flex-shrink-0"
+                                                    class="text-gray-400 text-xs shrink-0"
                                                 />
                                                 <label
                                                     class="text-xs font-medium text-gray-600 dark:text-gray-400"
@@ -77,7 +77,7 @@
                                             </div>
 
                                             <div
-                                                class="min-h-[1.5rem] flex items-start"
+                                                class="min-h-6 flex items-start"
                                             >
                                                 <!-- Boolean/Status fields -->
                                                 <template
@@ -388,7 +388,7 @@
                                             >
                                                 <UIcon
                                                     :name="getFieldIcon(field)"
-                                                    class="text-gray-400 text-xs flex-shrink-0"
+                                                    class="text-gray-400 text-xs shrink-0"
                                                 />
                                                 <label
                                                     class="text-xs font-medium text-gray-600 dark:text-gray-400"

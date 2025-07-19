@@ -107,7 +107,7 @@
         <div class="flex-1 flex flex-col">
             <!-- Mobile Header (shows contact info) / Desktop Header -->
             <div
-                class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm"
+                class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-xs"
             >
                 <div class="flex items-center space-x-3">
                     <!-- Mobile: Back to contacts, Desktop: Contact info -->
@@ -226,7 +226,7 @@
                     "
                 >
                     <div
-                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-2xl px-4 py-2 shadow-sm"
+                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-2xl px-4 py-2 shadow-xs"
                         :class="getMessageClasses(message.sender.name)"
                     >
                         <!-- Sender name (only for received messages in group chats) -->
@@ -265,7 +265,7 @@
                     class="flex justify-start"
                 >
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 shadow-sm border border-gray-200 dark:border-gray-700"
+                        class="bg-white dark:bg-gray-800 rounded-2xl px-4 py-3 shadow-xs border border-gray-200 dark:border-gray-700"
                     >
                         <div class="flex space-x-1">
                             <div
@@ -295,7 +295,7 @@
                         icon="i-heroicons-paper-clip"
                         variant="ghost"
                         size="sm"
-                        class="flex-shrink-0 self-end mb-1"
+                        class="shrink-0 self-end mb-1"
                         @click="handleAttachment"
                     />
 
@@ -332,7 +332,7 @@
                         :disabled="!newMessage.trim() && !isRecording"
                         :loading="sending"
                         size="sm"
-                        class="flex-shrink-0 self-end mb-1"
+                        class="shrink-0 self-end mb-1"
                         :class="
                             newMessage.trim() || isRecording
                                 ? 'bg-primary-500 hover:bg-primary-600'

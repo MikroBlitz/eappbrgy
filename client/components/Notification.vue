@@ -59,7 +59,7 @@
                             @click="openAnnouncementModal(announcement)"
                         >
                             <!-- Icon -->
-                            <div class="flex-shrink-0 mr-3">
+                            <div class="shrink-0 mr-3">
                                 <div
                                     class="h-8 w-8 rounded-full flex items-center justify-center bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                                 >
@@ -106,7 +106,7 @@
                             <!-- Unread indicator -->
                             <div
                                 v-if="!announcement.read"
-                                class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full ml-2"
+                                class="shrink-0 w-2 h-2 bg-blue-500 rounded-full ml-2"
                             />
                         </div>
                     </div>

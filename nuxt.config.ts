@@ -1,3 +1,5 @@
+import tailwindcss from "@tailwindcss/vite";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     apollo: {
@@ -23,7 +25,6 @@ export default defineNuxtConfig({
         "@nuxtjs/color-mode",
         "@nuxt/eslint",
         "@nuxt/ui",
-        "@nuxtjs/tailwindcss",
         "@nuxtjs/apollo",
         "@pinia/nuxt",
         "@pinia-plugin-persistedstate/nuxt",
@@ -40,7 +41,7 @@ export default defineNuxtConfig({
         },
     },
     srcDir: "client/",
-    tailwindcss: {
-        configPath: "./tailwind.config.js",
+    vite: {
+        plugins: [tailwindcss()],
     },
 });

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden"
+        class="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-slate-100 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden"
     >
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-5 dark:opacity-10">
@@ -33,7 +33,7 @@
 
             <!-- Center accent -->
             <div
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-full opacity-10 blur-3xl"
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-full opacity-10 blur-3xl"
             />
         </div>
 
@@ -92,7 +92,7 @@
         </div>
 
         <UCard
-            class="w-full max-w-md relative z-10 backdrop-blur-sm bg-white/80 dark:bg-slate-800/80 shadow-xl border-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50"
+            class="w-full max-w-md relative z-10 backdrop-blur-xs bg-white/80 dark:bg-slate-800/80 shadow-xl border-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50"
         >
             <template #header>
                 <div class="text-center">
@@ -109,34 +109,40 @@
             </template>
 
             <UForm :validate="validate" :state="formState" @submit="onSubmit">
-                <UFormGroup label="Email" name="email">
+                <UFormField label="Email" name="email" class="w-full">
                     <UInput
                         v-model="formState.email"
                         placeholder="Enter your email"
                         type="email"
                         autocomplete="email"
                         icon="i-heroicons-envelope"
+                        class="w-full"
                         required
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Password" name="password" class="mt-2">
+                <UFormField
+                    label="Password"
+                    name="password"
+                    class="mt-3 w-full"
+                >
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
                         type="password"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
+                        class="w-full"
                         required
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <div class="flex items-center justify-between mt-1">
-                    <UCheckbox
-                        v-model="formState.rememberMe"
-                        label="Remember me"
-                        name="remember"
-                    />
+                <div class="flex items-center justify-end mt-1">
+                    <!--                    <UCheckbox-->
+                    <!--                        v-model="formState.rememberMe"-->
+                    <!--                        label="Remember me"-->
+                    <!--                        name="remember"-->
+                    <!--                    />-->
                     <UButton
                         to="/forgot-password"
                         variant="link"
@@ -150,11 +156,14 @@
                     type="submit"
                     block
                     color="primary"
-                    class="mt-3 py-2"
+                    class="mt-3 py-2 cursor-pointer"
                     :loading="isLoading"
                     :disabled="!formState.email || !formState.password"
                 >
-                    Log in
+                    <span v-if="isLoading" class="animate-pulse"
+                        >Logging in...</span
+                    >
+                    <span v-else>Log in</span>
                 </UButton>
             </UForm>
 
@@ -167,23 +176,23 @@
                         </UButton>
                     </p>
 
-                    <UDivider label="Or continue with" class="my-4" />
+                    <USeparator label="Or continue with" class="my-4" />
 
                     <div class="flex justify-center space-x-4 mt-4">
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-google"
                             aria-label="Continue with Google"
                         />
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-facebook"
                             aria-label="Continue with Facebook"
                         />
                         <UButton
-                            color="gray"
+                            color="neutral"
                             variant="ghost"
                             icon="i-mdi-apple"
                             aria-label="Continue with Apple"
@@ -250,9 +259,9 @@ const onSubmit = async () => {
 
     try {
         await authStore.login(formState);
-    } catch (e) {
+    } catch (e: any) {
         toast.add({
-            color: "red",
+            color: "error",
             description: e.message,
             icon: "i-mdi-alert-circle-outline",
             title: "Authentication failed",

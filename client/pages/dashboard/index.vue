@@ -33,14 +33,14 @@
                                 class="mt-2 space-y-2"
                             >
                                 <div
-                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-24"
                                 />
                                 <div class="flex items-center space-x-2">
                                     <div
-                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-12"
                                     />
                                     <div
-                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-20"
                                     />
                                 </div>
                             </div>
@@ -70,10 +70,10 @@
                         </div>
 
                         <!-- Icon with loading state -->
-                        <div class="flex-shrink-0">
+                        <div class="shrink-0">
                             <div
                                 v-if="residentCounterLoading"
-                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse"
                             />
                             <UIcon
                                 v-else
@@ -100,14 +100,14 @@
                                 class="mt-2 space-y-2"
                             >
                                 <div
-                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-24"
                                 />
                                 <div class="flex items-center space-x-2">
                                     <div
-                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-12"
                                     />
                                     <div
-                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-20"
                                     />
                                 </div>
                             </div>
@@ -137,10 +137,10 @@
                         </div>
 
                         <!-- Icon with loading state -->
-                        <div class="flex-shrink-0">
+                        <div class="shrink-0">
                             <div
                                 v-if="pendingDocsLoading"
-                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse"
                             />
                             <UIcon
                                 v-else
@@ -167,14 +167,14 @@
                                 class="mt-2 space-y-2"
                             >
                                 <div
-                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"
+                                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-24"
                                 />
                                 <div class="flex items-center space-x-2">
                                     <div
-                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-12"
+                                        class="h-5 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-12"
                                     />
                                     <div
-                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"
+                                        class="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-20"
                                     />
                                 </div>
                             </div>
@@ -207,10 +207,10 @@
                         </div>
 
                         <!-- Icon with loading state -->
-                        <div class="flex-shrink-0">
+                        <div class="shrink-0">
                             <div
                                 v-if="blotterCounterLoading"
-                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                                class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse"
                             />
                             <UIcon
                                 v-else
@@ -628,7 +628,7 @@
                         <div
                             class="flex items-center space-x-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg"
                         >
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <div
                                     class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center"
                                 >
@@ -652,7 +652,7 @@
                         <div
                             class="flex items-center space-x-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg"
                         >
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <div
                                     class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center"
                                 >
@@ -676,7 +676,7 @@
                         <div
                             class="flex items-center space-x-4 p-4 bg-purple-50 dark:bg-purple-950 rounded-lg"
                         >
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <div
                                     class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center"
                                 >
