@@ -1,135 +1,307 @@
 <template>
-    <UModal v-model="isModalOpen" :ui="{ width: 'max-w-4xl' }">
-        <UCard class="overflow-hidden">
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center gap-3">
-                            <UIcon
-                                name="i-heroicons-eye"
-                                class="text-primary text-xl"
-                            />
-                            <h3
-                                class="text-xl font-bold text-gray-900 dark:text-gray-100"
-                            >
-                                {{ title }}
-                            </h3>
-                        </div>
-                    </div>
-                    <UButton
-                        color="gray"
-                        variant="ghost"
-                        icon="i-heroicons-x-mark"
-                        size="sm"
-                        square
-                        @click="isModalOpen = false"
-                    />
-                </div>
-            </template>
-
-            <!-- Enhanced content with better spacing and organization -->
-            <div class="max-h-[70vh] overflow-y-auto">
-                <div class="grid gap-4">
-                    <!-- Group fields by category for better organization -->
-                    <template
-                        v-for="(group, groupName) in groupedFields"
-                        :key="groupName"
-                    >
-                        <div v-if="group.length > 0" class="space-y-2">
-                            <div
-                                class="flex items-center gap-2 pb-2 border-b border-gray-200 dark:border-gray-700"
-                            >
+    <UModal v-model="isModalOpen">
+        <template #content>
+            <UCard class="overflow-hidden">
+                <template #header>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center gap-3">
                                 <UIcon
-                                    :name="getGroupIcon(groupName)"
-                                    class="text-gray-500 text-xs"
+                                    name="i-heroicons-eye"
+                                    class="text-primary text-xl"
                                 />
-                                <h4
-                                    class="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide"
+                                <h3
+                                    class="text-xl font-bold text-gray-900 dark:text-gray-100"
                                 >
-                                    {{ groupName }}
-                                </h4>
+                                    {{ title }}
+                                </h3>
                             </div>
+                        </div>
+                        <UButton
+                            color="gray"
+                            variant="ghost"
+                            icon="i-heroicons-x-mark"
+                            size="sm"
+                            square
+                            @click="isModalOpen = false"
+                        />
+                    </div>
+                </template>
 
-                            <!-- Regular fields in grid -->
-                            <div class="grid gap-2 md:grid-cols-2">
-                                <template
-                                    v-for="field in group.filter(
-                                        (f) => !isLongTextField(f),
-                                    )"
-                                    :key="field.name"
+                <!-- Enhanced content with better spacing and organization -->
+                <div class="max-h-[70vh] overflow-y-auto">
+                    <div class="grid gap-4">
+                        <!-- Group fields by category for better organization -->
+                        <template
+                            v-for="(group, groupName) in groupedFields"
+                            :key="groupName"
+                        >
+                            <div v-if="group.length > 0" class="space-y-2">
+                                <div
+                                    class="flex items-center gap-2 pb-2 border-b border-gray-200 dark:border-gray-700"
                                 >
-                                    <div
-                                        class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
+                                    <UIcon
+                                        :name="getGroupIcon(groupName)"
+                                        class="text-gray-500 text-xs"
+                                    />
+                                    <h4
+                                        class="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide"
                                     >
-                                        <div class="space-y-1">
-                                            <div
-                                                class="flex items-center gap-2"
-                                            >
-                                                <UIcon
-                                                    :name="getFieldIcon(field)"
-                                                    class="text-gray-400 text-xs shrink-0"
-                                                />
-                                                <label
-                                                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
-                                                >
-                                                    {{ field.label }}
-                                                </label>
-                                            </div>
+                                        {{ groupName }}
+                                    </h4>
+                                </div>
 
-                                            <div
-                                                class="min-h-6 flex items-start"
-                                            >
-                                                <!-- Boolean/Status fields -->
-                                                <template
-                                                    v-if="
-                                                        field.name.includes(
-                                                            'is_',
-                                                        ) ||
-                                                        field.name.includes(
-                                                            'has_',
-                                                        ) ||
-                                                        typeof state[
-                                                            field.name
-                                                        ] === 'boolean'
-                                                    "
+                                <!-- Regular fields in grid -->
+                                <div class="grid gap-2 md:grid-cols-2">
+                                    <template
+                                        v-for="field in group.filter(
+                                            (f) => !isLongTextField(f),
+                                        )"
+                                        :key="field.name"
+                                    >
+                                        <div
+                                            class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
+                                        >
+                                            <div class="space-y-1">
+                                                <div
+                                                    class="flex items-center gap-2"
                                                 >
-                                                    <UBadge
-                                                        :color="
-                                                            state[field.name]
-                                                                ? 'green'
-                                                                : 'red'
+                                                    <UIcon
+                                                        :name="
+                                                            getFieldIcon(field)
                                                         "
-                                                        :label="
-                                                            state[field.name]
-                                                                ? 'Active'
-                                                                : 'Inactive'
-                                                        "
-                                                        size="sm"
-                                                        class="animate-pulse"
+                                                        class="text-gray-400 text-xs shrink-0"
                                                     />
-                                                </template>
+                                                    <label
+                                                        class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                                                    >
+                                                        {{ field.label }}
+                                                    </label>
+                                                </div>
 
-                                                <!-- Date fields -->
-                                                <template
-                                                    v-else-if="
-                                                        field.name.includes(
-                                                            '_at',
-                                                        ) ||
-                                                        field.name.includes(
-                                                            'date',
-                                                        ) ||
-                                                        field.type === 'date'
-                                                    "
+                                                <div
+                                                    class="min-h-6 flex items-start"
                                                 >
-                                                    <div
-                                                        v-if="state[field.name]"
-                                                        class="flex items-center gap-2"
+                                                    <!-- Boolean/Status fields -->
+                                                    <template
+                                                        v-if="
+                                                            field.name.includes(
+                                                                'is_',
+                                                            ) ||
+                                                            field.name.includes(
+                                                                'has_',
+                                                            ) ||
+                                                            typeof state[
+                                                                field.name
+                                                            ] === 'boolean'
+                                                        "
+                                                    >
+                                                        <UBadge
+                                                            :color="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                                    ? 'green'
+                                                                    : 'red'
+                                                            "
+                                                            :label="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                                    ? 'Active'
+                                                                    : 'Inactive'
+                                                            "
+                                                            size="sm"
+                                                            class="animate-pulse"
+                                                        />
+                                                    </template>
+
+                                                    <!-- Date fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            field.name.includes(
+                                                                '_at',
+                                                            ) ||
+                                                            field.name.includes(
+                                                                'date',
+                                                            ) ||
+                                                            field.type ===
+                                                                'date'
+                                                        "
+                                                    >
+                                                        <div
+                                                            v-if="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            "
+                                                            class="flex items-center gap-2"
+                                                        >
+                                                            <span
+                                                                class="text-gray-900 dark:text-gray-100 font-medium"
+                                                            >
+                                                                {{
+                                                                    getDateOnly(
+                                                                        state[
+                                                                            field
+                                                                                .name
+                                                                        ],
+                                                                    )
+                                                                }}
+                                                            </span>
+                                                            <span
+                                                                class="text-xs text-gray-500 dark:text-gray-400"
+                                                            >
+                                                                {{
+                                                                    getRelativeTime(
+                                                                        state[
+                                                                            field
+                                                                                .name
+                                                                        ],
+                                                                    )
+                                                                }}
+                                                            </span>
+                                                        </div>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Not set</span
+                                                        >
+                                                    </template>
+
+                                                    <!-- Email fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            field.type ===
+                                                            'email'
+                                                        "
+                                                    >
+                                                        <a
+                                                            v-if="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            "
+                                                            :href="`mailto:${state[field.name]}`"
+                                                            class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1 group"
+                                                        >
+                                                            <span>{{
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            }}</span>
+                                                            <UIcon
+                                                                name="i-heroicons-arrow-top-right-on-square"
+                                                                class="text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            />
+                                                        </a>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Not set</span
+                                                        >
+                                                    </template>
+
+                                                    <!-- Phone fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            field.type === 'tel'
+                                                        "
+                                                    >
+                                                        <a
+                                                            v-if="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            "
+                                                            :href="`tel:${state[field.name]}`"
+                                                            class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1 group"
+                                                        >
+                                                            <span>{{
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            }}</span>
+                                                            <UIcon
+                                                                name="i-heroicons-phone"
+                                                                class="text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            />
+                                                        </a>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Not set</span
+                                                        >
+                                                    </template>
+
+                                                    <!-- Array fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            Array.isArray(
+                                                                state[
+                                                                    field.name
+                                                                ],
+                                                            )
+                                                        "
+                                                    >
+                                                        <div
+                                                            v-if="
+                                                                state[
+                                                                    field.name
+                                                                ]?.length > 0
+                                                            "
+                                                            class="flex flex-wrap gap-1"
+                                                        >
+                                                            <UBadge
+                                                                v-for="(
+                                                                    item, index
+                                                                ) in state[
+                                                                    field.name
+                                                                ]"
+                                                                :key="index"
+                                                                :label="
+                                                                    getArrayItemLabel(
+                                                                        item,
+                                                                    )
+                                                                "
+                                                                color="blue"
+                                                                variant="soft"
+                                                                size="xs"
+                                                            />
+                                                        </div>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >None</span
+                                                        >
+                                                    </template>
+
+                                                    <!-- Select/Combobox fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            [
+                                                                'select',
+                                                                'combobox',
+                                                            ].includes(
+                                                                field.type,
+                                                            )
+                                                        "
                                                     >
                                                         <span
+                                                            v-if="
+                                                                getDisplayValue(
+                                                                    field,
+                                                                    state[
+                                                                        field
+                                                                            .name
+                                                                    ],
+                                                                )
+                                                            "
                                                             class="text-gray-900 dark:text-gray-100 font-medium"
                                                         >
                                                             {{
-                                                                getDateOnly(
+                                                                getDisplayValue(
+                                                                    field,
                                                                     state[
                                                                         field
                                                                             .name
@@ -138,193 +310,143 @@
                                                             }}
                                                         </span>
                                                         <span
-                                                            class="text-xs text-gray-500 dark:text-gray-400"
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Not selected</span
                                                         >
-                                                            {{
-                                                                getRelativeTime(
+                                                    </template>
+
+                                                    <!-- Password fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            field.type ===
+                                                            'password'
+                                                        "
+                                                    >
+                                                        <div
+                                                            class="flex items-center gap-2"
+                                                        >
+                                                            <span
+                                                                class="text-gray-400 font-mono"
+                                                                >••••••••</span
+                                                            >
+                                                            <UBadge
+                                                                label="Protected"
+                                                                color="yellow"
+                                                                size="xs"
+                                                            />
+                                                        </div>
+                                                    </template>
+
+                                                    <!-- Long text fields -->
+                                                    <template
+                                                        v-else-if="
+                                                            field.name.includes(
+                                                                'description',
+                                                            ) ||
+                                                            field.name.includes(
+                                                                'content',
+                                                            ) ||
+                                                            field.type ===
+                                                                'textarea'
+                                                        "
+                                                    >
+                                                        <div
+                                                            v-if="
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            "
+                                                            class="w-full"
+                                                        >
+                                                            <div
+                                                                class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-3 max-h-32 overflow-y-auto"
+                                                            >
+                                                                <p
+                                                                    class="text-gray-700 dark:text-gray-300 text-xs leading-relaxed whitespace-pre-wrap break-words"
+                                                                >
+                                                                    {{
+                                                                        state[
+                                                                            field
+                                                                                .name
+                                                                        ]
+                                                                    }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Empty</span
+                                                        >
+                                                    </template>
+
+                                                    <!-- Default text display -->
+                                                    <template v-else>
+                                                        <span
+                                                            v-if="
+                                                                hasValue(
                                                                     state[
                                                                         field
                                                                             .name
                                                                     ],
-                                                                )
-                                                            }}
-                                                        </span>
-                                                    </div>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Not set</span
-                                                    >
-                                                </template>
-
-                                                <!-- Email fields -->
-                                                <template
-                                                    v-else-if="
-                                                        field.type === 'email'
-                                                    "
-                                                >
-                                                    <a
-                                                        v-if="state[field.name]"
-                                                        :href="`mailto:${state[field.name]}`"
-                                                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1 group"
-                                                    >
-                                                        <span>{{
-                                                            state[field.name]
-                                                        }}</span>
-                                                        <UIcon
-                                                            name="i-heroicons-arrow-top-right-on-square"
-                                                            class="text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        />
-                                                    </a>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Not set</span
-                                                    >
-                                                </template>
-
-                                                <!-- Phone fields -->
-                                                <template
-                                                    v-else-if="
-                                                        field.type === 'tel'
-                                                    "
-                                                >
-                                                    <a
-                                                        v-if="state[field.name]"
-                                                        :href="`tel:${state[field.name]}`"
-                                                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1 group"
-                                                    >
-                                                        <span>{{
-                                                            state[field.name]
-                                                        }}</span>
-                                                        <UIcon
-                                                            name="i-heroicons-phone"
-                                                            class="text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        />
-                                                    </a>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Not set</span
-                                                    >
-                                                </template>
-
-                                                <!-- Array fields -->
-                                                <template
-                                                    v-else-if="
-                                                        Array.isArray(
-                                                            state[field.name],
-                                                        )
-                                                    "
-                                                >
-                                                    <div
-                                                        v-if="
-                                                            state[field.name]
-                                                                ?.length > 0
-                                                        "
-                                                        class="flex flex-wrap gap-1"
-                                                    >
-                                                        <UBadge
-                                                            v-for="(
-                                                                item, index
-                                                            ) in state[
-                                                                field.name
-                                                            ]"
-                                                            :key="index"
-                                                            :label="
-                                                                getArrayItemLabel(
-                                                                    item,
                                                                 )
                                                             "
-                                                            color="blue"
-                                                            variant="soft"
-                                                            size="xs"
-                                                        />
-                                                    </div>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >None</span
-                                                    >
-                                                </template>
-
-                                                <!-- Select/Combobox fields -->
-                                                <template
-                                                    v-else-if="
-                                                        [
-                                                            'select',
-                                                            'combobox',
-                                                        ].includes(field.type)
-                                                    "
-                                                >
-                                                    <span
-                                                        v-if="
-                                                            getDisplayValue(
-                                                                field,
-                                                                state[
-                                                                    field.name
-                                                                ],
-                                                            )
-                                                        "
-                                                        class="text-gray-900 dark:text-gray-100 font-medium"
-                                                    >
-                                                        {{
-                                                            getDisplayValue(
-                                                                field,
-                                                                state[
-                                                                    field.name
-                                                                ],
-                                                            )
-                                                        }}
-                                                    </span>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Not selected</span
-                                                    >
-                                                </template>
-
-                                                <!-- Password fields -->
-                                                <template
-                                                    v-else-if="
-                                                        field.type ===
-                                                        'password'
-                                                    "
-                                                >
-                                                    <div
-                                                        class="flex items-center gap-2"
-                                                    >
-                                                        <span
-                                                            class="text-gray-400 font-mono"
-                                                            >••••••••</span
+                                                            class="text-gray-900 dark:text-gray-100 font-medium break-words"
                                                         >
-                                                        <UBadge
-                                                            label="Protected"
-                                                            color="yellow"
-                                                            size="xs"
-                                                        />
-                                                    </div>
-                                                </template>
+                                                            {{
+                                                                state[
+                                                                    field.name
+                                                                ]
+                                                            }}
+                                                        </span>
+                                                        <span
+                                                            v-else
+                                                            class="text-gray-400 italic text-xs"
+                                                            >Empty</span
+                                                        >
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
 
-                                                <!-- Long text fields -->
-                                                <template
-                                                    v-else-if="
-                                                        field.name.includes(
-                                                            'description',
-                                                        ) ||
-                                                        field.name.includes(
-                                                            'content',
-                                                        ) ||
-                                                        field.type ===
-                                                            'textarea'
-                                                    "
+                                <!-- Long text fields (description, content, textarea) - full width -->
+                                <div class="space-y-4">
+                                    <template
+                                        v-for="field in group.filter((f) =>
+                                            isLongTextField(f),
+                                        )"
+                                        :key="field.name"
+                                    >
+                                        <div
+                                            class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
+                                        >
+                                            <div class="space-y-3">
+                                                <div
+                                                    class="flex items-center gap-2"
                                                 >
+                                                    <UIcon
+                                                        :name="
+                                                            getFieldIcon(field)
+                                                        "
+                                                        class="text-gray-400 text-xs shrink-0"
+                                                    />
+                                                    <label
+                                                        class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                                                    >
+                                                        {{ field.label }}
+                                                    </label>
+                                                </div>
+
+                                                <div class="w-full">
                                                     <div
                                                         v-if="state[field.name]"
                                                         class="w-full"
                                                     >
                                                         <div
-                                                            class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-3 max-h-32 overflow-y-auto"
+                                                            class="p-2 max-h-40 overflow-y-auto"
                                                         >
                                                             <p
                                                                 class="text-gray-700 dark:text-gray-300 text-xs leading-relaxed whitespace-pre-wrap break-words"
@@ -338,133 +460,56 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Empty</span
-                                                    >
-                                                </template>
-
-                                                <!-- Default text display -->
-                                                <template v-else>
-                                                    <span
-                                                        v-if="
-                                                            hasValue(
-                                                                state[
-                                                                    field.name
-                                                                ],
-                                                            )
-                                                        "
-                                                        class="text-gray-900 dark:text-gray-100 font-medium break-words"
-                                                    >
-                                                        {{ state[field.name] }}
-                                                    </span>
-                                                    <span
-                                                        v-else
-                                                        class="text-gray-400 italic text-xs"
-                                                        >Empty</span
-                                                    >
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-
-                            <!-- Long text fields (description, content, textarea) - full width -->
-                            <div class="space-y-4">
-                                <template
-                                    v-for="field in group.filter((f) =>
-                                        isLongTextField(f),
-                                    )"
-                                    :key="field.name"
-                                >
-                                    <div
-                                        class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-2 transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
-                                    >
-                                        <div class="space-y-3">
-                                            <div
-                                                class="flex items-center gap-2"
-                                            >
-                                                <UIcon
-                                                    :name="getFieldIcon(field)"
-                                                    class="text-gray-400 text-xs shrink-0"
-                                                />
-                                                <label
-                                                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
-                                                >
-                                                    {{ field.label }}
-                                                </label>
-                                            </div>
-
-                                            <div class="w-full">
-                                                <div
-                                                    v-if="state[field.name]"
-                                                    class="w-full"
-                                                >
                                                     <div
-                                                        class="p-2 max-h-40 overflow-y-auto"
+                                                        v-else
+                                                        class="text-gray-400 italic text-xs p-2"
                                                     >
-                                                        <p
-                                                            class="text-gray-700 dark:text-gray-300 text-xs leading-relaxed whitespace-pre-wrap break-words"
-                                                        >
-                                                            {{
-                                                                state[
-                                                                    field.name
-                                                                ]
-                                                            }}
-                                                        </p>
+                                                        Empty
                                                     </div>
                                                 </div>
-                                                <div
-                                                    v-else
-                                                    class="text-gray-400 italic text-xs p-2"
-                                                >
-                                                    Empty
-                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
+                                    </template>
+                                </div>
                             </div>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
                 </div>
-            </div>
 
-            <div class="flex justify-between items-center mt-4">
-                <div
-                    class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
-                >
-                    <UIcon
-                        name="i-heroicons-information-circle"
-                        class="text-xs"
-                    />
-                    <span
-                        >Last updated:
-                        {{
-                            getRelativeTime(state.updated_at || new Date())
-                        }}</span
+                <div class="flex justify-between items-center mt-4">
+                    <div
+                        class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
                     >
+                        <UIcon
+                            name="i-heroicons-information-circle"
+                            class="text-xs"
+                        />
+                        <span
+                            >Last updated:
+                            {{
+                                getRelativeTime(state.updated_at || new Date())
+                            }}</span
+                        >
+                    </div>
+                    <div class="flex gap-3">
+                        <UButton
+                            color="gray"
+                            variant="ghost"
+                            @click="isModalOpen = false"
+                        >
+                            Close
+                        </UButton>
+                        <UButton
+                            v-if="showEditButton"
+                            color="blue"
+                            @click="$emit('edit-clicked')"
+                        >
+                            Edit
+                        </UButton>
+                    </div>
                 </div>
-                <div class="flex gap-3">
-                    <UButton
-                        color="gray"
-                        variant="ghost"
-                        @click="isModalOpen = false"
-                    >
-                        Close
-                    </UButton>
-                    <UButton
-                        v-if="showEditButton"
-                        color="blue"
-                        @click="$emit('edit-clicked')"
-                    >
-                        Edit
-                    </UButton>
-                </div>
-            </div>
-        </UCard>
+            </UCard>
+        </template>
     </UModal>
 </template>
 

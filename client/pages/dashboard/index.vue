@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-7xl mx-auto p-6">
+    <div class="h-dvh sm:h-[calc(90vh-100px)] bg-gray-50 dark:bg-gray-900">
+        <div class="w-full mx-auto md:px-24 px-6 py-6">
             <!-- Header Section -->
             <div class="mb-8">
                 <h1
@@ -54,7 +54,7 @@
                                 </p>
                                 <div class="flex items-center mt-2">
                                     <UBadge
-                                        color="green"
+                                        color="success"
                                         variant="subtle"
                                         size="sm"
                                     >
@@ -121,7 +121,7 @@
                                 </p>
                                 <div class="flex items-center mt-2">
                                     <UBadge
-                                        color="yellow"
+                                        color="warning"
                                         variant="subtle"
                                         size="sm"
                                     >
@@ -189,8 +189,8 @@
                                     <UBadge
                                         :color="
                                             blotterResolvedCounter > 0
-                                                ? 'green'
-                                                : 'red'
+                                                ? 'success'
+                                                : 'error'
                                         "
                                         variant="subtle"
                                         size="sm"
@@ -237,7 +237,7 @@
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
-                                    color="green"
+                                    color="success"
                                     variant="subtle"
                                     size="sm"
                                 >
@@ -259,8 +259,8 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <UCard>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                <UCard class="col-span-12 sm:col-span-3">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -278,7 +278,7 @@
                     <div class="space-y-3">
                         <UButton
                             block
-                            color="blue"
+                            color="info"
                             variant="soft"
                             icon="i-heroicons-plus"
                             @click="navigateTo('/residents')"
@@ -287,7 +287,7 @@
                         </UButton>
                         <UButton
                             block
-                            color="green"
+                            color="success"
                             variant="soft"
                             icon="i-heroicons-document-plus"
                             @click="navigateTo('/documents')"
@@ -296,7 +296,7 @@
                         </UButton>
                         <UButton
                             block
-                            color="yellow"
+                            color="warning"
                             variant="soft"
                             icon="i-heroicons-megaphone"
                         >
@@ -304,7 +304,7 @@
                         </UButton>
                         <UButton
                             block
-                            color="purple"
+                            color="info"
                             variant="soft"
                             icon="i-heroicons-calendar-days"
                         >
@@ -313,94 +313,8 @@
                     </div>
                 </UCard>
 
-                <!-- Recent Activities -->
-                <UCard>
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <h3
-                                class="text-lg font-semibold text-gray-900 dark:text-white"
-                            >
-                                Recent Activities
-                            </h3>
-                            <UIcon
-                                name="i-heroicons-clock"
-                                class="w-5 h-5 text-gray-400"
-                            />
-                        </div>
-                    </template>
-
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium"
-                                        >Juan Dela Cruz</span
-                                    >
-                                    requested a barangay certificate
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    2 hours ago
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium"
-                                        >Maria Santos</span
-                                    >
-                                    submitted a complaint
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    4 hours ago
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium">Admin</span>
-                                    published new announcement
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    1 day ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </UCard>
-
                 <!-- Announcements -->
-                <UCard>
+                <UCard class="col-span-12 sm:col-span-4">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -417,7 +331,7 @@
 
                     <div class="space-y-4">
                         <UAlert
-                            color="blue"
+                            color="info"
                             variant="soft"
                             title="Community Meeting"
                             description="Monthly barangay meeting scheduled for next Friday at 7:00 PM"
@@ -425,7 +339,7 @@
                         />
 
                         <UAlert
-                            color="yellow"
+                            color="warning"
                             variant="soft"
                             title="Water Interruption"
                             description="Scheduled water maintenance on Sunday, 6:00 AM - 12:00 PM"
@@ -433,7 +347,7 @@
                         />
 
                         <UAlert
-                            color="green"
+                            color="success"
                             variant="soft"
                             title="New Health Program"
                             description="Free health checkup program starts next month"
@@ -441,12 +355,9 @@
                         />
                     </div>
                 </UCard>
-            </div>
 
-            <!-- Data Tables -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Recent Documents -->
-                <UCard>
+                <!-- Data Tables -->
+                <UCard class="col-span-12 sm:col-span-5">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -455,7 +366,7 @@
                                 Recent Document Updates
                             </h3>
                             <UButton
-                                color="gray"
+                                color="neutral"
                                 variant="ghost"
                                 size="sm"
                                 @click="navigateTo('/documents')"
@@ -477,17 +388,17 @@
                                         #
                                     </th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                    >
-                                        Resident
-                                    </th>
-                                    <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
                                         Document
                                     </th>
                                     <th
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                        class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
+                                        Resident
+                                    </th>
+                                    <th
+                                        class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
                                         Status
                                     </th>
@@ -560,6 +471,17 @@
                                     </td>
                                     <td class="px-2 py-3 whitespace-nowrap">
                                         <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <span
+                                                class="text-sm text-foreground"
+                                            >
+                                                {{ toTitleCase(doc.type) }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 py-3 whitespace-nowrap">
+                                        <div
                                             class="flex items-center space-x-3"
                                         >
                                             <div>
@@ -580,24 +502,13 @@
                                         </div>
                                     </td>
                                     <td class="px-2 py-3 whitespace-nowrap">
-                                        <div
-                                            class="flex items-center space-x-2"
-                                        >
-                                            <span
-                                                class="text-sm text-gray-500 dark:text-gray-400"
-                                            >
-                                                {{ toTitleCase(doc.type) }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="px-2 py-3 whitespace-nowrap">
                                         <UBadge
                                             :color="
                                                 getDocumentStatusColor(
                                                     doc.status,
                                                 ).color
                                             "
-                                            variant="subtle"
+                                            variant="soft"
                                             size="sm"
                                         >
                                             {{ toTitleCase(doc.status) }}
@@ -606,96 +517,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </UCard>
-
-                <!-- Upcoming Events -->
-                <UCard>
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <h3
-                                class="text-lg font-semibold text-gray-900 dark:text-white"
-                            >
-                                Upcoming Events
-                            </h3>
-                            <UButton color="gray" variant="ghost" size="sm">
-                                View Calendar
-                            </UButton>
-                        </div>
-                    </template>
-
-                    <div class="space-y-4">
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg"
-                        >
-                            <div class="shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">25</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Monthly Barangay Meeting
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 25, 2025 at 7:00 PM
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg"
-                        >
-                            <div class="shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">28</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Community Clean-up Drive
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 28, 2025 at 6:00 AM
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-purple-50 dark:bg-purple-950 rounded-lg"
-                        >
-                            <div class="shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">30</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Health and Wellness Program
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 30, 2025 at 9:00 AM
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </UCard>
             </div>

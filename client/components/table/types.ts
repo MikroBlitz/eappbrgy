@@ -1,10 +1,8 @@
-import type { ButtonColor } from "#ui/types";
-
 import type { FieldOption } from "~/types/fields";
 
 export interface Column {
     class?: string;
-    key: string;
+    id: string;
     label?: string;
     render?: (row: any) => any;
     sortable?: boolean;
@@ -24,7 +22,7 @@ export interface Sort {
 export type Row = Record<string, any>;
 
 export interface TableAction {
-    color: (row: any) => ButtonColor;
+    color: (row: any) => any;
     condition: (row: any) => boolean | undefined;
     icon: (row: any) => string;
     onClick: (row: any) => void;

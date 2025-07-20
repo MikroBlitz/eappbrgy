@@ -1,104 +1,111 @@
 <template>
     <UModal v-model="isModalOpen" :fullscreen="isFullscreen">
-        <UCard
-            :ui="{
-                ring: '',
-                divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }"
-        >
-            <template #header>
-                <div class="flex items-center">
-                    <UIcon
-                        name="i-heroicons-pencil-square"
-                        class="mr-3 text-emerald-500 text-xl"
-                    />
-                    <span
-                        class="text-lg text-gray-900 dark:text-gray-100 font-medium"
-                    >
-                        {{ title }}
-                    </span>
-                </div>
-            </template>
-
-            <UForm
-                :schema="zodSchema"
-                :state="state"
-                class="space-y-4 gap-x-2 grid-cols-12 grid"
-                @submit="onSubmit"
-            >
-                <template v-for="field in formSchema.fields" :key="field.name">
-                    <UFormGroup
-                        :label="field.label"
-                        :name="field.name"
-                        :class="field.class || 'col-span-full'"
-                    >
-                        <component
-                            :is="resolveComponent(field.type)"
-                            v-model="state[field.name]"
-                            :disabled="field.disabled"
-                            :hidden="field.hidden"
-                            :type="field.type"
-                            :options="field.options"
-                            :multiple="field.multiple || false"
-                            :placeholder="
-                                field.placeholder || `Enter ${field.label}`
-                            "
-                            :searchable="
-                                field.searchable === true
-                                    ? (query: string) => field.onSearch?.(query)
-                                    : false
-                            "
-                            :value-attribute="
-                                field.valueAttribute ||
-                                (['select', 'combobox'].includes(field.type)
-                                    ? 'value'
-                                    : undefined)
-                            "
-                            :option-attribute="
-                                field.optionAttribute ||
-                                (['select', 'combobox'].includes(field.type)
-                                    ? 'label'
-                                    : undefined)
-                            "
-                            :loading="
-                                ['select', 'combobox'].includes(field.type)
-                                    ? optionLoading
-                                    : undefined
-                            "
+        <template #content>
+            <UCard>
+                <template #header>
+                    <div class="flex items-center">
+                        <UIcon
+                            name="i-heroicons-pencil-square"
+                            class="mr-3 text-emerald-500 text-xl"
+                        />
+                        <span
+                            class="text-lg text-gray-900 dark:text-gray-100 font-medium"
                         >
-                            <template
-                                v-if="
-                                    ['select', 'combobox'].includes(field.type)
-                                "
-                                #leading="{ optionsLoading }"
-                            >
-                                <UIcon
-                                    v-if="optionsLoading"
-                                    name="i-heroicons-arrow-path"
-                                    class="animate-spin text-primary"
-                                />
-                                <UIcon
-                                    v-else
-                                    name="mdi:form-dropdown"
-                                    class="text-primary"
-                                />
-                            </template>
-                        </component>
-                    </UFormGroup>
+                            {{ title }}
+                        </span>
+                    </div>
                 </template>
 
-                <div class="flex col-span-full justify-end gap-2 pt-4">
-                    <UButton
-                        color="gray"
-                        variant="ghost"
-                        @click="isModalOpen = false"
+                <UForm
+                    :schema="zodSchema"
+                    :state="state"
+                    class="space-y-4 gap-x-2 grid-cols-12 grid"
+                    @submit="onSubmit"
+                >
+                    <template
+                        v-for="field in formSchema.fields"
+                        :key="field.name"
                     >
-                        Cancel
-                    </UButton>
-                    <UButton :loading="loading" type="submit" label="Submit" />
-                </div>
-            </UForm>
-        </UCard>
+                        <UFormGroup
+                            :label="field.label"
+                            :name="field.name"
+                            :class="field.class || 'col-span-full'"
+                        >
+                            <component
+                                :is="resolveComponent(field.type)"
+                                v-model="state[field.name]"
+                                :disabled="field.disabled"
+                                :hidden="field.hidden"
+                                :type="field.type"
+                                :options="field.options"
+                                :multiple="field.multiple || false"
+                                :placeholder="
+                                    field.placeholder || `Enter ${field.label}`
+                                "
+                                :searchable="
+                                    field.searchable === true
+                                        ? (query: string) =>
+                                              field.onSearch?.(query)
+                                        : false
+                                "
+                                :value-attribute="
+                                    field.valueAttribute ||
+                                    (['select', 'combobox'].includes(field.type)
+                                        ? 'value'
+                                        : undefined)
+                                "
+                                :option-attribute="
+                                    field.optionAttribute ||
+                                    (['select', 'combobox'].includes(field.type)
+                                        ? 'label'
+                                        : undefined)
+                                "
+                                :loading="
+                                    ['select', 'combobox'].includes(field.type)
+                                        ? optionLoading
+                                        : undefined
+                                "
+                            >
+                                <template
+                                    v-if="
+                                        ['select', 'combobox'].includes(
+                                            field.type,
+                                        )
+                                    "
+                                    #leading="{ optionsLoading }"
+                                >
+                                    <UIcon
+                                        v-if="optionsLoading"
+                                        name="i-heroicons-arrow-path"
+                                        class="animate-spin text-primary"
+                                    />
+                                    <UIcon
+                                        v-else
+                                        name="mdi:form-dropdown"
+                                        class="text-primary"
+                                    />
+                                </template>
+                            </component>
+                        </UFormGroup>
+                    </template>
+
+                    <div class="flex col-span-full justify-end gap-2 pt-4">
+                        <UButton
+                            color="gray"
+                            variant="ghost"
+                            @click="isModalOpen = false"
+                        >
+                            Cancel
+                        </UButton>
+                        <UButton
+                            :loading="loading"
+                            type="submit"
+                            label="Submit"
+                        />
+                    </div>
+                </UForm>
+            </UCard>
+        </template>
     </UModal>
 </template>
 

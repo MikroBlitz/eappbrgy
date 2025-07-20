@@ -1,5 +1,10 @@
 <template>
-    <UPopover :popper="{ placement: 'bottom-start' }">
+    <UPopover
+        :content="{
+            align: 'center',
+            side: 'top',
+        }"
+    >
         <UButton
             variant="outline"
             class="w-full flex items-center justify-center"
@@ -7,7 +12,7 @@
             :label="date ? format(date, 'd MMM, yyyy') : 'Select date'"
         />
 
-        <template #panel="{ close }">
+        <template #content="{ close }">
             <DatePicker v-model="date" is-required @close="close" />
         </template>
     </UPopover>

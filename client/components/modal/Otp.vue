@@ -4,92 +4,100 @@
         :prevent-close="loading"
         @update:model-value="emitClose"
     >
-        <div class="p-6 space-y-6">
-            <!-- Header -->
-            <div class="text-center space-y-2">
-                <div
-                    class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
-                >
-                    <Icon :name="icon" class="w-8 h-8 text-primary" />
-                </div>
-                <h3 class="text-xl font-bold text-primary">{{ title }}</h3>
-                <p class="text-sm text-gray-500">{{ description }}</p>
-            </div>
-
-            <!-- OTP Inputs -->
-            <div class="space-y-4">
-                <div class="flex justify-center gap-3">
-                    <input
-                        v-for="(digit, index) in otpDigits"
-                        :key="index"
-                        :ref="(el) => setInputRef(el, index)"
-                        v-model="otpDigits[index]"
-                        type="text"
-                        inputmode="numeric"
-                        maxlength="1"
-                        class="w-12 h-12 text-center bg-primary/10 text-lg font-bold text-primary border rounded-lg transition-colors"
-                        :class="{
-                            'border-red-500 focus:ring-red-500': hasError,
-                            'border-green-500 bg-green-50 dark:bg-green-900':
-                                digit && !hasError,
-                            'bg-gray-500': loading,
-                        }"
-                        :disabled="loading"
-                        @input="handleInput(index, $event)"
-                        @keydown="handleKeydown(index, $event)"
-                        @paste="handlePaste"
-                    />
-                </div>
-
-                <div v-if="hasError" class="text-center text-sm text-red-600">
-                    {{ errorMessage }}
-                </div>
-
-                <div v-if="showTimer" class="text-center text-sm text-gray-500">
-                    Code expires in
-                    <span class="font-mono font-bold text-green-600">{{
-                        formatTime(timeLeft)
-                    }}</span>
-                </div>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex flex-col gap-3">
-                <UButton
-                    size="lg"
-                    class="justify-center"
-                    :disabled="!isOtpComplete || loading"
-                    :loading="loading"
-                    @click="verifyOtpMethod"
-                >
-                    {{ loading ? "Loading..." : "Verify Code" }}
-                </UButton>
-
-                <div class="flex justify-between items-center">
-                    <UButton
-                        variant="ghost"
-                        color="gray"
-                        :disabled="loading"
-                        @click="emitClose(false)"
+        <template #content>
+            <div class="p-6 space-y-6">
+                <!-- Header -->
+                <div class="text-center space-y-2">
+                    <div
+                        class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
                     >
-                        Cancel
-                    </UButton>
-                    <UButton
-                        variant="ghost"
-                        size="sm"
-                        color="gray"
-                        :disabled="!canResend || loading"
-                        @click="sendOtp"
+                        <Icon :name="icon" class="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 class="text-xl font-bold text-primary">{{ title }}</h3>
+                    <p class="text-sm text-gray-500">{{ description }}</p>
+                </div>
+
+                <!-- OTP Inputs -->
+                <div class="space-y-4">
+                    <div class="flex justify-center gap-3">
+                        <input
+                            v-for="(digit, index) in otpDigits"
+                            :key="index"
+                            :ref="(el) => setInputRef(el, index)"
+                            v-model="otpDigits[index]"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="1"
+                            class="w-12 h-12 text-center bg-primary/10 text-lg font-bold text-primary border rounded-lg transition-colors"
+                            :class="{
+                                'border-red-500 focus:ring-red-500': hasError,
+                                'border-green-500 bg-green-50 dark:bg-green-900':
+                                    digit && !hasError,
+                                'bg-gray-500': loading,
+                            }"
+                            :disabled="loading"
+                            @input="handleInput(index, $event)"
+                            @keydown="handleKeydown(index, $event)"
+                            @paste="handlePaste"
+                        />
+                    </div>
+
+                    <div
+                        v-if="hasError"
+                        class="text-center text-sm text-red-600"
                     >
-                        {{
-                            canResend
-                                ? "Resend Code"
-                                : `Resend in ${resendTimer}s`
-                        }}
+                        {{ errorMessage }}
+                    </div>
+
+                    <div
+                        v-if="showTimer"
+                        class="text-center text-sm text-gray-500"
+                    >
+                        Code expires in
+                        <span class="font-mono font-bold text-green-600">{{
+                            formatTime(timeLeft)
+                        }}</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-col gap-3">
+                    <UButton
+                        size="lg"
+                        class="justify-center"
+                        :disabled="!isOtpComplete || loading"
+                        :loading="loading"
+                        @click="verifyOtpMethod"
+                    >
+                        {{ loading ? "Loading..." : "Verify Code" }}
                     </UButton>
+
+                    <div class="flex justify-between items-center">
+                        <UButton
+                            variant="ghost"
+                            color="neutral"
+                            :disabled="loading"
+                            @click="emitClose(false)"
+                        >
+                            Cancel
+                        </UButton>
+                        <UButton
+                            variant="ghost"
+                            size="sm"
+                            color="neutral"
+                            :disabled="!canResend || loading"
+                            @click="sendOtp"
+                        >
+                            {{
+                                canResend
+                                    ? "Resend Code"
+                                    : `Resend in ${resendTimer}s`
+                            }}
+                        </UButton>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
     </UModal>
 </template>
 

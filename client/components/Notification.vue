@@ -1,11 +1,17 @@
 <template>
-    <UPopover :popper="{ placement: 'bottom-start' }">
+    <UPopover
+        :content="{
+            align: 'end',
+            side: 'bottom',
+        }"
+    >
+        <!-- Trigger Slot -->
         <div class="relative">
             <UButton
                 icon="solar:bell-broken"
                 variant="ghost"
                 :trailing="false"
-                class="hover:bg-transparent hover:scale-110 transition-all duration-300 p-1"
+                class="hover:bg-transparent hover:scale-110 transition-all duration-300 p-1 cursor-pointer"
                 size="xl"
             />
 
@@ -18,7 +24,8 @@
             </div>
         </div>
 
-        <template #panel>
+        <!-- Content Slot -->
+        <template #content>
             <div class="w-96 max-h-screen overflow-hidden">
                 <!-- Header -->
                 <div
@@ -111,85 +118,71 @@
                         </div>
                     </div>
                 </div>
-
-                <!--                &lt;!&ndash; Footer &ndash;&gt;-->
-                <!--                <div-->
-                <!--                    v-if="announcements.length > 0"-->
-                <!--                    class="p-3 border-t border-gray-200 dark:border-gray-700"-->
-                <!--                >-->
-                <!--                    <UButton-->
-                <!--                        variant="ghost"-->
-                <!--                        size="sm"-->
-                <!--                        color="blue"-->
-                <!--                        class="w-full justify-center"-->
-                <!--                        @click="viewAllAnnouncements"-->
-                <!--                    >-->
-                <!--                        View all announcements-->
-                <!--                    </UButton>-->
-                <!--                </div>-->
             </div>
         </template>
     </UPopover>
 
     <!-- Announcement Modal -->
-    <UModal v-model="isModalOpen" :ui="{ width: 'w-full max-w-2xl' }">
-        <div v-if="selectedAnnouncement" class="p-6">
-            <!-- Modal Header -->
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                    <div
-                        class="h-10 w-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-                    >
-                        <Icon
-                            name="solar:document-text-outline"
-                            class="h-5 w-5"
+    <UModal v-model:open="isModalOpen">
+        <template #content>
+            <div v-if="selectedAnnouncement" class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="h-10 w-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                        >
+                            <Icon
+                                name="solar:document-text-outline"
+                                class="h-5 w-5"
+                            />
+                        </div>
+                        <div>
+                            <h2
+                                class="text-xl font-semibold text-gray-900 dark:text-white"
+                            >
+                                {{ selectedAnnouncement.title }}
+                            </h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Published
+                                {{
+                                    formatDateAgo(
+                                        selectedAnnouncement.publish_date,
+                                    )
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span
+                            v-if="isNew(selectedAnnouncement.created_at)"
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                        >
+                            New
+                        </span>
+                        <UButton
+                            variant="ghost"
+                            color="red"
+                            size="sm"
+                            icon="solar:close-circle-outline"
+                            @click="isModalOpen = false"
                         />
                     </div>
-                    <div>
-                        <h2
-                            class="text-xl font-semibold text-gray-900 dark:text-white"
-                        >
-                            {{ selectedAnnouncement.title }}
-                        </h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Published
-                            {{
-                                formatDateAgo(selectedAnnouncement.publish_date)
-                            }}
-                        </p>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="prose prose-sm max-w-none dark:prose-invert">
+                    <div
+                        class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap"
+                    >
+                        {{ selectedAnnouncement.content }}
                     </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <span
-                        v-if="isNew(selectedAnnouncement.created_at)"
-                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                    >
-                        New
-                    </span>
-                    <UButton
-                        variant="ghost"
-                        color="red"
-                        size="sm"
-                        icon="solar:close-circle-outline"
-                        @click="isModalOpen = false"
-                    />
-                </div>
-            </div>
 
-            <!-- Modal Content -->
-            <div class="prose prose-sm max-w-none dark:prose-invert">
+                <!-- Modal Footer -->
                 <div
-                    class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap"
+                    class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400"
                 >
-                    {{ selectedAnnouncement.content }}
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div
-                class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700"
-            >
-                <div class="text-xs text-gray-500 dark:text-gray-400">
                     Created {{ formatDateAgo(selectedAnnouncement.created_at) }}
                     <span
                         v-if="
@@ -202,14 +195,11 @@
                     </span>
                 </div>
             </div>
-        </div>
+        </template>
     </UModal>
 </template>
 
-<script setup>
-import { ref } from "vue";
-
-// Modal state
+<script setup lang="ts">
 const isModalOpen = ref(false);
 const selectedAnnouncement = ref(null);
 

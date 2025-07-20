@@ -30,7 +30,7 @@
                 class="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
                 <UButton
-                    color="gray"
+                    color="neutral"
                     variant="outline"
                     size="lg"
                     icon="i-heroicons-arrow-left"

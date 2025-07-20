@@ -1,5 +1,3 @@
-import type { BadgeColor } from "#ui/types";
-
 import {
     Shield,
     Briefcase,
@@ -63,18 +61,18 @@ export const roleIconMap: Record<string, any> = {
     "Youth Representative": Smile,
 };
 
-export const colorMap: Record<string, BadgeColor> = {
-    Admin: "emerald",
-    "Barangay Captain": "red",
-    "Barangay Councilor": "amber",
+export const colorMap: Record<string, any> = {
+    Admin: "success",
+    "Barangay Captain": "error",
+    "Barangay Councilor": "warning",
 
     "Barangay Health Worker": "green",
     "Barangay Secretary": "indigo",
-    "Barangay Tanod": "gray",
+    "Barangay Tanod": "neutral",
     "Barangay Treasurer": "yellow",
     "Barangay Volunteer": "teal",
-    "Data Encoder": "blue",
-    Guest: "gray",
+    "Data Encoder": "info",
+    Guest: "neutral",
     Manager: "orange",
     "PWD Representative": "pink",
     Resident: "sky",
@@ -82,8 +80,8 @@ export const colorMap: Record<string, BadgeColor> = {
     "SK Chairperson": "purple",
     "SK Councilor": "purple",
     "Social Welfare Officer": "rose",
-    "System Administrator": "emerald",
-    User: "blue",
+    "System Administrator": "success",
+    User: "info",
     "Youth Representative": "cyan",
 };
 
@@ -92,25 +90,23 @@ export const genderIconMap: Record<string, any> = {
     male: Male,
 };
 
-export const genderColorMap: Record<string, BadgeColor> = {
+export const genderColorMap: Record<string, any> = {
     female: "pink",
-    male: "blue",
+    male: "info",
 };
 
-export function getDocumentStatusColor(
-    status: string,
-): Record<string, BadgeColor> {
+export function getDocumentStatusColor(status: string): Record<string, any> {
     switch (status?.toLowerCase()) {
         case "approved":
-            return { color: "emerald" };
+            return { color: "success" };
         case "released":
-            return { color: "blue" };
+            return { color: "info" };
         case "expired":
-            return { color: "red" };
+            return { color: "error" };
         case "revoked":
-            return { color: "amber" };
+            return { color: "warning" };
         default:
-            return { color: "gray" };
+            return { color: "neutral" };
     }
 }
 

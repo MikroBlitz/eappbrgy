@@ -1,40 +1,42 @@
 <template>
     <UModal v-model="isConfirmOpen">
-        <div class="p-6 space-y-4">
-            <div class="flex items-center">
-                <UIcon
-                    v-if="props.icon"
-                    :name="props.icon"
-                    class="mr-3 text-red-500 text-xl"
-                />
-                <span
-                    class="text-lg text-gray-600 dark:text-gray-100 font-medium"
-                    >Confirm {{ props.label }}
-                </span>
-            </div>
+        <template #content>
+            <div class="p-6 space-y-4">
+                <div class="flex items-center">
+                    <UIcon
+                        v-if="props.icon"
+                        :name="props.icon"
+                        class="mr-3 text-red-500 text-xl"
+                    />
+                    <span
+                        class="text-lg text-gray-600 dark:text-gray-100 font-medium"
+                        >Confirm {{ props.label }}
+                    </span>
+                </div>
 
-            <p class="text-gray-500 dark:text-gray-200">
-                {{ props.description }}
-            </p>
+                <p class="text-gray-500 dark:text-gray-200">
+                    {{ props.description }}
+                </p>
 
-            <div class="flex justify-end space-x-3 pt-3">
-                <UButton
-                    color="gray"
-                    variant="outline"
-                    @click="isConfirmOpen = false"
-                >
-                    Cancel
-                </UButton>
-                <UButton
-                    :color="color"
-                    variant="solid"
-                    :loading="loading"
-                    @click="handleAction"
-                >
-                    {{ props.label }}
-                </UButton>
+                <div class="flex justify-end space-x-3 pt-3">
+                    <UButton
+                        color="neutral"
+                        variant="outline"
+                        @click="isConfirmOpen = false"
+                    >
+                        Cancel
+                    </UButton>
+                    <UButton
+                        :color="color"
+                        variant="solid"
+                        :loading="loading"
+                        @click="handleAction"
+                    >
+                        {{ props.label }}
+                    </UButton>
+                </div>
             </div>
-        </div>
+        </template>
     </UModal>
 </template>
 
