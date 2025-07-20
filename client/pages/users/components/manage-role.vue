@@ -17,8 +17,8 @@ import type { Role } from "~/types/codegen/graphql";
 import { permissionsPaginate } from "~/graphql/Permission";
 import { rolesPaginate, upsertRole, deleteRole } from "~/graphql/Role";
 
-import { columns, status } from "../data/columns";
-import { schema } from "../data/schema";
+import { columns, status } from "../data/role/columns";
+import { schema } from "../data/role/schema";
 
 const permissionName = "role";
 const crudConfig = useCrudConfig(

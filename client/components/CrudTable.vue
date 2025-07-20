@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col items-center p-2 h-[calc(100vh-100px)]">
         <div
-            class="w-full max-w-[1600px] border border-gray-100 dark:border-gray-700 rounded-lg flex flex-col h-[calc(100vh-80px)]"
+            class="w-full max-w-[1600px] border border-gray-100 dark:border-gray-700 rounded-lg flex flex-col h-[calc(100vh-85px)]"
         >
             <TableData
                 v-model:selected-rows="selectedRows"

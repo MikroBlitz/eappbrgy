@@ -19,8 +19,8 @@ import {
     deletePermission,
 } from "~/graphql/Permission";
 
-import { columns, filter } from "../data/columns";
-import { schema } from "../data/schema";
+import { columns, filter } from "../data/permission/columns";
+import { schema } from "../data/permission/schema";
 
 const permission = "permission";
 const crudConfig = useCrudConfig(

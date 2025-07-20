@@ -22,8 +22,8 @@ import {
     updateUserStatus,
 } from "~/graphql/User";
 
-import { columns, status } from "../data/columns";
-import { schema } from "../data/schema";
+import { columns, status } from "../data/user/columns";
+import { schema } from "../data/user/schema";
 
 const permission = "user";
 const crudConfig = useCrudConfig(

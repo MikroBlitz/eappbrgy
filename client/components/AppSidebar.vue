@@ -77,38 +77,6 @@
                             </ul>
                         </nav>
                     </div>
-
-                    <div class="border-t border-gray-200 dark:border-gray-800">
-                        <UDropdown :items="userMenuItems" class="w-full p-2">
-                            <UAvatar
-                                src="https://media.istockphoto.com/id/1288129985/vector/missing-image-of-a-person-placeholder.jpg?s=612x612&w=0&k=20&c=9kE777krx5mrFHsxx02v60ideRWvIgI1RWzR1X4MG2Y="
-                                size="sm"
-                                class="cursor-pointer"
-                            />
-
-                            <template #leading>
-                                <UAvatar
-                                    src="/api/placeholder/40/40"
-                                    alt="User"
-                                    size="sm"
-                                />
-                            </template>
-
-                            <div class="pl-2 flex flex-col items-start">
-                                <span
-                                    class="text-sm text-gray-800 dark:text-gray-200 font-medium"
-                                    >{{
-                                        auth.user?.name
-                                            ? auth.user?.name
-                                            : "No Name"
-                                    }}</span
-                                >
-                                <span class="text-xs text-gray-500">{{
-                                    auth.user?.email || "No Email"
-                                }}</span>
-                            </div>
-                        </UDropdown>
-                    </div>
                 </div>
             </USlideover>
         </UButton>
@@ -118,8 +86,7 @@
 <script setup lang="ts">
 const isOpen = ref(false);
 const route = useRoute();
-const auth = useAuthStore();
-const { mainMenuItems, userMenuItems } = useLinks();
+const { mainMenuItems } = useLinks();
 
 const isActive = (path: string) => {
     return route.path === path;

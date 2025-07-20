@@ -45,7 +45,7 @@
         .header {
             padding: 2rem 2rem 1.5rem;
             text-align: center;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
             color: white;
             position: relative;
         }
@@ -133,11 +133,11 @@
             width: 50px;
             height: 60px;
             background: #ffffff;
-            border: 2px solid #3b82f6;
+            border: 2px solid #22c55e;
+            color: #15803d;
             border-radius: 8px;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #1e40af;
             margin: 0 4px;
             line-height: 60px;
             text-align: center;
@@ -181,8 +181,8 @@
         }
 
         .security-notice {
-            background: #f0f9ff;
-            border: 1px solid #7dd3fc;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
             border-radius: 8px;
             padding: 1.5rem;
             margin: 2rem 0;
@@ -191,7 +191,7 @@
         .security-notice p {
             margin: 0;
             font-size: 0.875rem;
-            color: #0369a1;
+            color: #166534;
             line-height: 1.6;
         }
 
@@ -228,14 +228,14 @@
         }
 
         .contact-link {
-            color: #3b82f6;
+            color: #22c55e;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s ease;
         }
 
         .contact-link:hover {
-            color: #1e40af;
+            color: #15803d;
         }
 
         .divider {
@@ -247,15 +247,15 @@
         .app-info {
             margin: 1rem 0;
             padding: 1rem;
-            background: #dbeafe;
+            background: #dcfce7;
             border-radius: 8px;
-            border-left: 4px solid #3b82f6;
+            border-left: 4px solid #22c55e;
         }
 
         .app-info p {
             margin: 0;
             font-size: 0.75rem;
-            color: #1e40af;
+            color: #15803d;
             font-weight: 500;
         }
 

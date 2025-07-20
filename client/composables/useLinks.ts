@@ -12,18 +12,6 @@ export const useLinks = () => {
             to: "/dashboard",
         },
         {
-            icon: "solar:lock-outline",
-            label: "Permissions",
-            permission: auth.can("view permission"),
-            to: "/permissions",
-        },
-        {
-            icon: "solar:key-outline",
-            label: "Roles",
-            permission: auth.can("view role"),
-            to: "/roles",
-        },
-        {
             icon: "solar:users-group-rounded-outline",
             label: "Users",
             permission: auth.can("view user"),

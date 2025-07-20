@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-7xl mx-auto p-6">
+    <div class="min-h-[calc(90vh-100px)] bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-[1600px] mx-auto p-6">
             <!-- Header Section -->
             <div class="mb-8">
                 <h1
@@ -259,8 +259,8 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <UCard>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                <UCard class="col-span-12 lg:col-span-3">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -313,140 +313,8 @@
                     </div>
                 </UCard>
 
-                <!-- Recent Activities -->
-                <UCard>
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <h3
-                                class="text-lg font-semibold text-gray-900 dark:text-white"
-                            >
-                                Recent Activities
-                            </h3>
-                            <UIcon
-                                name="i-heroicons-clock"
-                                class="w-5 h-5 text-gray-400"
-                            />
-                        </div>
-                    </template>
-
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium"
-                                        >Juan Dela Cruz</span
-                                    >
-                                    requested a barangay certificate
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    2 hours ago
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium"
-                                        >Maria Santos</span
-                                    >
-                                    submitted a complaint
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    4 hours ago
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-3">
-                            <UAvatar
-                                size="sm"
-                                src="/api/placeholder/32/32"
-                                alt="User"
-                            />
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-white"
-                                >
-                                    <span class="font-medium">Admin</span>
-                                    published new announcement
-                                </p>
-                                <p
-                                    class="text-xs text-gray-500 dark:text-gray-400"
-                                >
-                                    1 day ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </UCard>
-
-                <!-- Announcements -->
-                <UCard>
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <h3
-                                class="text-lg font-semibold text-gray-900 dark:text-white"
-                            >
-                                Latest Announcements
-                            </h3>
-                            <UIcon
-                                name="i-heroicons-megaphone"
-                                class="w-5 h-5 text-gray-400"
-                            />
-                        </div>
-                    </template>
-
-                    <div class="space-y-4">
-                        <UAlert
-                            color="blue"
-                            variant="soft"
-                            title="Community Meeting"
-                            description="Monthly barangay meeting scheduled for next Friday at 7:00 PM"
-                            icon="i-heroicons-information-circle"
-                        />
-
-                        <UAlert
-                            color="yellow"
-                            variant="soft"
-                            title="Water Interruption"
-                            description="Scheduled water maintenance on Sunday, 6:00 AM - 12:00 PM"
-                            icon="i-heroicons-exclamation-triangle"
-                        />
-
-                        <UAlert
-                            color="green"
-                            variant="soft"
-                            title="New Health Program"
-                            description="Free health checkup program starts next month"
-                            icon="i-heroicons-heart"
-                        />
-                    </div>
-                </UCard>
-            </div>
-
-            <!-- Data Tables -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Recent Documents -->
-                <UCard>
+                <UCard class="col-span-12 lg:col-span-5">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -609,93 +477,46 @@
                     </div>
                 </UCard>
 
-                <!-- Upcoming Events -->
-                <UCard>
+                <!-- Announcements -->
+                <UCard class="col-span-12 lg:col-span-4">
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
                                 class="text-lg font-semibold text-gray-900 dark:text-white"
                             >
-                                Upcoming Events
+                                Latest Announcements
                             </h3>
-                            <UButton color="gray" variant="ghost" size="sm">
-                                View Calendar
-                            </UButton>
+                            <UIcon
+                                name="i-heroicons-megaphone"
+                                class="w-5 h-5 text-gray-400"
+                            />
                         </div>
                     </template>
 
                     <div class="space-y-4">
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg"
-                        >
-                            <div class="flex-shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">25</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Monthly Barangay Meeting
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 25, 2025 at 7:00 PM
-                                </p>
-                            </div>
-                        </div>
+                        <UAlert
+                            color="blue"
+                            variant="soft"
+                            title="Community Meeting"
+                            description="Monthly barangay meeting scheduled for next Friday at 7:00 PM"
+                            icon="i-heroicons-information-circle"
+                        />
 
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg"
-                        >
-                            <div class="flex-shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">28</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Community Clean-up Drive
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 28, 2025 at 6:00 AM
-                                </p>
-                            </div>
-                        </div>
+                        <UAlert
+                            color="yellow"
+                            variant="soft"
+                            title="Water Interruption"
+                            description="Scheduled water maintenance on Sunday, 6:00 AM - 12:00 PM"
+                            icon="i-heroicons-exclamation-triangle"
+                        />
 
-                        <div
-                            class="flex items-center space-x-4 p-4 bg-purple-50 dark:bg-purple-950 rounded-lg"
-                        >
-                            <div class="flex-shrink-0">
-                                <div
-                                    class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center"
-                                >
-                                    <span class="text-white font-bold">30</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                    Health and Wellness Program
-                                </p>
-                                <p
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    June 30, 2025 at 9:00 AM
-                                </p>
-                            </div>
-                        </div>
+                        <UAlert
+                            color="green"
+                            variant="soft"
+                            title="New Health Program"
+                            description="Free health checkup program starts next month"
+                            icon="i-heroicons-heart"
+                        />
                     </div>
                 </UCard>
             </div>
