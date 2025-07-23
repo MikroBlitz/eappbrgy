@@ -10,7 +10,7 @@
         "@nuxtjs/color-mode": "3.5.2",
         "@nuxtjs/tailwindcss": "6.13.2",
         "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
-        "@pinia/nuxt": "^0.10.1",
+        "@pinia/nuxt": "^0.11.2",
         "@popperjs/core": "^2.11.8",
         "date-fns": "^4.1.0",
         "eslint": "^9.0.0",
@@ -444,7 +444,7 @@
 
     "@pinia-plugin-persistedstate/nuxt": ["@pinia-plugin-persistedstate/nuxt@1.2.1", "", { "dependencies": { "@nuxt/kit": "^3.12.2", "defu": "^6.1.4", "pinia-plugin-persistedstate": ">=3.2.1" }, "peerDependencies": { "@pinia/nuxt": "^0.5.0" } }, "sha512-q8s+4aQW/AjBMyeqLL48/qzBR5lcgnvvf1525ovNuKf6Wl9CsoLjPKh/5X8vNoKGwSow4gP7lVmdYPQRypgjgg=="],
 
-    "@pinia/nuxt": ["@pinia/nuxt@0.10.1", "", { "dependencies": { "@nuxt/kit": "^3.9.0" }, "peerDependencies": { "pinia": "^3.0.1" } }, "sha512-xrpkKZHSmshPK6kQzboJ+TZiZ5zj73gBCI5SfiUaJkKKS9gx4B1hLEzJIjxZl0/HS5jRWrIvQ+u9ulvIRlNiow=="],
+    "@pinia/nuxt": ["@pinia/nuxt@0.11.2", "", { "dependencies": { "@nuxt/kit": "^3.9.0" }, "peerDependencies": { "pinia": "^3.0.3" } }, "sha512-CgvSWpbktxxWBV7ModhAcsExsQZqpPq6vMYEe9DexmmY6959ev8ukL4iFhr/qov2Nb9cQAWd7niFDnaWkN+FHg=="],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 

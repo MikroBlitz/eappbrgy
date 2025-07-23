@@ -33,6 +33,7 @@ import { formatDateTimeForGraphQL } from "~/utils/helpers";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
+const auth = useAuthStore();
 const toast = useToast();
 const selectedRow = ref<Document | null>(null);
 const selectedStatus = ref<string | null>(null);
@@ -130,25 +131,32 @@ const tableData = useTableData<Document>(
 
 const customActions: TableAction[] = [
     {
+        color: () => "gray",
+        condition: () => auth.can("pending document"),
+        icon: () => "solar:clock-square-broken",
+        onClick: (row: Document) => confirmUpdateStatus(row, "pending"),
+        tooltip: () => "Revert to pending",
+    },
+    {
         color: () => "green",
-        condition: () => true,
+        condition: () => auth.can("approve document"),
         icon: () => "solar:check-square-broken",
         onClick: (row: Document) => confirmUpdateStatus(row, "approved"),
-        tooltip: () => "Approve this document",
+        tooltip: (row: Document) => `Approve ${toTitleCase(row.type)}`,
     },
     {
         color: () => "emerald",
-        condition: () => true,
+        condition: () => auth.can("release document"),
         icon: () => "solar:square-arrow-right-up-broken",
         onClick: (row: Document) => confirmUpdateStatus(row, "released"),
-        tooltip: () => "Release this document",
+        tooltip: (row: Document) => `Release ${toTitleCase(row.type)}`,
     },
     {
         color: () => "orange",
-        condition: () => true,
+        condition: () => auth.can("revoke document"),
         icon: () => "solar:close-square-broken",
         onClick: (row: Document) => confirmUpdateStatus(row, "revoked"),
-        tooltip: () => "Revoke this document",
+        tooltip: (row: Document) => `Revoke ${toTitleCase(row.type)}`,
     },
 ];
 

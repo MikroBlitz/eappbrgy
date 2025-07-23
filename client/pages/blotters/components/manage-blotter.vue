@@ -142,21 +142,21 @@ const tableData = useTableData<Blotter>(
 const customActions: TableAction[] = [
     {
         color: () => "blue",
-        condition: () => true,
+        condition: () => auth.can("open blotter"),
         icon: () => "solar:file-broken",
         onClick: (row: Blotter) => openOtpWith(row, "open"),
         tooltip: () => "Open this blotter",
     },
     {
         color: () => "emerald",
-        condition: () => true,
+        condition: () => auth.can("resolve blotter"),
         icon: () => "solar:file-check-broken",
         onClick: (row: Blotter) => openOtpWith(row, "resolved"),
         tooltip: () => "Resolve this blotter",
     },
     {
         color: () => "red",
-        condition: () => true,
+        condition: () => auth.can("dismiss blotter"),
         icon: () => "solar:file-remove-broken",
         onClick: (row: Blotter) => openOtpWith(row, "dismissed"),
         tooltip: () => "Dismiss this blotter",

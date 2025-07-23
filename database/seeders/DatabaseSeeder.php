@@ -100,6 +100,9 @@ class DatabaseSeeder extends Seeder
             'create blotter',
             'edit blotter',
             'delete blotter',
+            'open blotter',
+            'resolve blotter',
+            'dismiss blotter',
 
             'view official',
             'create official',
@@ -110,6 +113,10 @@ class DatabaseSeeder extends Seeder
             'create document',
             'edit document',
             'delete document',
+            'approve document',
+            'pending document',
+            'release document',
+            'revoke document',
         ];
 
         // Create permissions if not exists
