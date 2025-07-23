@@ -1,11 +1,11 @@
 import { UBadge } from "#components";
 import { ShieldCheck } from "lucide-vue-next";
 
-import type { Column } from "~/components/table/types";
+import type { Permission } from "~/types/codegen/graphql";
 
 import { colorMap } from "~/utils/helpers";
 
-export const columns: Column[] = [
+export const columns = [
     {
         class: "w-2",
         key: "select",
@@ -18,7 +18,7 @@ export const columns: Column[] = [
     {
         key: "permissions",
         label: "Permissions",
-        render: (row) => {
+        render: (row: Permission) => {
             const Icon = ShieldCheck;
 
             return h(
@@ -54,7 +54,7 @@ export const columns: Column[] = [
     {
         key: "updated_at",
         label: "Updated At",
-        render: (row) => h("div", getFriendlyDate(row.updated_at)),
+        render: (row: Permission) => h("div", getFriendlyDate(row.updated_at)),
         sortable: true,
     },
     {

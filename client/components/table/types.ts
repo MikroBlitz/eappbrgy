@@ -54,6 +54,21 @@ export interface CrudOperations<T> {
     upsert: any;
 }
 
+export interface TableOperations<T> {
+    delete: <TData = unknown>(id: unknown) => TData;
+    getFormState?: (item?: T) => Record<string, unknown>;
+    prepareSubmitData?: (
+        data: Record<string, unknown>,
+        selectedItem?: T,
+    ) => Record<string, unknown>;
+    query: <TData = unknown>(id: unknown) => TData;
+    updateStatus: <TData = unknown>(params: {
+        id: unknown;
+        status: boolean;
+    }) => TData;
+    upsert: <TData = unknown>(data: unknown) => TData;
+}
+
 export type SearchableFieldHandlers = {
     [key: string]: {
         options: Ref<FieldOption[]>;

@@ -1,11 +1,6 @@
 <template>
     <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="status"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
+        :table-data="tableData"
         :option-loading="permissionSearch.loadingOptions"
         :default-view-modal="false"
     />
@@ -21,20 +16,6 @@ import { columns, status } from "../data/role/columns";
 import { schema } from "../data/role/schema";
 
 const permissionName = "role";
-const crudConfig = useCrudConfig(
-    "Roles", // title
-    "Role", // subtitle
-    "solar:key-outline", // icon
-    {
-        // permissions
-        create: `create ${permissionName}`,
-        delete: `delete ${permissionName}`,
-        edit: `edit ${permissionName}`,
-        view: `view ${permissionName}`,
-    },
-);
-
-// Permission Search Option
 const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
     queryKey: "permissionsPaginate",
 });
@@ -47,47 +28,54 @@ const formSchema = computed(() =>
     }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Role>(
+
+const tableData = useTableData<Role>(
+    {
+        icon: "solar:key-outline",
+        permissions: {
+            create: `create ${permissionName}`,
+            delete: `delete ${permissionName}`,
+            edit: `edit ${permissionName}`,
+            view: `view ${permissionName}`,
+        },
+        singular: "Role",
+        title: "Roles",
+    },
     {
         delete: deleteRole,
         paginate: rolesPaginate,
         upsert: upsertRole,
     },
     {
+        columns,
+        filters: status,
+        formSchema: formSchema.value,
         getFormState: (role?: Role) => {
-            if (role) {
-                const permissionIds = role.permissions
-                    ? role.permissions.map((perm) => perm?.id)
-                    : [];
-                permissionSearch.initializeOptions();
-                return {
-                    id: role.id,
-                    name: role.name,
-                    permissions: permissionIds,
-                };
-            } else {
-                permissionSearch.initializeOptions();
-                return {
-                    id: undefined,
-                    name: "",
-                    permissions: [],
-                };
-            }
+            const permissionIds =
+                role?.permissions?.map((perm) => perm?.id) || [];
+            permissionSearch.initializeOptions();
+            return role
+                ? {
+                      id: role.id,
+                      name: role.name,
+                      permissions: permissionIds,
+                  }
+                : {
+                      id: undefined,
+                      name: "",
+                      permissions: [],
+                  };
         },
-        prepareSubmitData: (data: any, selectedRole?: Role) => {
-            let permissions: string[] = [];
-            if (data.permissions) {
-                permissions = Array.isArray(data.permissions)
+        prepareSubmitData: (data, selectedRole?: Role) => ({
+            ...data,
+            id: selectedRole?.id,
+            permissions: {
+                sync: Array.isArray(data.permissions)
                     ? data.permissions
-                    : [data.permissions];
-            }
-
-            return {
-                ...data,
-                id: selectedRole?.id || undefined,
-                permissions: { sync: permissions },
-            };
-        },
+                    : [data.permissions],
+            },
+        }),
+        zodSchema: zodSchema.value,
     },
 );
 </script>

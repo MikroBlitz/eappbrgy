@@ -11,10 +11,10 @@
                 v-model:search="search"
                 v-model:selected-status="selectedFilters"
                 v-model:selected-columns="selectedColumns"
-                :columns="columns"
+                :columns="tableData.columns"
                 :data="data"
                 :loading="loading"
-                :filters="filters"
+                :filters="tableData.filters || []"
                 :total-items="pageTotal"
                 :actions="computedActions"
                 class="flex flex-col h-full overflow-auto"
@@ -25,21 +25,21 @@
                     <div class="flex w-full items-center justify-between pt-2">
                         <div class="flex items-center gap-2">
                             <Icon
-                                :name="config.icon"
+                                :name="tableData.icon"
                                 class="text-gray-900 mr-2 dark:text-emerald-500"
                                 size="30"
                             />
                             <h2
                                 class="font-semibold text-xl text-gray-900 dark:text-gray-100 leading-tight"
                             >
-                                {{ config.title }}
+                                {{ tableData.title }}
                             </h2>
                         </div>
                         <div class="flex gap-2">
                             <template
-                                v-if="auth.can(config.permissions.create)"
+                                v-if="auth.can(tableData.permissions.create)"
                             >
-                                <UTooltip :text="`Add ${config.singular}`">
+                                <UTooltip :text="`Add ${tableData.singular}`">
                                     <UButton
                                         class="hover:bg-transparent hover:scale-110 transition-all duration-300 p-1"
                                         icon="solar:add-square-broken"
@@ -65,12 +65,12 @@
             </TableData>
         </div>
 
-        <!-- Form Modal -->
+        <!-- Modals -->
         <ModalForm
             v-model:is-open="isOpen"
-            :title="`${config.singular} Form`"
-            :form-schema="formSchema"
-            :zod-schema="zodSchema"
+            :title="`${tableData.singular} Form`"
+            :form-schema="tableData.formSchema"
+            :zod-schema="tableData.zodSchema"
             :state="formState"
             :on-submit="onSubmit"
             :loading="modalLoading"
@@ -78,31 +78,28 @@
             :is-fullscreen="isFormFullscreen"
         />
 
-        <!-- View Modal -->
         <ModalView
             v-if="defaultViewModal"
             v-model:is-open="isViewModal"
-            :title="`View ${config.singular}`"
-            :form-schema="formSchema"
+            :title="`View ${tableData.singular}`"
+            :form-schema="tableData.formSchema"
             :state="viewState"
-            :show-edit-button="auth.can(config.permissions.edit)"
+            :show-edit-button="auth.can(tableData.permissions.edit)"
             @edit-clicked="handleEditFromView"
         />
 
-        <!-- Delete Modal -->
         <ModalConfirm
             v-model:is-open="isDeleteModal"
             :loading="modalLoading"
             label="Delete"
-            :description="`Are you sure you want to delete this ${config.singular.toLowerCase()}?`"
+            :description="`Are you sure you want to delete this ${tableData.singular.toLowerCase()}?`"
             icon="i-heroicons-exclamation-triangle"
             :action="() => handleDelete(selectedItem.id)"
             color="red"
         />
 
-        <!-- Change Status Modal -->
         <ModalConfirm
-            v-if="config.hasStatus"
+            v-if="tableData.hasStatus"
             v-model:is-open="isChangeStatusModal"
             :loading="modalLoading"
             label="Switch Status"
@@ -115,34 +112,62 @@
 </template>
 
 <script setup lang="ts" generic="T extends Record<string, any>">
+import type { DocumentNode } from "@apollo/client";
 import type { FormSubmitEvent } from "#ui/types";
-import type { ZodType, ZodTypeDef } from "zod";
+import type { ZodSchema } from "zod";
 
 import { useDebounce } from "@vueuse/shared";
 
 import type {
-    CrudConfig,
-    CrudOperations,
+    Column,
+    FilterOption,
     TableAction,
 } from "~/components/table/types";
 import type { FormSchema } from "~/types/fields";
 
 interface Props<T extends Record<string, unknown>> {
-    actions?: TableAction[];
-    columns: Array<Record<string, unknown>>;
-    config: CrudConfig;
-    defaultViewModal: boolean;
-    filters?: Array<Record<string, unknown>>;
-    formSchema: FormSchema;
-    isFormFullscreen: boolean;
-    operations: CrudOperations<T>;
-    optionLoading?: Ref<boolean, boolean> | boolean;
-    zodSchema: ZodType<any, ZodTypeDef, any> | undefined;
-
-    // Action configuration
     actionPosition?: "start" | "end" | "both";
+    actions?: TableAction[];
+    defaultViewModal?: boolean;
     hideDefaultActions?: boolean;
+    isFormFullscreen?: boolean;
     maxVisibleActions?: number;
+    optionLoading?: Ref<boolean, boolean> | boolean;
+    tableData: {
+        // Config
+        title: string;
+        singular: string;
+        icon: string;
+        permissions: {
+            view: string;
+            create: string;
+            edit: string;
+            delete: string;
+            updateStatus?: string;
+        };
+        hasStatus?: boolean;
+
+        // Operations
+        query: DocumentNode;
+        upsert: DocumentNode;
+        delete: DocumentNode;
+        updateStatus?: <TData = unknown>(params: {
+            id: unknown;
+            status: boolean;
+        }) => TData;
+        getFormState: (item?: T) => Record<string, unknown>;
+        graphQLMutation: any;
+        prepareSubmitData: (
+            data: Record<string, unknown>,
+            selectedItem?: T,
+        ) => Record<string, unknown>;
+
+        // UI
+        columns: Column[];
+        filters?: FilterOption[];
+        formSchema: FormSchema;
+        zodSchema?: ZodSchema;
+    };
     useActionDropdown?: boolean;
 }
 
@@ -150,7 +175,6 @@ const props = withDefaults(defineProps<Props<any>>(), {
     actionPosition: "end",
     actions: () => [],
     defaultViewModal: true,
-    filters: () => [],
     hideDefaultActions: false,
     isFormFullscreen: false,
     maxVisibleActions: 5,
@@ -159,9 +183,10 @@ const props = withDefaults(defineProps<Props<any>>(), {
 });
 
 const auth = useAuthStore();
-const selectedColumns = ref(props.columns);
-const selectedRows = ref<T[]>([]);
 
+// Refs
+const selectedColumns = ref(props.tableData.columns);
+const selectedRows = ref<T[]>([]);
 const sort = ref({ column: "id", direction: "asc" as "asc" | "desc" });
 const page = ref(1);
 const pageCount = ref(10);
@@ -180,261 +205,197 @@ const rotationRefetch = ref(0);
 const formState = reactive({});
 const viewState = reactive({});
 
-const queryVariables = computed(() => {
-    const variables: Record<string, unknown> = {
-        first: Number(pageCount.value),
-        page: page.value,
-    };
-
-    if (debouncedSearch.value) variables.search = debouncedSearch.value;
-    if (sort.value) variables.sort = sort.value;
-    if (selectedFilters.value && selectedFilters.value.length > 0) {
-        variables.filter = selectedFilters.value;
-    }
-
-    return variables;
-});
+// Computed
+const queryVariables = computed(() => ({
+    first: Number(pageCount.value),
+    page: page.value,
+    ...(debouncedSearch.value && { search: debouncedSearch.value }),
+    ...(sort.value && { sort: sort.value }),
+    ...(selectedFilters.value?.length && { filter: selectedFilters.value }),
+}));
 
 const { error, loading, refetch, result } = useQuery(
-    props.operations.query,
+    props.tableData.query,
     queryVariables,
-    {
-        errorPolicy: "all",
-        fetchPolicy: "cache-and-network",
-    },
+    { errorPolicy: "all", fetchPolicy: "cache-and-network" },
 );
 
 const data = computed(() => {
     if (!result.value) return [];
     const queryKey = Object.keys(result.value)[0];
-    if (!queryKey) return [];
-    return result.value[queryKey].data || [];
+    return queryKey ? result.value[queryKey].data || [] : [];
 });
 
 const pageTotal = computed(() => {
     if (!result.value) return 0;
     const queryKey = Object.keys(result.value)[0];
-    if (!queryKey) return 0;
-    return result.value[queryKey].paginatorInfo?.total || 0;
+    return queryKey ? result.value[queryKey].paginatorInfo?.total || 0 : 0;
 });
 
-// Helper function to resolve dynamic values
-const resolveDynamicValue = <T, K>(value: K | ((row: T) => K), row: T): K => {
-    return typeof value === "function" ? (value as (row: T) => K)(row) : value;
-};
-
-// Enhanced computed actions with full customization
+// Actions
 const computedActions = computed(() => {
-    const customActions = props.actions.map((action, _index) => ({
-        ...action,
-    }));
+    const customActions = props.actions.map((action) => ({ ...action }));
 
-    const defaultActions = props.hideDefaultActions
-        ? []
-        : [
-              ...(props.config.hasStatus
-                  ? [
-                        {
-                            color: (row: T) =>
-                                row.is_active ? "green" : "gray",
-                            condition: () =>
-                                auth.can(
-                                    props.config.permissions.updateStatus || "",
-                                ),
-                            icon: (row: T) =>
-                                row.is_active
-                                    ? "mdi:toggle-switch"
-                                    : "mdi:toggle-switch-off",
-                            onClick: (row: T) => openChangeStatusModal(row),
-                            tooltip: (row: T) =>
-                                `Switch status to "${row.is_active ? "Inactive" : "Active"}"`,
-                        },
-                    ]
-                  : []),
+    if (props.hideDefaultActions) return customActions;
 
-              // View action
-              {
-                  color: () => "yellow",
-                  condition: () =>
-                      props.defaultViewModal &&
-                      auth.can(props.config.permissions.view),
-                  icon: () => "solar:eye-broken",
-                  onClick: (row: T) => openViewModal(row),
-                  tooltip: (row: T) =>
-                      `View ${props.config.singular} ${row.name || row.id}`,
-              },
-
-              // Edit action
-              {
-                  color: () => "blue",
-                  condition: () => auth.can(props.config.permissions.edit),
-                  icon: () => "solar:pen-new-square-outline",
-                  onClick: (row: T) => openEditModal(row),
-                  tooltip: (row: T) =>
-                      `Edit ${props.config.singular} ${row.name || row.id}`,
-              },
-
-              // Delete action
-              {
-                  color: () => "red",
-                  condition: () => auth.can(props.config.permissions.delete),
-                  icon: () => "solar:trash-bin-minimalistic-broken",
-                  onClick: (row: T) => openDeleteModal(row),
-                  tooltip: (row: T) =>
-                      `Delete ${props.config.singular} ${row.name || row.id}`,
-              },
-          ];
-
-    const allActions = [...customActions, ...defaultActions];
-
-    return allActions.map((action) => ({
-        color: action.color,
-        condition: action.condition,
-        icon: action.icon,
-        onClick: action.onClick,
-        tooltip: action.tooltip,
-    }));
+    return [
+        ...customActions,
+        ...(props.tableData.hasStatus
+            ? [
+                  {
+                      color: (row: T) => (row.is_active ? "green" : "gray"),
+                      condition: () =>
+                          auth.can(
+                              props.tableData.permissions.updateStatus || "",
+                          ),
+                      icon: (row: T) =>
+                          row.is_active
+                              ? "mdi:toggle-switch"
+                              : "mdi:toggle-switch-off",
+                      onClick: (row: T) => openChangeStatusModal(row),
+                      tooltip: (row: T) =>
+                          `Switch status to "${row.is_active ? "Inactive" : "Active"}"`,
+                  },
+              ]
+            : []),
+        {
+            color: () => "yellow",
+            condition: () =>
+                props.defaultViewModal &&
+                auth.can(props.tableData.permissions.view),
+            icon: () => "solar:eye-broken",
+            onClick: (row: T) => openViewModal(row),
+            tooltip: (row: T) =>
+                `View ${props.tableData.singular} ${row.name || row.id}`,
+        },
+        {
+            color: () => "blue",
+            condition: () => auth.can(props.tableData.permissions.edit),
+            icon: () => "solar:pen-new-square-outline",
+            onClick: (row: T) => openEditModal(row),
+            tooltip: (row: T) =>
+                `Edit ${props.tableData.singular} ${row.name || row.id}`,
+        },
+        {
+            color: () => "red",
+            condition: () => auth.can(props.tableData.permissions.delete),
+            icon: () => "solar:trash-bin-minimalistic-broken",
+            onClick: (row: T) => openDeleteModal(row),
+            tooltip: (row: T) =>
+                `Delete ${props.tableData.singular} ${row.name || row.id}`,
+        },
+    ];
 });
 
-// Watch for errors and handle them
-watch(error, (newError) => {
-    if (newError) {
-        console.error(
-            `Error fetching ${props.config.title.toLowerCase()}:`,
-            newError,
-        );
-    }
-});
-
+// Methods
 const resetFilters = () => {
     search.value = "";
     selectedFilters.value = [];
-    sort.value = { column: "id", direction: "asc" as "asc" | "desc" };
+    sort.value = { column: "id", direction: "asc" };
 };
 
-function select(row: T) {
+const select = (row: T) => {
     const index = selectedRows.value.findIndex((item) => item.id === row.id);
-    if (index === -1) {
-        selectedRows.value.push(row);
-    } else {
-        selectedRows.value.splice(index, 1);
-    }
-}
+    index === -1
+        ? selectedRows.value.push(row)
+        : selectedRows.value.splice(index, 1);
+};
 
-function openAddModal() {
-    selectedItem.value = null;
-    Object.assign(formState, props.operations.getFormState());
-    isOpen.value = true;
-}
-
-function openViewModal(item: T) {
+const openModal = (
+    item: T | null,
+    modal: Ref<boolean>,
+    state: Record<string, any>,
+) => {
     selectedItem.value = item;
-    Object.assign(viewState, props.operations.getFormState(item));
-    isViewModal.value = true;
-}
+    Object.assign(state, props.tableData.getFormState(item));
+    modal.value = true;
+};
 
-function openEditModal(item: T) {
-    selectedItem.value = item;
-    Object.assign(formState, props.operations.getFormState(item));
-    isOpen.value = true;
-}
-
-function openDeleteModal(item: T) {
+const openAddModal = () => openModal(null, isOpen, formState);
+const openViewModal = (item: T) => openModal(item, isViewModal, viewState);
+const openEditModal = (item: T) => openModal(item, isOpen, formState, true);
+const openDeleteModal = (item: T) => {
     selectedItem.value = item;
     isDeleteModal.value = true;
-}
-
-function openChangeStatusModal(item: T) {
+};
+const openChangeStatusModal = (item: T) => {
     selectedItem.value = item;
     isChangeStatusModal.value = true;
-}
+};
 
-function handleEditFromView() {
+const handleEditFromView = () => {
     isViewModal.value = false;
-    // The formState should already be populated from openViewModal
     Object.assign(formState, viewState);
     isOpen.value = true;
-}
+};
 
-async function handleRefetch() {
+const handleRefetch = async () => {
     rotationRefetch.value += 360;
     try {
         await refetch();
     } catch (error) {
         console.error(
-            `Error refetching ${props.config.title.toLowerCase()}:`,
+            `Error refetching ${props.tableData.title.toLowerCase()}:`,
             error,
         );
     }
-}
+};
 
-async function handleDelete(id: string) {
-    const { mutate: deleteMutation } = useMutation(props.operations.delete);
-    return useGraphQLMutation(
-        props.config.singular,
-        "deleted",
-        modalLoading,
-        { id },
-        {
-            auth: auth.user?.id,
-            fetch: () => refetch(),
-            modal: isDeleteModal,
-            mutation: deleteMutation,
-        },
-    );
-}
+const executeMutation = async (
+    action: "delete" | "updateStatus" | "upsert",
+    input: any,
+    successMessage: string,
+    modal: Ref<boolean>,
+) => {
+    if (!props.tableData[action]) return;
 
-async function handleStatusChange(id: string) {
-    if (!props.operations.updateStatus || !selectedItem.value) return;
-
-    const { mutate: statusMutation } = useMutation(
-        props.operations.updateStatus,
-    );
-    const input: Record<string, unknown> = {
-        id,
-        is_active: !selectedItem.value.is_active,
-    };
-
-    return useGraphQLMutation(
-        `${props.config.singular} Status`,
-        "updated",
+    const { mutate } = useMutation(props.tableData[action]);
+    return props.tableData.graphQLMutation(
+        action === "updateStatus"
+            ? `${props.tableData.singular} Status`
+            : props.tableData.singular,
+        successMessage,
         modalLoading,
         input,
         {
             auth: auth.user?.id,
             fetch: () => refetch(),
-            modal: isChangeStatusModal,
-            mutation: statusMutation,
+            modal,
+            mutation: mutate,
         },
     );
-}
+};
 
-async function onSubmit(event: FormSubmitEvent<any>) {
-    const { mutate: upsertMutation } = useMutation(props.operations.upsert);
-    const input = props.operations.prepareSubmitData(
+const handleDelete = (id: string) =>
+    executeMutation("delete", { id }, "deleted", isDeleteModal);
+const handleStatusChange = (id: string) =>
+    executeMutation(
+        "updateStatus",
+        { id, is_active: !selectedItem.value?.is_active },
+        "updated",
+        isChangeStatusModal,
+    );
+
+const onSubmit = (event: FormSubmitEvent<any>) => {
+    const input = props.tableData.prepareSubmitData(
         event.data,
         selectedItem.value,
     );
+    return executeMutation("upsert", { input }, "saved", isOpen);
+};
 
-    return useGraphQLMutation(
-        props.config.singular,
-        "saved",
-        modalLoading,
-        { input },
-        {
-            fetch: () => refetch(),
-            modal: isOpen,
-            mutation: upsertMutation,
-        },
-    );
-}
+watch(error, (newError) => {
+    if (newError)
+        console.error(
+            `Error fetching ${props.tableData.title.toLowerCase()}:`,
+            newError,
+        );
+});
 
-// Expose helper function for parent components
 defineExpose({
     openAddModal,
     openEditModal,
     openViewModal,
     refetch: handleRefetch,
-    resolveDynamicValue,
 });
 </script>

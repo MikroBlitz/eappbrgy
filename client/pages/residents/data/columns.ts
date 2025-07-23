@@ -123,7 +123,7 @@ export const columns: Column[] = [
 ];
 
 // Filters
-export const gender = [
+export const filters = [
     {
         key: "gender",
         label: "Male",

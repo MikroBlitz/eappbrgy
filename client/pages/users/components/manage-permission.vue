@@ -1,13 +1,5 @@
 <template>
-    <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="filter"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
-        :default-view-modal="false"
-    />
+    <CrudTable :table-data="tableData" :default-view-modal="false" />
 </template>
 
 <script setup lang="ts">
@@ -19,52 +11,50 @@ import {
     deletePermission,
 } from "~/graphql/Permission";
 
-import { columns, filter } from "../data/permission/columns";
+import { columns, filter as filters } from "../data/permission/columns";
 import { schema } from "../data/permission/schema";
 
 const permission = "permission";
-const crudConfig = useCrudConfig(
-    "Permissions", // title
-    "Permission", // subtitle
-    "solar:lock-outline", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        view: `view ${permission}`,
-    },
-);
 const formSchema = computed(() => schema());
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
-const operations = useCrudOperations<Permission>(
+const tableData = useTableData<Permission>(
+    {
+        icon: "solar:lock-outline",
+        permissions: {
+            create: `create ${permission}`,
+            delete: `delete ${permission}`,
+            edit: `edit ${permission}`,
+            view: `view ${permission}`,
+        },
+        singular: "Permission",
+        title: "Permissions",
+    },
     {
         delete: deletePermission,
         paginate: permissionsPaginate,
         upsert: upsertPermission,
     },
     {
-        getFormState: (permission?: Permission) => {
-            if (permission) {
-                return {
-                    id: permission.id,
-                    name: permission.name,
-                };
-            } else {
-                return {
-                    id: undefined,
-                    name: "",
-                };
-            }
-        },
-        prepareSubmitData: (data: any, selectedPermission?: Permission) => {
-            return {
-                ...data,
-                guard_name: "web",
-                id: selectedPermission?.id || undefined,
-            };
-        },
+        columns,
+        filters,
+        formSchema: formSchema.value,
+        getFormState: (permission?: Permission) =>
+            permission
+                ? {
+                      id: permission.id,
+                      name: permission.name,
+                  }
+                : {
+                      id: undefined,
+                      name: "",
+                  },
+        prepareSubmitData: (data, selectedPermission?: Permission) => ({
+            ...data,
+            guard_name: "web",
+            id: selectedPermission?.id,
+        }),
+        zodSchema: zodSchema.value,
     },
 );
 </script>

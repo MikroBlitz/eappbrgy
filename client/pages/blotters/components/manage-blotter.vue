@@ -1,12 +1,7 @@
 <template>
     <div>
         <CrudTable
-            :config="crudConfig"
-            :columns="columns"
-            :filters="filter"
-            :form-schema="formSchema"
-            :zod-schema="zodSchema"
-            :operations="operations"
+            :table-data="tableData"
             :option-loading="loadingOptions"
             :actions="customActions"
         />
@@ -46,39 +41,23 @@ import {
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
 
-import { columns, filter } from "../data/columns";
+import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 const toast = useToast();
 const auth = useAuthStore();
 const currentUserId = auth.user?.id;
-
 const selectedRow = ref<Blotter | null>(null);
 const selectedStatus = ref("");
 const isConfirmModal = ref(false);
 const isOtpModal = ref(false);
 const modalLoading = ref(false);
-
 const permission = "blotter";
-const crudConfig = useCrudConfig(
-    "Blotters", // title
-    "Blotter", // subtitle
-    "solar:document-add-broken", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        view: `view ${permission}`,
-    },
-);
 
-// query for combo box
-function createResidentSearchHandler() {
-    return useSearchQueryOptions(residentsPaginate, {
+const createResidentSearchHandler = () =>
+    useSearchQueryOptions(residentsPaginate, {
         queryKey: "residentsPaginate",
     });
-}
 const complainantSearch = createResidentSearchHandler();
 const respondentSearch = createResidentSearchHandler();
 const loadingOptions = computed(
@@ -98,56 +77,68 @@ const formSchema = computed(() =>
         },
     }),
 );
-
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Blotter>(
+
+const tableData = useTableData<Blotter>(
+    {
+        icon: "solar:document-add-broken",
+        permissions: {
+            create: `create ${permission}`,
+            delete: `delete ${permission}`,
+            edit: `edit ${permission}`,
+            view: `view ${permission}`,
+        },
+        singular: "Blotter",
+        title: "Blotters",
+    },
     {
         delete: deleteBlotter,
         paginate: blottersPaginate,
         upsert: upsertBlotter,
     },
     {
+        columns,
+        filters,
+        formSchema: formSchema.value,
         getFormState: (row?: Blotter) => {
-            if (row) {
-                complainantSearch.initializeOptions();
-                respondentSearch.initializeOptions();
-                return {
-                    case_no: row.case_no,
-                    complainant: row.complainant?.id,
-                    complaint: row.complaint,
-                    details: row.details,
-                    id: row.id,
-                    incident_date: row.incident_date,
-                    respondent: row.respondent?.id,
-                    status: row.status,
-                };
-            } else {
-                complainantSearch.initializeOptions();
-                respondentSearch.initializeOptions();
-                return {
-                    case_no: "",
-                    complainant: null,
-                    complaint: "",
-                    details: "",
-                    id: undefined,
-                    incident_date: "",
-                    respondent: null,
-                    status: "",
-                };
-            }
+            complainantSearch.initializeOptions();
+            respondentSearch.initializeOptions();
+            return row
+                ? {
+                      case_no: row.case_no,
+                      complainant: row.complainant?.id,
+                      complaint: row.complaint,
+                      details: row.details,
+                      id: row.id,
+                      incident_date: row.incident_date,
+                      respondent: row.respondent?.id,
+                      status: row.status,
+                  }
+                : {
+                      case_no: "",
+                      complainant: null,
+                      complaint: "",
+                      details: "",
+                      id: undefined,
+                      incident_date: "",
+                      respondent: null,
+                      status: "",
+                  };
         },
-        prepareSubmitData: (data: any, row?: Blotter) => ({
+        prepareSubmitData: (data, row?: Blotter) => ({
             ...data,
             complainant: { connect: data.complainant },
             id: row?.id,
             incident_date: data.incident_date
-                ? formatDateTimeForGraphQL(data.incident_date)
+                ? formatDateTimeForGraphQL(String(data.incident_date))
                 : null,
             respondent: { connect: data.respondent },
         }),
+        zodSchema: zodSchema.value,
     },
 );
 
+// Custom actions
 const customActions: TableAction[] = [
     {
         color: () => "blue",
@@ -188,7 +179,7 @@ async function updateBlotterStatus() {
     if (!selectedRow.value || !selectedStatus.value) return;
 
     try {
-        const { mutate } = useMutation(upsertBlotter);
+        const { mutate } = useMutation(tableData.upsert);
         await mutate({
             input: {
                 id: selectedRow.value.id,

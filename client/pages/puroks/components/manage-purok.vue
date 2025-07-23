@@ -1,13 +1,5 @@
 <template>
-    <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="filter"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
-        :default-view-modal="false"
-    />
+    <CrudTable :table-data="tableData" :default-view-modal="false" />
 </template>
 
 <script setup lang="ts">
@@ -15,32 +7,34 @@ import type { Purok } from "~/types/codegen/graphql";
 
 import { puroksPaginate, upsertPurok, deletePurok } from "~/graphql/Purok";
 
-import { columns, filter } from "../data/columns";
+import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 const permission = "purok";
-const crudConfig = useCrudConfig(
-    "Puroks", // title
-    "Purok", // subtitle
-    "solar:home-angle-broken", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        view: `view ${permission}`,
-    },
-);
 const formSchema = computed(() => schema());
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
-const operations = useCrudOperations<Purok>(
+const tableData = useTableData<Purok>(
+    {
+        icon: "solar:home-angle-broken",
+        permissions: {
+            create: `create ${permission}`,
+            delete: `delete ${permission}`,
+            edit: `edit ${permission}`,
+            view: `view ${permission}`,
+        },
+        singular: "Purok",
+        title: "Puroks",
+    },
     {
         delete: deletePurok,
         paginate: puroksPaginate,
         upsert: upsertPurok,
     },
     {
+        columns,
+        filters,
+        formSchema: formSchema.value,
         getFormState: (purok?: Purok) => {
             console.log(purok);
             if (purok) {
@@ -55,12 +49,13 @@ const operations = useCrudOperations<Purok>(
                 };
             }
         },
-        prepareSubmitData: (data: any, selectedPurok?: Purok) => {
+        prepareSubmitData: (data, selectedPurok?: Purok) => {
             return {
                 ...data,
                 id: selectedPurok?.id || undefined,
             };
         },
+        zodSchema: zodSchema.value,
     },
 );
 </script>

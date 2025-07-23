@@ -104,7 +104,7 @@ export const columns: Column[] = [
     },
 ];
 
-export const filter = [
+export const filters = [
     {
         key: "status",
         label: "Open",

@@ -1,12 +1,7 @@
 <template>
     <div>
         <CrudTable
-            :config="crudConfig"
-            :columns="columns"
-            :filters="filter"
-            :form-schema="formSchema"
-            :zod-schema="zodSchema"
-            :operations="operations"
+            :table-data="tableData"
             :option-loading="residentSearch.loadingOptions"
             :actions="customActions"
         />
@@ -35,33 +30,21 @@ import {
 import { residentsPaginate } from "~/graphql/Resident";
 import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
-import { columns, filter } from "../data/columns";
+import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 const toast = useToast();
-
 const selectedRow = ref<Document | null>(null);
 const selectedStatus = ref<string | null>(null);
 const isConfirmModal = ref(false);
 const modalLoading = ref(false);
 
-const permission = "document";
-const crudConfig = useCrudConfig(
-    "Documents", // title
-    "Document", // subtitle
-    "solar:documents-broken", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        view: `view ${permission}`,
-    },
-);
-
+// Resident search handler
 const residentSearch = useSearchQueryOptions(residentsPaginate, {
     queryKey: "residentsPaginate",
 });
+
+// Form schema
 const formSchema = computed(() =>
     schema({
         resident: {
@@ -71,66 +54,77 @@ const formSchema = computed(() =>
     }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Document>(
+
+// Initialize table data
+const tableData = useTableData<Document>(
+    {
+        icon: "solar:documents-broken",
+        permissions: {
+            create: `create document`,
+            delete: `delete document`,
+            edit: `edit document`,
+            view: `view document`,
+        },
+        singular: "Document",
+        title: "Documents",
+    },
     {
         delete: deleteDocument,
         paginate: documentsPaginate,
         upsert: upsertDocument,
     },
     {
+        columns,
+        filters,
+        formSchema: formSchema.value,
         getFormState: (row?: Document) => {
-            if (row) {
-                residentSearch.initializeOptions();
-                return {
-                    category: row.category,
-                    id: row.id,
-                    issued_at: row.issued_at,
-                    requested_at: row.requested_at,
-                    resident: row.resident?.id,
-                    status: row.status,
-                    type: row.type,
-                    valid_until: row.valid_until,
-                };
-            } else {
-                residentSearch.initializeOptions();
-                return {
-                    category: "",
-                    id: undefined,
-                    issued_at: "",
-                    requested_at: "",
-                    resident: "",
-                    status: "",
-                    type: "",
-                    valid_until: "",
-                };
-            }
+            residentSearch.initializeOptions();
+            return row
+                ? {
+                      category: row.category,
+                      id: row.id,
+                      issued_at: row.issued_at,
+                      requested_at: row.requested_at,
+                      resident: row.resident?.id,
+                      status: row.status,
+                      type: row.type,
+                      valid_until: row.valid_until,
+                  }
+                : {
+                      category: "",
+                      id: undefined,
+                      issued_at: "",
+                      requested_at: "",
+                      resident: "",
+                      status: "",
+                      type: "",
+                      valid_until: "",
+                  };
         },
-        prepareSubmitData: (data: any, selectedRow?: Document) => {
-            return {
-                ...data,
-                id: selectedRow?.id || undefined,
-                issued_at: data.issued_at
-                    ? formatDateTimeForGraphQL(data.issued_at)
-                    : null,
-                requested_at: data.requested_at
-                    ? formatDateTimeForGraphQL(data.requested_at)
-                    : null,
-                resident: {
-                    connect: data.resident,
-                },
-                status:
-                    selectedRow?.status === "revoked"
-                        ? "revoked"
-                        : !data.valid_until
-                          ? undefined
-                          : new Date(data.valid_until).getTime() > Date.now()
-                            ? data.status
-                            : "expired",
-                valid_until: data.valid_until
-                    ? formatDateTimeForGraphQL(data.valid_until)
-                    : null,
-            };
-        },
+        prepareSubmitData: (data, selectedRow?: Document) => ({
+            ...data,
+            id: selectedRow?.id,
+            issued_at: data.issued_at
+                ? formatDateTimeForGraphQL(String(data.issued_at))
+                : null,
+            requested_at: data.requested_at
+                ? formatDateTimeForGraphQL(String(data.requested_at))
+                : null,
+            resident: { connect: data.resident },
+            status:
+                selectedRow?.status === "revoked"
+                    ? "revoked"
+                    : !data.valid_until
+                      ? undefined
+                      : new Date(String(data.valid_until)).getTime() >
+                          Date.now()
+                        ? data.status
+                        : "expired",
+            valid_until: data.valid_until
+                ? formatDateTimeForGraphQL(String(data.valid_until))
+                : null,
+        }),
+        zodSchema: zodSchema.value,
     },
 );
 
@@ -167,7 +161,7 @@ function confirmUpdateStatus(row: Document, status: string) {
 async function updateDocumentStatus() {
     if (!selectedRow.value || !selectedStatus.value) return;
     try {
-        const { mutate } = useMutation(upsertDocument);
+        const { mutate } = useMutation(tableData.upsert);
         await mutate({
             input: {
                 id: selectedRow.value.id,

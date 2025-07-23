@@ -1,11 +1,6 @@
 <template>
     <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="filter"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
+        :table-data="tableData"
         :option-loading="purokSearch.loadingOptions"
     />
 </template>
@@ -20,23 +15,10 @@ import {
 } from "~/graphql/Household";
 import { puroksPaginate } from "~/graphql/Purok";
 
-import { columns, filter } from "../data/columns";
+import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 const permission = "household";
-const crudConfig = useCrudConfig(
-    "Households", // title
-    "Household", // subtitle
-    "solar:home-broken", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        view: `view ${permission}`,
-    },
-);
-
 const purokSearch = useSearchQueryOptions(puroksPaginate, {
     queryKey: "puroksPaginate",
 });
@@ -49,13 +31,29 @@ const formSchema = computed(() =>
     }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Household>(
+
+const tableData = useTableData<Household>(
+    {
+        icon: "solar:home-broken",
+        permissions: {
+            // permissions
+            create: `create ${permission}`,
+            delete: `delete ${permission}`,
+            edit: `edit ${permission}`,
+            view: `view ${permission}`,
+        },
+        singular: "Household",
+        title: "Households",
+    },
     {
         delete: deleteHousehold,
         paginate: householdsPaginate,
         upsert: upsertHousehold,
     },
     {
+        columns,
+        filters,
+        formSchema: formSchema.value,
         getFormState: (household?: Household) => {
             if (household) {
                 purokSearch.initializeOptions();
@@ -75,8 +73,7 @@ const operations = useCrudOperations<Household>(
                 };
             }
         },
-        prepareSubmitData: (data: any, selectedRow?: Household) => {
-            console.log(data);
+        prepareSubmitData: (data, selectedRow?: Household) => {
             return {
                 ...data,
                 id: selectedRow?.id || undefined,
@@ -85,6 +82,7 @@ const operations = useCrudOperations<Household>(
                 },
             };
         },
+        zodSchema: zodSchema.value,
     },
 );
 </script>

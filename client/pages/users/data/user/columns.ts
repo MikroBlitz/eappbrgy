@@ -2,6 +2,7 @@ import { UBadge } from "#components";
 import { User } from "lucide-vue-next";
 
 import type { Column } from "~/components/table/types";
+import type { User as UserType } from "~/types/codegen/graphql";
 
 import { colorMap, roleIconMap } from "~/utils/helpers";
 
@@ -19,16 +20,16 @@ export const columns: Column[] = [
         class: "w-52",
         key: "roles",
         label: "Role",
-        render: (row) => {
+        render: (row: UserType) => {
             return h("div", { class: "flex items-center space-x-2" }, [
-                ...row.roles.map((role: { name: string }) => {
-                    const Icon = roleIconMap[role.name] || User;
+                ...row.roles.map((role) => {
+                    const Icon = roleIconMap[role!.name] || User;
 
                     return h(
                         UBadge,
                         {
-                            color: colorMap[role.name] || "gray",
-                            label: role.name,
+                            color: colorMap[role!.name] || "gray",
+                            label: role!.name,
                             size: "sm",
                             variant: "solid",
                         },
@@ -39,7 +40,7 @@ export const columns: Column[] = [
                                     { class: "flex items-center space-x-1" },
                                     [
                                         h(Icon, { class: "w-3 h-3" }),
-                                        h("span", null, role.name),
+                                        h("span", null, role!.name),
                                     ],
                                 ),
                         },
@@ -57,7 +58,7 @@ export const columns: Column[] = [
     {
         key: "email",
         label: "Email",
-        render: (row) =>
+        render: (row: UserType) =>
             h("div", { class: "flex items-center space-x-2" }, [
                 h(
                     "a",
@@ -73,15 +74,16 @@ export const columns: Column[] = [
     {
         key: "phone",
         label: "Phone",
-        render: (row) =>
+        render: (row: UserType) =>
             h("div", { class: "flex items-center space-x-2" }, [
                 h(
                     "a",
                     {
                         class: "text-blue-600 text-xs cursor-pointer",
-                        onClick: () => copyToClipboard("phone", row.phone),
+                        onClick: () =>
+                            copyToClipboard("phone", row.phone || "N/A"),
                     },
-                    row.phone,
+                    row.phone || "N/A",
                 ),
             ]),
         sortable: false,
@@ -89,7 +91,7 @@ export const columns: Column[] = [
     {
         key: "is_active",
         label: "Status",
-        render: (row) =>
+        render: (row: UserType) =>
             h(UBadge, {
                 color: row.is_active ? "green" : "gray",
                 label: row.is_active ? "Active" : "Inactive",
@@ -107,7 +109,7 @@ export const columns: Column[] = [
     {
         key: "updated_at",
         label: "Updated At",
-        render: (row) => h("div", getFriendlyDate(row.updated_at)),
+        render: (row: UserType) => h("div", getFriendlyDate(row.updated_at)),
         sortable: true,
     },
     {
@@ -118,7 +120,7 @@ export const columns: Column[] = [
 ];
 
 // Filters
-export const status = [
+export const filters = [
     {
         key: "is_active",
         label: "Inactive",

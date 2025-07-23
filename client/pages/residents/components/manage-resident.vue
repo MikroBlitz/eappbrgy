@@ -1,17 +1,13 @@
 <template>
     <CrudTable
-        :config="crudConfig"
-        :columns="columns"
-        :filters="gender"
-        :form-schema="formSchema"
-        :zod-schema="zodSchema"
-        :operations="operations"
+        :table-data="tableData"
         :option-loading="loadingOptions"
         :actions="customActions"
     />
 </template>
 
 <script setup lang="ts">
+import type { TableAction } from "~/components/table/types";
 import type { Household, Resident } from "~/types/codegen/graphql";
 
 import { householdsPaginate } from "~/graphql/Household";
@@ -23,24 +19,10 @@ import {
 } from "~/graphql/Resident";
 import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
-import { columns, gender } from "../data/columns";
+import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 const permission = "resident";
-const crudConfig = useCrudConfig(
-    "Residents", // title
-    "Resident", // subtitle
-    "solar:users-group-two-rounded-broken", // icon
-    {
-        // permissions
-        create: `create ${permission}`,
-        delete: `delete ${permission}`,
-        edit: `edit ${permission}`,
-        updateStatus: "update user status",
-        view: `view ${permission}`,
-    },
-);
-
 const purokSearch = useSearchQueryOptions(puroksPaginate, {
     queryKey: "puroksPaginate",
 });
@@ -69,61 +51,70 @@ const formSchema = computed(() =>
         },
     }),
 );
-
 const zodSchema = computed(() => formZodSchema(formSchema.value));
-const operations = useCrudOperations<Resident>(
+
+const tableData = useTableData<Resident>(
+    {
+        icon: "solar:users-group-two-rounded-broken",
+        permissions: {
+            create: `create ${permission}`,
+            delete: `delete ${permission}`,
+            edit: `edit ${permission}`,
+            updateStatus: "update user status",
+            view: `view ${permission}`,
+        },
+        singular: "Resident",
+        title: "Residents",
+    },
     {
         delete: deleteResident,
         paginate: residentsPaginate,
         upsert: upsertResident,
     },
     {
+        columns,
+        filters,
+        formSchema: formSchema.value,
         getFormState: (row?: Resident) => {
-            if (row) {
-                // This is for editing data
-                purokSearch.initializeOptions();
-                householdSearch.initializeOptions();
-                return {
-                    birthdate: row.birthdate,
-                    citizenship: row.citizenship,
-                    civil_status: row.civil_status,
-                    email: row.email || "",
-                    first_name: row.first_name,
-                    gender: row.gender || "",
-                    household: row.household?.id,
-                    id: row.id,
-                    last_name: row.last_name,
-                    middle_name: row.middle_name || "",
-                    phone: row.phone || "",
-                    purok: row.purok?.id,
-                    suffix: row.suffix || "",
-                };
-            } else {
-                // This is adding data
-                purokSearch.initializeOptions();
-                householdSearch.initializeOptions();
-                return {
-                    birthdate: "",
-                    citizenship: "",
-                    civil_status: "",
-                    email: "",
-                    first_name: "",
-                    gender: "",
-                    household: [],
-                    id: undefined,
-                    last_name: "",
-                    middle_name: "",
-                    phone: "",
-                    purok: [],
-                    suffix: "",
-                };
-            }
+            purokSearch.initializeOptions();
+            householdSearch.initializeOptions();
+            return row
+                ? {
+                      birthdate: row.birthdate,
+                      citizenship: row.citizenship,
+                      civil_status: row.civil_status,
+                      email: row.email || "",
+                      first_name: row.first_name,
+                      gender: row.gender || "",
+                      household: row.household?.id,
+                      id: row.id,
+                      last_name: row.last_name,
+                      middle_name: row.middle_name || "",
+                      phone: row.phone || "",
+                      purok: row.purok?.id,
+                      suffix: row.suffix || "",
+                  }
+                : {
+                      birthdate: "",
+                      citizenship: "",
+                      civil_status: "",
+                      email: "",
+                      first_name: "",
+                      gender: "",
+                      household: [],
+                      id: undefined,
+                      last_name: "",
+                      middle_name: "",
+                      phone: "",
+                      purok: [],
+                      suffix: "",
+                  };
         },
-        prepareSubmitData: (data: any, selectedRow?: Resident) => {
+        prepareSubmitData: (data, selectedRow?: Resident) => {
             return {
                 ...data,
                 birthdate: data.birthdate
-                    ? formatDateTimeForGraphQL(data.birthdate)
+                    ? formatDateTimeForGraphQL(String(data.birthdate))
                     : null,
                 household: {
                     connect: data.household,
@@ -134,11 +125,12 @@ const operations = useCrudOperations<Resident>(
                 },
             };
         },
+        zodSchema: zodSchema.value,
     },
 );
 
 // Custom actions
-const customActions = [
+const customActions: TableAction[] = [
     {
         color: () => "orange",
         condition: () => true,

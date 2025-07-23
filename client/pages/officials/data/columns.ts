@@ -93,4 +93,4 @@ export const columns: Column[] = [
     },
 ];
 
-export const filter = [];
+export const filters = [];
