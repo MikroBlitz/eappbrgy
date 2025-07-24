@@ -2,6 +2,7 @@
     <div
         class="h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-white overflow-hidden"
     >
+        <FluidCursor v-if="isFuildCursorEnabled" />
         <nav
             class="px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800"
         >
@@ -13,20 +14,32 @@
                 >
             </div>
             <ClientOnly>
-                <UButton
-                    :icon="
-                        !isDark
-                            ? 'i-heroicons-sun-20-solid'
-                            : 'i-heroicons-moon-20-solid'
-                    "
-                    color="primary"
-                    variant="ghost"
-                    aria-label="Theme"
-                    @click="isDark = !isDark"
-                />
-                <template #fallback>
-                    <div class="w-8 h-8" />
-                </template>
+                <div class="gap-2 flex">
+                    <UButton
+                        :variant="isFuildCursorEnabled ? 'soft' : 'ghost'"
+                        color="primary"
+                        :icon="
+                            isFuildCursorEnabled
+                                ? 'solar:cursor-bold'
+                                : 'solar:cursor-broken'
+                        "
+                        class="hover:scale-110 transition-all duration-300"
+                        @click="isFuildCursorEnabled = !isFuildCursorEnabled"
+                    />
+
+                    <UButton
+                        :icon="
+                            !isDark
+                                ? 'i-heroicons-sun-20-solid'
+                                : 'i-heroicons-moon-20-solid'
+                        "
+                        color="primary"
+                        variant="ghost"
+                        aria-label="Theme"
+                        class="hover:scale-110 transition-all duration-300"
+                        @click="isDark = !isDark"
+                    />
+                </div>
             </ClientOnly>
         </nav>
 
@@ -42,27 +55,30 @@
             />
 
             <div class="max-w-2xl mx-auto px-6 text-center z-10">
-                <div class="inline-block mb-4">
-                    <span
-                        class="bg-gradient-to-r from-blue-400 to-indigo-400 text-white text-xs px-3 py-1 rounded-lg"
-                    >
-                        Digital Services
-                    </span>
-                </div>
-
                 <h1
-                    class="text-4xl md:text-5xl font-bold pb-4 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent"
+                    class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight"
                 >
-                    Govana
-                    <span class="text-blue-500 dark:text-blue-400">App</span>
+                    <span
+                        class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 dark:from-white dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent drop-shadow-sm"
+                    >
+                        Govana
+                    </span>
+                    <span
+                        class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent animate-pulse"
+                    >
+                        App
+                    </span>
                 </h1>
 
                 <p
-                    class="text-sm text-slate-600 dark:text-gray-400 mb-8 max-w-md mx-auto"
+                    class="text-slate-600 text-lg dark:text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed font-light"
                 >
-                    Access barangay documents, certificates, and services
-                    online. Fast, secure, and convenient digital solutions for
-                    your community needs.
+                    <span
+                        class="font-medium bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"
+                    >
+                        Fast, secure, and convenient
+                    </span>
+                    digital solutions designed for your community.
                 </p>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
@@ -172,6 +188,7 @@
 
 <script setup lang="ts">
 const getYear = () => new Date().getFullYear();
+const isFuildCursorEnabled = ref(true);
 const colorMode = useColorMode();
 const isDark = computed({
     get() {
