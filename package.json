@@ -17,7 +17,7 @@
     "dependencies": {
         "@graphql-typed-document-node/core": "3.1.1",
         "@nuxt/eslint": "1.1.0",
-        "@nuxt/ui": "2",
+        "@nuxt/ui": "2.22.1",
         "@nuxtjs/color-mode": "3.5.2",
         "@nuxtjs/tailwindcss": "6.13.2",
         "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
@@ -27,7 +27,7 @@
         "date-fns": "^4.1.0",
         "eslint": "^9.0.0",
         "lucide-vue-next": "^0.487.0",
-        "nuxt": "^3.16.2",
+        "nuxt": "^3.17.7",
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.2.0",
         "tailwind-merge": "^3.3.1",
