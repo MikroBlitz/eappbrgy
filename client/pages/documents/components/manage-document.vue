@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import type { TableAction } from "~/components/table/types";
-import type { Document } from "~/types/codegen/graphql";
+import type { SqlOperator, Document } from "~/types/codegen/graphql";
 
 import {
     deleteDocument,
@@ -104,6 +104,7 @@ const tableData = useTableData<Document>(
         },
         prepareSubmitData: (data, selectedRow?: Document) => ({
             ...data,
+            createdBy: selectedRow?.createdBy || { connect: auth.user?.id },
             id: selectedRow?.id,
             issued_at: data.issued_at
                 ? formatDateTimeForGraphQL(String(data.issued_at))
@@ -121,13 +122,37 @@ const tableData = useTableData<Document>(
                           Date.now()
                         ? data.status
                         : "expired",
+            updatedBy: selectedRow?.updatedBy || { connect: auth.user?.id },
             valid_until: data.valid_until
                 ? formatDateTimeForGraphQL(String(data.valid_until))
                 : null,
         }),
+        whereConditions: conditions(),
         zodSchema: zodSchema.value,
     },
 );
+
+function conditions() {
+    const isAdmin = auth.user?.roles?.some((r) => r?.name === "Admin");
+    const requiredPermissions = [
+        "view document",
+        "create document",
+        "edit document",
+        "delete document",
+        "approve document",
+        "pending document",
+        "release document",
+        "revoke document",
+    ];
+    const hasPermissions = requiredPermissions.every((perm) => auth.can(perm));
+    if (isAdmin || hasPermissions) return undefined;
+
+    return {
+        column: "CREATED_BY",
+        operator: "EQ" as SqlOperator, // TODO: Fix GraphQL enum issue
+        value: auth.user?.id,
+    };
+}
 
 const customActions: TableAction[] = [
     {

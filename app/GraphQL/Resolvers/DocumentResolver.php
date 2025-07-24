@@ -4,6 +4,7 @@ namespace App\GraphQL\Resolvers;
 
 use App\Models\Document;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -13,9 +14,19 @@ class DocumentResolver
     public function upsertDocument($_, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): Document
     {
         $input = $args['input'];
-        if (isset($input['resident']['connect'])) {
-            $input['resident_id'] = $input['resident']['connect'];
-            unset($input['resident']);
+
+        // Auto-map all nested relations that have a `connect`
+        foreach ($input as $key => $value) {
+            if (is_array($value) && isset($value['connect'])) {
+                $snakeKey = Str::snake($key);
+                // If it's updatedBy, createdBy, etc. we just use updated_by
+                if (str_ends_with($snakeKey, '_by')) {
+                    $input[$snakeKey] = $value['connect'];
+                } else {
+                    $input[$snakeKey . '_id'] = $value['connect'];
+                }
+                unset($input[$key]);
+            }
         }
 
         $isUpdating = isset($input['id']) && !empty($input['id']);

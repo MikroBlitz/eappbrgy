@@ -134,6 +134,13 @@ class DatabaseSeeder extends Seeder
         // Create additional users
         $users = User::factory(50)->create();
         $users->each(fn($user) => $user->assignRole($userRole));
+        $userRole->syncPermissions([
+            'view dashboard',
+            'view document',
+            'create document',
+            'edit document',
+            'delete document',
+        ]);
 
         // Assign permissions to roles
         // Permissions for System Administrator (technical admin, full access)

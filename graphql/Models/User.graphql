@@ -13,6 +13,7 @@ type User {
     roles: [Role]! @morphToMany
     messages: [Message] @hasMany
     contacts: [Contact] @hasMany
+    documents: [Document] @hasMany
     resident: Resident @belongsTo
     permissions: [Permission] @field(resolver: "App\\GraphQL\\Resolvers\\UserResolver@permissions")
     created_at: DateTime!

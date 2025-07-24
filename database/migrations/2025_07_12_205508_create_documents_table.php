@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('type'); // e.g., Business, Residency
             $table->string('category')->default('document'); // e.g. 'permit', 'certificate', 'indigency'
             $table->dateTime('requested_at')->nullable();

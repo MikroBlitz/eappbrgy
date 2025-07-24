@@ -15,6 +15,7 @@
 
             <!-- Statistics Cards -->
             <div
+                v-if="auth.user?.roles[0]?.name !== 'User'"
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
             >
                 <!-- Total Residents -->
@@ -260,7 +261,10 @@
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-                <UCard class="col-span-12 lg:col-span-3">
+                <UCard
+                    v-if="auth.user?.roles[0]?.name !== 'User'"
+                    class="col-span-12 lg:col-span-3"
+                >
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -314,7 +318,10 @@
                 </UCard>
 
                 <!-- Recent Documents -->
-                <UCard class="col-span-12 lg:col-span-5">
+                <UCard
+                    v-if="auth.user?.roles[0]?.name !== 'User'"
+                    class="col-span-12 lg:col-span-5"
+                >
                     <template #header>
                         <div class="flex items-center justify-between">
                             <h3
@@ -536,6 +543,7 @@ import {
 import { residentsCount } from "~/graphql/Resident";
 import { getDocumentStatusColor } from "~/utils/helpers";
 
+const auth = useAuthStore();
 const residentCounter = ref(0);
 const blotterCounter = ref(0);
 const blotterResolvedCounter = ref(0);

@@ -1,6 +1,8 @@
 type Document {
     id: ID!
     resident: Resident! @belongsTo
+    createdBy: User! @belongsTo(relation: "createdBy")
+    updatedBy: User @belongsTo(relation: "updatedBy")
     type: String!
     category: String!
     requested_at: DateTime
@@ -14,6 +16,8 @@ type Document {
 input DocumentInput {
     id: ID
     resident: ConnectResidentRelation
+    createdBy: ConnectUserRelation
+    updatedBy: ConnectUserRelation
     type: String
     category: String
     requested_at: DateTime
@@ -54,6 +58,7 @@ extend type Query {
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
+        where: _ @whereConditions(columns: ["created_by"])
     ): [Document]! @paginate
     documentsCount: Int! @count(model: "Document")
     totalPendingDocuments: Int! @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@totalPendingDocuments")

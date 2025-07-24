@@ -15,6 +15,8 @@ class Document extends Model
     protected $fillable = [
         'id',
         'resident_id',
+        'created_by',
+        'updated_by',
         'type',
         'category',
         'requested_at',
@@ -27,4 +29,15 @@ class Document extends Model
     {
         return $this->belongsTo(Resident::class);
     }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
 }

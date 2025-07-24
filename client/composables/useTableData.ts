@@ -4,6 +4,7 @@ import type { ZodSchema } from "zod";
 import { useToast } from "#ui/composables/useToast";
 
 import type { Column, FilterOption } from "~/components/table/types";
+import type { WhereConditions } from "~/types/codegen/graphql";
 
 type Action<
     TInput = unknown,
@@ -49,6 +50,7 @@ export function useTableData<T extends Record<string, unknown>>(
         relationKey?: string;
         columns: Column[];
         filters?: FilterOption[];
+        whereConditions?: WhereConditions;
         formSchema: any;
         zodSchema?: ZodSchema;
     },
@@ -153,6 +155,8 @@ export function useTableData<T extends Record<string, unknown>>(
         columns: options?.columns || [],
         filters: options?.filters || [],
         formSchema: options?.formSchema,
+
+        whereConditions: options?.whereConditions || [],
         zodSchema: options?.zodSchema,
 
         // Optional relations

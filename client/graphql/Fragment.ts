@@ -160,11 +160,19 @@ export const documentFragment = gql`
         requested_at
         issued_at
         valid_until
-        created_at
-        updated_at
         resident {
             id
             name
         }
+        createdBy {
+            id
+            name
+        }
+        updatedBy {
+            id
+            name
+        }
+        created_at
+        updated_at
     }
 `;

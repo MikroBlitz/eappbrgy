@@ -121,4 +121,9 @@ class User extends Authenticatable
         return $this->belongsTo(Resident::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }

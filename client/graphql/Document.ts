@@ -7,6 +7,7 @@ export const documentsPaginate = gql`
         $search: String
         $sort: SortInput
         $filter: [FilterInput]
+        $whereConditions: QueryDocumentsPaginateWhereWhereConditions
     ) {
         documentsPaginate(
             first: $first
@@ -14,6 +15,7 @@ export const documentsPaginate = gql`
             search: $search
             sort: $sort
             filter: $filter
+            where: $whereConditions
         ) {
             data {
                 ...document

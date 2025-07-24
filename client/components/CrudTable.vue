@@ -123,6 +123,7 @@ import type {
     FilterOption,
     TableAction,
 } from "~/components/table/types";
+import type { WhereConditions } from "~/types/codegen/graphql";
 import type { FormSchema } from "~/types/fields";
 
 interface Props<T extends Record<string, unknown>> {
@@ -165,6 +166,7 @@ interface Props<T extends Record<string, unknown>> {
         // UI
         columns: Column[];
         filters?: FilterOption[];
+        whereConditions?: WhereConditions;
         formSchema: FormSchema;
         zodSchema?: ZodSchema;
     };
@@ -206,18 +208,20 @@ const formState = reactive({});
 const viewState = reactive({});
 
 // Computed
-const queryVariables = computed(() => ({
-    first: Number(pageCount.value),
-    page: page.value,
-    ...(debouncedSearch.value && { search: debouncedSearch.value }),
-    ...(sort.value && { sort: sort.value }),
-    ...(selectedFilters.value?.length && { filter: selectedFilters.value }),
-}));
+const queryVariables = computed(() => {
+    return {
+        first: Number(pageCount.value),
+        page: page.value,
+        ...(debouncedSearch.value && { search: debouncedSearch.value }),
+        ...(sort.value && { sort: sort.value }),
+        ...(selectedFilters.value?.length && { filter: selectedFilters.value }),
+        whereConditions: props.tableData.whereConditions || {},
+    };
+});
 
 const { error, loading, refetch, result } = useQuery(
     props.tableData.query,
     queryVariables,
-    { errorPolicy: "all", fetchPolicy: "cache-and-network" },
 );
 
 const data = computed(() => {

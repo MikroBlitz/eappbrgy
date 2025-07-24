@@ -137,12 +137,19 @@ export const columns: Column[] = [
             }),
         sortable: true,
     },
-    // {
-    //     key: "created_at",
-    //     label: "Created At",
-    //     render: (row) => h("div", getFriendlyDate(row.created_at)),
-    //     sortable: true,
-    // },
+    {
+        key: "createdBy",
+        label: "Created By",
+        render: ({ createdBy }) => {
+            const auth = useAuthStore();
+            const isCurrentUser = createdBy?.id === auth.user?.id;
+            return h(
+                "div",
+                isCurrentUser ? "Me" : (createdBy?.name ?? "Unknown"),
+            );
+        },
+        sortable: true,
+    },
     // {
     //     key: "updated_at",
     //     label: "Updated At",
