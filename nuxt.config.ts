@@ -43,4 +43,7 @@ export default defineNuxtConfig({
     tailwindcss: {
         configPath: "./tailwind.config.js",
     },
+    ui: {
+        primary: "amber",
+    },
 });

@@ -5,9 +5,9 @@ namespace App\GraphQL\Mutations;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class LoginMutator
+final class Login
 {
-    public function login($_, array $args): array
+    public function __invoke($_, array $args): array
     {
         $user = User::where('email', $args['email'])->first();
 

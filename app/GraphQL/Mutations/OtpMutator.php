@@ -4,17 +4,22 @@ namespace App\GraphQL\Mutations;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class OtpMutator
 {
-    public function requestOtp(null $_, array $args): array
+    /**
+     * Request OTP for either existing user (login/verify) or new user (registration)
+     */
+    public function requestOtp($_, array $args): array
     {
-        $userId = $args['user_id'];
-        $sessionKey = $args['generated_session_key'];
+        $email = $args['email'] ?? null;
+        $userId = $args['user_id'] ?? null;
+        $sessionKey = $args['generated_session_key'] ?? Str::uuid()->toString();
         $clientIp = request()->ip();
-        $redisKey = "$clientIp:$userId-general";
+        $redisKey = "$clientIp:" . ($email ?? $userId) . "-general";
 
+        // Prevent OTP spamming (max 3 attempts within 2 minutes)
         if (Cache::has($redisKey) && Cache::get($redisKey) >= 3) {
             $ttl = Cache::getRedis()->ttl($redisKey);
             return [
@@ -26,54 +31,91 @@ class OtpMutator
 
         Cache::add($redisKey, 0, now()->addMinutes(2));
 
+        // Generate OTP & hash
         $otp = rand(100000, 999999);
         $secret = env('OTP_SECRET_KEY');
         $hashedOtp = hash_hmac('sha256', $otp, $secret);
 
-        // Store OTP in redis with TTL
-        Cache::put($sessionKey, json_encode(['otp' => $hashedOtp, 'tries' => 1]), now()->addMinutes(5));
+        // TEMP DATA TO STORE IN CACHE
+        $tempData = [
+            'otp' => $hashedOtp,
+            'tries' => 1,
+            'type' => $userId ? 'existing' : 'registration',
+            'user_id' => $userId,
+            'email' => $email,
+        ];
 
-        // Send email
-        $user = \App\Models\User::findOrFail($userId);
-        Mail::to($user->email)->send(new \App\Mail\SendOtpMail($otp));
+        // Determine email recipient
+        if ($userId) {
+            $user = User::findOrFail($userId);
+            $sendToEmail = $user->email;
+        } else {
+            $sendToEmail = $email;
+        }
+
+        // Store OTP in cache with TTL (5 minutes)
+        Cache::put($sessionKey, json_encode($tempData), now()->addMinutes(5));
+
+        // Send OTP email
+        Mail::to($sendToEmail)->send(new \App\Mail\SendOtpMail($otp));
 
         return [
             'status' => true,
             'remarks' => "OTP has been sent",
             'expiry' => 300,
+            'session_key' => $sessionKey,
         ];
     }
 
-    public function verifyOtp(null $_, array $args)
+    /**
+     * Verify OTP
+     */
+    public function verifyOtp($_, array $args): array
     {
-        $userId = $args['user_id'];
         $sessionKey = $args['generated_session_key'];
-        $inputHashedOtp = $args['hashed_otp'];
+        $inputOtp = $args['otp']; // plain OTP
         $clientIp = request()->ip();
-        $redisKey = "$clientIp:$userId-general";
 
         $otpData = Cache::get($sessionKey);
         if (!$otpData) {
-            return ['status' => false, 'error' => 'Session expired or invalid', 'expiry' => 0];
+            return [
+                'status' => false,
+                'error' => 'Session expired or invalid',
+                'expiry' => 0,
+            ];
         }
 
         $decoded = json_decode($otpData, true);
+        $secret = env('OTP_SECRET_KEY');
+        $inputHashedOtp = hash_hmac('sha256', $inputOtp, $secret);
+
         if ($decoded['otp'] === $inputHashedOtp) {
+            // ✅ OTP VERIFIED
             Cache::forget($sessionKey);
-            Cache::forget($redisKey);
-            return ['status' => true, 'remarks' => 'OTP verified successfully'];
+            Cache::forget("$clientIp:" . ($decoded['email'] ?? $decoded['user_id']) . "-general");
+
+            return [
+                'status' => true,
+                'remarks' => 'OTP verified successfully',
+            ];
         } else {
+            // ❌ WRONG OTP
             $decoded['tries'] += 1;
 
             if ($decoded['tries'] >= 3) {
                 Cache::forget($sessionKey);
-                Cache::increment($redisKey);
-                Cache::put($redisKey, Cache::get($redisKey), now()->addMinutes(2));
-                return ['status' => false, 'error' => 'OTP attempts exceeded, try again later'];
+                return [
+                    'status' => false,
+                    'error' => 'OTP attempts exceeded, request again',
+                ];
             } else {
                 $ttl = Cache::getRedis()->ttl($sessionKey);
                 Cache::put($sessionKey, json_encode($decoded), now()->addSeconds($ttl));
-                return ['status' => false, 'error' => 'Incorrect OTP', 'expiry' => $ttl];
+                return [
+                    'status' => false,
+                    'error' => 'Incorrect OTP',
+                    'expiry' => $ttl,
+                ];
             }
         }
     }

@@ -6,14 +6,17 @@
 import ManageMessages from "./components/manage-messages.vue";
 
 definePageMeta({ layout: "default" });
+
+const route = useRoute();
+const routeName = computed(() => route.name ?? "Page");
+const { appTitle, metaDescription } = useConstants();
 useHead({
     meta: [
         {
-            content:
-                "Access barangay services online. Apply for certificates, stay updated with announcements, and connect with your local government digitally.",
+            content: metaDescription,
             name: "description",
         },
     ],
-    title: "Govana - Messages",
+    title: `${appTitle} - ${toTitleCase(String(routeName.value))}`,
 });
 </script>

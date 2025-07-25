@@ -44,27 +44,36 @@ export const logout = gql`
 `;
 
 export const requestOtp = gql`
-    mutation requestOtp($userId: ID!, $sessionKey: String!) {
-        requestOtp(user_id: $userId, generated_session_key: $sessionKey) {
-            status
-            remarks
-            error
-            expiry
-        }
-    }
-`;
-
-export const verifyOtp = gql`
-    mutation verifyOtp($userId: ID!, $sessionKey: String!, $otp: String!) {
-        verifyOtp(
+    mutation requestOtp($userId: ID, $email: String, $sessionKey: String) {
+        requestOtp(
             user_id: $userId
+            email: $email
             generated_session_key: $sessionKey
-            hashed_otp: $otp
         ) {
             status
             remarks
             error
             expiry
+            session_key
+        }
+    }
+`;
+
+export const verifyOtp = gql`
+    mutation verifyOtp($userId: ID, $sessionKey: String!, $otp: String!) {
+        verifyOtp(
+            user_id: $userId
+            generated_session_key: $sessionKey
+            otp: $otp
+        ) {
+            status
+            remarks
+            error
+            expiry
+            user {
+                id
+                email
+            }
         }
     }
 `;

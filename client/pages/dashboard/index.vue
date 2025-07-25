@@ -6,10 +6,10 @@
                 <h1
                     class="text-3xl font-bold text-gray-900 dark:text-white mb-2"
                 >
-                    Govana
+                    {{ appTitle }}
                 </h1>
                 <p class="text-gray-600 dark:text-gray-400">
-                    Welcome to the Govana
+                    {{ appDescription }}
                 </p>
             </div>
 
@@ -604,14 +604,14 @@ onMounted(async () => {
 const copyClipboard = (id: string) => copyToClipboard("Doc Id", id);
 
 definePageMeta({ layout: "app-layout", permission: "view dashboard" });
+const { appDescription, appTitle, metaDescription } = useConstants();
 useHead({
     meta: [
         {
-            content:
-                "Access barangay services online. Apply for certificates, stay updated with announcements, and connect with your local government digitally.",
+            content: metaDescription,
             name: "description",
         },
     ],
-    title: "Govana - Dashboard",
+    title: `${appTitle} - ${appDescription}`,
 });
 </script>

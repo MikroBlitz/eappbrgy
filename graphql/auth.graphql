@@ -16,16 +16,29 @@ type OtpResponse {
     remarks: String
     error: String
     expiry: Int
+    session_key: String
+    user: User
 }
 
-type Mutation {
+extend type Mutation {
 #    Authentication
     login(
         email: String!
         password: String!
-    ): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\LoginMutator@login")
-    logout: LogoutResponse @field(resolver: "App\\GraphQL\\Mutations\\LogoutMutator@resolve")
+    ): AuthPayload!
+    logout: LogoutResponse
 #   OTP
-    requestOtp(user_id: ID!, generated_session_key: String!): OtpResponse @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@requestOtp")
-    verifyOtp(user_id: ID!, generated_session_key: String!, hashed_otp: String!): OtpResponse @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@verifyOtp")
+    requestOtp(
+        user_id: ID
+        email: String
+        generated_session_key: String
+    ): OtpResponse
+    @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@requestOtp")
+
+    verifyOtp(
+        user_id: ID
+        generated_session_key: String!
+        otp: String!
+    ): OtpResponse
+    @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@verifyOtp")
 }

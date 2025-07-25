@@ -331,7 +331,7 @@
                 </h2>
                 <p class="status-description">
                     @if ($user->is_active)
-                        Your Govana account is now active and ready to use. You can access all community features and connect with your barangay services.
+                        Your Govana account is now active and ready to use.
                     @else
                         Your Govana account has been temporarily disabled. Please contact our support team for assistance with reactivation.
                     @endif
@@ -348,7 +348,7 @@
             @endif
 
             <div class="app-info">
-                <p>Govana - Bridging communities through digital innovation</p>
+                <p>Govana - Digital City Government Services</p>
             </div>
         </div>
 

@@ -4,9 +4,9 @@ namespace App\GraphQL\Mutations;
 
 use Illuminate\Support\Facades\Auth;
 
-class LogoutMutator
+final class Logout
 {
-    public function resolve($rootValue, array $args, $context, $info)
+    public function __invoke($rootValue, array $args, $context, $info): array
     {
         $user = Auth::guard('sanctum')->user();
 

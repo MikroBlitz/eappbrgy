@@ -333,7 +333,7 @@
             </div>
 
             <div class="app-info">
-                <p>Govana - Bridging communities through digital innovation</p>
+                <p>Govana - Digital City Government Services</p>
             </div>
         </div>
 

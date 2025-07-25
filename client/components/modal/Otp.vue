@@ -101,7 +101,8 @@ import { formatTime, hmacSHA256 } from "~/utils/helpers";
 
 const props = defineProps<{
     isOpen: boolean;
-    userId?: string | number;
+    userId?: string | number; // existing user flow
+    email?: string; // registration flow
     sessionPrefix?: string;
     title?: string;
     description?: string;
@@ -126,9 +127,11 @@ const resendTimer = ref(props.resendDelay ?? 60);
 const canResend = ref(false);
 const loading = ref(false);
 
-const sessionKey = computed(
-    () => `${props.sessionPrefix || "otp"}:${props.userId}`,
-);
+const sessionKey = computed(() => {
+    const identifier = props.userId || props.email;
+    return `${props.sessionPrefix || "otp"}:${identifier}`;
+});
+
 const otpValue = computed(() => otpDigits.value.join(""));
 const isOtpComplete = computed(() => otpDigits.value.every((d) => d !== ""));
 const showTimer = computed(() => timeLeft.value > 0);
@@ -170,8 +173,9 @@ async function sendOtp() {
         loading.value = true;
         const { mutate } = useMutation(requestOtp);
         const { data } = await mutate({
+            email: props.email || undefined,
             sessionKey: sessionKey.value,
-            userId: props.userId,
+            userId: props.userId || undefined,
         });
         if (!data?.requestOtp?.status)
             throw new Error(data?.requestOtp?.error || "OTP request failed");
@@ -190,17 +194,12 @@ async function verifyOtpMethod() {
 
     try {
         loading.value = true;
-        const config = useRuntimeConfig();
-        const hashed = await hmacSHA256(
-            otpValue.value,
-            config.public.OTP_SECRET_KEY,
-        );
-
         const { mutate } = useMutation(verifyOtp);
         const { data } = await mutate({
-            otp: hashed,
+            email: props.email || undefined,
+            otp: otpValue.value, // plain OTP now
             sessionKey: sessionKey.value,
-            userId: props.userId,
+            userId: props.userId || undefined,
         });
 
         if (!data?.verifyOtp?.status)
@@ -286,4 +285,8 @@ watch(
     },
     { immediate: true },
 );
+
+onMounted(() => {
+    resetTimers();
+});
 </script>

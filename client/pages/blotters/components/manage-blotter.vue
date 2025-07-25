@@ -20,7 +20,7 @@
             v-model:is-open="isOtpModal"
             :user-id="currentUserId"
             session-prefix="otp:blotter"
-            title="Confirm OTP"
+            :title="`Confirm Blotter to ${toTitleCase(selectedStatus)}`"
             description="A verification code has been sent to your email"
             icon="solar:shield-check-broken"
             :on-verified="updateBlotterStatus"
@@ -40,6 +40,7 @@ import {
     deleteBlotter,
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
+import { toTitleCase } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";

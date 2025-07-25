@@ -68,7 +68,7 @@ extend type Query {
 extend type Mutation {
     registerUser(input: RegisterInput!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@registerUser")
     upsertUser(input: UserInput! @spread): User! @upsert @guard
-    deleteUser(id: [ID!] @eq): [User] @delete @guard
+    deleteUser(id: [ID!] @eq): [User] @forceDelete @guard
     restoreUser(id: ID!): User! @restore @guard
     updateUserStatus(id: ID!, is_active: Boolean!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@updateStatus") @guard
 }
