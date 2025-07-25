@@ -13,7 +13,8 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "codegen": "graphql-codegen --config codegen.ts",
-        "dir-tree": "tree -I \"node_modules|vendor|.nuxt|.output|storage\" --charset=ascii --noreport > DIRECTORY.md"
+        "dir-tree": "tree -I \"node_modules|vendor|.nuxt|.output|storage\" --charset=ascii --noreport > DIRECTORY.md",
+        "migrate-fresh": "php artisan migrate:fresh --seed"
     },
     "dependencies": {
         "@graphql-typed-document-node/core": "3.1.1",

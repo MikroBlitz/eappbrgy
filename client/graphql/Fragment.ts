@@ -37,6 +37,10 @@ export const householdFragment = gql`
             id
             name
         }
+        barangay {
+            id
+            name
+        }
         address
         created_at
         updated_at
@@ -57,6 +61,10 @@ export const residentFragment = gql`
         citizenship
         phone
         email
+        barangay {
+            id
+            name
+        }
         household {
             id
             household_no
@@ -133,6 +141,10 @@ export const blotterFragment = gql`
             id
             name
         }
+        barangay {
+            id
+            name
+        }
         created_at
         updated_at
     }
@@ -144,6 +156,10 @@ export const officialFragment = gql`
         position
         term_start
         term_end
+        barangay {
+            id
+            name
+        }
         resident {
             id
             name
@@ -172,6 +188,24 @@ export const documentFragment = gql`
             id
             name
         }
+        created_at
+        updated_at
+    }
+`;
+
+export const barangayFragment = gql`
+    fragment barangay on Barangay {
+        id
+        name
+        official {
+            id
+            resident {
+                id
+                name
+            }
+            position
+        }
+        population
         created_at
         updated_at
     }

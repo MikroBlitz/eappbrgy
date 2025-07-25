@@ -1,0 +1,54 @@
+type Barangay {
+    id: ID!
+    residents: Resident @hasMany
+    households: Household @hasMany
+    puroks: Purok @hasMany
+    blotters: Blotter @hasMany
+    official: Official @belongsTo
+    officials: Official @hasMany
+    name: String!
+    population: Int
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input BarangayInput {
+    id: ID
+    official: ConnectOfficialRelation
+    name: String
+    population: Int
+}
+
+input ConnectBarangayRelation {
+    id: ID
+    connect: ID
+    upsert: BarangayInput
+    delete: ID
+}
+
+input ConnectBarangaysRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [BarangayInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    barangays: [Barangay]! @all
+    barangaysPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+        #        where: _ @whereConditions(columns: ["status"])
+    ): [Barangay]! @paginate
+    barangaysCount: Int! @count(model: "Barangay")
+}
+
+extend type Mutation @guard {
+    upsertBarangay(input: BarangayInput! @spread): Barangay! @upsert
+    deleteBarangay(id: [ID!] @eq): [Barangay] @delete
+}

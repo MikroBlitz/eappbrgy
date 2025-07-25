@@ -1,6 +1,7 @@
 type Purok {
     id: ID!
     name: String!
+    barangay: Barangay @belongsTo
     residents: [Resident] @hasMany
     households: [Household] @hasMany
     created_at: DateTime!
@@ -10,8 +11,7 @@ type Purok {
 input PurokInput {
     id: ID
     name: String
-    residents: ConnectResidentsRelation
-    households: ConnectHouseholdsRelation
+    barangay: ConnectBarangayRelation
 }
 
 input ConnectPurokRelation {

@@ -48,6 +48,11 @@ class Resident extends Model
         return $this->hasOne(User::class);
     }
 
+    public function barangay(): BelongsTo
+    {
+        return $this->belongsTo(Barangay::class);
+    }
+
     public function household(): BelongsTo
     {
         return $this->belongsTo(Household::class);

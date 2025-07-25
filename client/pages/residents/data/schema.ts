@@ -9,6 +9,17 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
             class: "col-span-full",
+            label: "Barangay",
+            multiple: false,
+            name: "barangay",
+            onSearch: handlers.barangay?.onSearch,
+            options: handlers.barangay?.options.value ?? [],
+            placeholder: "Select Barangay",
+            searchable: true,
+            type: "combobox",
+        },
+        {
+            class: "col-span-6",
             label: "Purok",
             multiple: false,
             name: "purok",
@@ -23,7 +34,7 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             ]),
         },
         {
-            class: "col-span-full",
+            class: "col-span-6",
             label: "Household",
             multiple: false,
             name: "household",

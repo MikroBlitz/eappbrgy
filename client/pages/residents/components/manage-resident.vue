@@ -10,6 +10,7 @@
 import type { TableAction } from "~/components/table/types";
 import type { Household, Resident } from "~/types/codegen/graphql";
 
+import { barangaysPaginate } from "~/graphql/Barangay";
 import { householdsPaginate } from "~/graphql/Household";
 import { puroksPaginate } from "~/graphql/Purok";
 import {
@@ -33,14 +34,21 @@ const householdSearch = useSearchQueryOptions(householdsPaginate, {
     }),
     queryKey: "householdsPaginate",
 });
+const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
+    queryKey: "barangaysPaginate",
+});
 const loadingOptions = computed(
     () =>
         purokSearch.loadingOptions.value ||
-        householdSearch.loadingOptions.value,
+        householdSearch.loadingOptions.value ||
+        barangaySearch.loadingOptions.value,
 );
-
 const formSchema = computed(() =>
     schema({
+        barangay: {
+            onSearch: barangaySearch.debouncedSearch,
+            options: barangaySearch.queryOptions,
+        },
         household: {
             onSearch: householdSearch.debouncedSearch,
             options: householdSearch.queryOptions,
@@ -80,6 +88,7 @@ const tableData = useTableData<Resident>(
             householdSearch.initializeOptions();
             return row
                 ? {
+                      barangay: row.barangay?.id,
                       birthdate: row.birthdate,
                       citizenship: row.citizenship,
                       civil_status: row.civil_status,
@@ -95,6 +104,7 @@ const tableData = useTableData<Resident>(
                       suffix: row.suffix || "",
                   }
                 : {
+                      barangay: [],
                       birthdate: "",
                       citizenship: "",
                       civil_status: "",
@@ -113,6 +123,9 @@ const tableData = useTableData<Resident>(
         prepareSubmitData: (data, selectedRow?: Resident) => {
             return {
                 ...data,
+                barangay: {
+                    connect: data.barangay,
+                },
                 birthdate: data.birthdate
                     ? formatDateTimeForGraphQL(String(data.birthdate))
                     : null,

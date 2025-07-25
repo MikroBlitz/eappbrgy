@@ -18,6 +18,10 @@ import {
     Database,
     LifeBuoy,
     AlertCircle,
+    Crown,
+    Wallet,
+    AlertTriangle,
+    Wrench,
     Mars as Male,
     Venus as Female,
 } from "lucide-vue-next";
@@ -40,51 +44,87 @@ export const authContext = () => {
 };
 
 export const roleIconMap: Record<string, any> = {
-    Admin: Shield,
+    // ✅ CITY-LEVEL ROLES
+    "City Administrator": Briefcase,
+    "City Budget Officer": Wallet,
+    "City Councilor": Users,
+    "City Disaster Risk Officer": AlertTriangle,
+    "City Engineer": Wrench,
+    "City Health Officer": Heart,
+    "City Mayor": Crown,
+    "City Planning Officer": Map,
+    "City Treasurer": FileText,
+    "City Vice Mayor": Crown,
+
+    // ✅ BARANGAY-LEVEL ROLES
     "Barangay Captain": Gavel,
     "Barangay Councilor": Medal,
-
     "Barangay Health Worker": Heart,
     "Barangay Secretary": Clipboard,
     "Barangay Tanod": ShieldCheck,
     "Barangay Treasurer": FileText,
     "Barangay Volunteer": Handshake,
+
+    // ✅ SK (YOUTH COUNCIL)
+    "SK Chairperson": Users,
+    "SK Councilor": Users,
+
+    // ✅ REPRESENTATIVES
+    "PWD Representative": LifeBuoy,
+    "Senior Citizen": Eye,
+    "Youth Representative": Smile,
+
+    // ✅ GENERAL ROLES
+    Admin: Shield,
     "Data Encoder": Database,
     Guest: AlertCircle,
     Manager: Briefcase,
-    "PWD Representative": LifeBuoy,
     Resident: Smile,
-    "Senior Citizen": Eye,
-    "SK Chairperson": Users,
-    "SK Councilor": Users,
     "Social Welfare Officer": Heart,
     "System Administrator": Settings,
     User: UserIcon,
-    "Youth Representative": Smile,
 };
 
 export const colorMap: Record<string, BadgeColor> = {
-    Admin: "emerald",
+    // ✅ CITY-LEVEL ROLES
+    "City Administrator": "emerald",
+    "City Budget Officer": "lime",
+    "City Councilor": "pink",
+    "City Disaster Risk Officer": "amber",
+    "City Engineer": "orange",
+    "City Health Officer": "green",
+    "City Mayor": "red",
+    "City Planning Officer": "cyan",
+    "City Treasurer": "yellow",
+    "City Vice Mayor": "rose",
+
+    // ✅ BARANGAY-LEVEL ROLES
     "Barangay Captain": "red",
     "Barangay Councilor": "amber",
-
     "Barangay Health Worker": "green",
     "Barangay Secretary": "indigo",
     "Barangay Tanod": "gray",
     "Barangay Treasurer": "yellow",
     "Barangay Volunteer": "teal",
+
+    // ✅ SK (YOUTH COUNCIL)
+    "SK Chairperson": "purple",
+    "SK Councilor": "purple",
+
+    // ✅ REPRESENTATIVES
+    "PWD Representative": "pink",
+    "Senior Citizen": "lime",
+    "Youth Representative": "cyan",
+
+    // ✅ GENERAL ROLES
+    Admin: "emerald",
     "Data Encoder": "blue",
     Guest: "gray",
     Manager: "orange",
-    "PWD Representative": "pink",
     Resident: "sky",
-    "Senior Citizen": "lime",
-    "SK Chairperson": "purple",
-    "SK Councilor": "purple",
     "Social Welfare Officer": "rose",
     "System Administrator": "emerald",
     User: "blue",
-    "Youth Representative": "cyan",
 };
 
 export const genderIconMap: Record<string, any> = {
@@ -259,4 +299,19 @@ export async function hmacSHA256(otp: string, secret: string): Promise<string> {
     return Array.from(new Uint8Array(signature))
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
+}
+
+export function generateCaseNumber(text: string, date = new Date()) {
+    const d = new Date(date);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    const seconds = String(d.getSeconds()).padStart(2, "0");
+
+    const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
+
+    return `${text}-${timestamp}`;
 }

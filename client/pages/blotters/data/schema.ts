@@ -6,12 +6,23 @@ import type { formZodSchema } from "~/utils/helpers";
 
 export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
+        // {
+        //     class: "col-span-full",
+        //     label: "Case no.",
+        //     name: "case_no",
+        //     type: "text",
+        //     validation: z.string().min(1, "Case number is required"),
+        // },
         {
             class: "col-span-full",
-            label: "Case no.",
-            name: "case_no",
-            type: "text",
-            validation: z.string().min(1, "Case number is required"),
+            label: "Barangay",
+            multiple: false,
+            name: "barangay",
+            onSearch: handlers.barangay?.onSearch,
+            options: handlers.barangay?.options.value ?? [],
+            placeholder: "Select Barangay",
+            searchable: true,
+            type: "combobox",
         },
         {
             class: "col-span-full md:col-span-6",

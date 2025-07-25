@@ -34,13 +34,14 @@ import { useToast } from "#ui/composables/useToast";
 import type { TableAction } from "~/components/table/types";
 import type { Blotter } from "~/types/codegen/graphql";
 
+import { barangaysPaginate } from "~/graphql/Barangay";
 import {
     upsertBlotter,
     blottersPaginate,
     deleteBlotter,
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
-import { toTitleCase } from "~/utils/helpers";
+import { generateCaseNumber, toTitleCase } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
@@ -59,15 +60,23 @@ const createResidentSearchHandler = () =>
     useSearchQueryOptions(residentsPaginate, {
         queryKey: "residentsPaginate",
     });
+const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
+    queryKey: "barangaysPaginate",
+});
 const complainantSearch = createResidentSearchHandler();
 const respondentSearch = createResidentSearchHandler();
 const loadingOptions = computed(
     () =>
         complainantSearch.loadingOptions.value ||
-        respondentSearch.loadingOptions.value,
+        respondentSearch.loadingOptions.value ||
+        barangaySearch.loadingOptions.value,
 );
 const formSchema = computed(() =>
     schema({
+        barangay: {
+            onSearch: barangaySearch.debouncedSearch,
+            options: barangaySearch.queryOptions,
+        },
         complainant: {
             onSearch: complainantSearch.debouncedSearch,
             options: complainantSearch.queryOptions,
@@ -106,6 +115,7 @@ const tableData = useTableData<Blotter>(
             respondentSearch.initializeOptions();
             return row
                 ? {
+                      barangay: row.barangay?.id,
                       case_no: row.case_no,
                       complainant: row.complainant?.id,
                       complaint: row.complaint,
@@ -116,6 +126,7 @@ const tableData = useTableData<Blotter>(
                       status: row.status,
                   }
                 : {
+                      barangay: [],
                       case_no: "",
                       complainant: null,
                       complaint: "",
@@ -128,6 +139,10 @@ const tableData = useTableData<Blotter>(
         },
         prepareSubmitData: (data, row?: Blotter) => ({
             ...data,
+            barangay: {
+                connect: data.barangay,
+            },
+            case_no: row?.case_no || generateCaseNumber("Case"),
             complainant: { connect: data.complainant },
             id: row?.id,
             incident_date: data.incident_date

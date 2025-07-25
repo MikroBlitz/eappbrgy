@@ -1,13 +1,11 @@
 <template>
-    <CrudTable
-        :table-data="tableData"
-        :option-loading="residentSearch.loadingOptions"
-    />
+    <CrudTable :table-data="tableData" :option-loading="loadingOptions" />
 </template>
 
 <script setup lang="ts">
 import type { Official } from "~/types/codegen/graphql";
 
+import { barangaysPaginate } from "~/graphql/Barangay";
 import {
     deleteOfficial,
     officialsPaginate,
@@ -23,8 +21,20 @@ const permission = "official";
 const residentSearch = useSearchQueryOptions(residentsPaginate, {
     queryKey: "residentsPaginate",
 });
+const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
+    queryKey: "barangaysPaginate",
+});
+const loadingOptions = computed(
+    () =>
+        residentSearch.loadingOptions.value ||
+        barangaySearch.loadingOptions.value,
+);
 const formSchema = computed(() =>
     schema({
+        barangay: {
+            onSearch: barangaySearch.debouncedSearch,
+            options: barangaySearch.queryOptions,
+        },
         resident: {
             onSearch: residentSearch.debouncedSearch,
             options: residentSearch.queryOptions,
@@ -58,6 +68,7 @@ const tableData = useTableData<Official>(
             residentSearch.initializeOptions();
             return row
                 ? {
+                      barangay: row.barangay?.id,
                       id: row.id,
                       position: row.position,
                       resident: row.resident?.id,
@@ -65,6 +76,7 @@ const tableData = useTableData<Official>(
                       term_start: row.term_start,
                   }
                 : {
+                      barangay: "",
                       id: undefined,
                       position: "",
                       resident: "",
@@ -75,6 +87,9 @@ const tableData = useTableData<Official>(
         prepareSubmitData: (data, selectedRow?: Official) => {
             return {
                 ...data,
+                barangay: {
+                    connect: data.barangay,
+                },
                 id: selectedRow?.id || undefined,
                 resident: {
                     connect: data.resident,

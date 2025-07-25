@@ -14,6 +14,10 @@ export const puroksPaginate = gql`
             data {
                 id
                 name
+                barangay {
+                    id
+                    name
+                }
                 created_at
                 updated_at
             }
@@ -32,6 +36,10 @@ export const upsertPurok = gql`
         upsertPurok(input: $input) {
             id
             name
+            barangay {
+                id
+                name
+            }
             created_at
             updated_at
         }

@@ -11,6 +11,8 @@ type Resident {
     citizenship: String!
     phone: String
     email: String
+    user: User @hasOne
+    barangay: Barangay @belongsTo
     household: Household @belongsTo
     purok: Purok @belongsTo
     blotters: Blotter @hasMany
@@ -32,6 +34,7 @@ input ResidentInput {
     citizenship: String
     phone: String
     email: String
+    barangay: ConnectBarangayRelation
     household: ConnectHouseholdRelation
     purok: ConnectPurokRelation
 }

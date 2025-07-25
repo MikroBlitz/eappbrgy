@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('officials', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('barangay_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
-            $table->string('position'); // e.g., Captain, Kagawad
+            $table->string('position'); // e.g., Mayor, Vice Mayor
             $table->dateTime('term_start');
             $table->dateTime('term_end')->nullable();
             $table->timestamps();

@@ -11,6 +11,31 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             label: "Position",
             name: "position",
             options: [
+                // ✅ CITY-LEVEL POSITIONS
+                { label: "City Mayor", value: "City Mayor" },
+                { label: "City Vice Mayor", value: "City Vice Mayor" },
+                { label: "City Councilor 1", value: "City Councilor 1" },
+                { label: "City Councilor 2", value: "City Councilor 2" },
+                { label: "City Councilor 3", value: "City Councilor 3" },
+                { label: "City Councilor 4", value: "City Councilor 4" },
+                { label: "City Councilor 5", value: "City Councilor 5" },
+                { label: "City Councilor 6", value: "City Councilor 6" },
+                { label: "City Councilor 7", value: "City Councilor 7" },
+                { label: "City Administrator", value: "City Administrator" },
+                { label: "City Treasurer", value: "City Treasurer" },
+                { label: "City Budget Officer", value: "City Budget Officer" },
+                { label: "City Engineer", value: "City Engineer" },
+                { label: "City Health Officer", value: "City Health Officer" },
+                {
+                    label: "City Disaster Risk Officer",
+                    value: "City Disaster Risk Officer",
+                },
+                {
+                    label: "City Planning Officer",
+                    value: "City Planning Officer",
+                },
+
+                // ✅ BARANGAY-LEVEL POSITIONS
                 {
                     label: "Punong Barangay (Barangay Captain)",
                     value: "Barangay Captain",
@@ -90,6 +115,17 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
                 }
                 return undefined;
             }, z.date()),
+        },
+        {
+            class: "col-span-full",
+            label: "Barangay",
+            multiple: false,
+            name: "barangay",
+            onSearch: handlers.barangay?.onSearch,
+            options: handlers.barangay?.options.value ?? [],
+            placeholder: "Select Barangay",
+            searchable: true,
+            type: "combobox",
         },
     ],
 });

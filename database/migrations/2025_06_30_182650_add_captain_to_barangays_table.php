@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('puroks', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('barangay_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('name')->unique();
-            $table->timestamps();
+        Schema::table('barangays', function (Blueprint $table) {
+            $table->foreignId('official_id')->nullable()->constrained()->nullOnDelete();
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('puroks');
+        Schema::table('barangays', function (Blueprint $table) {
+            $table->dropForeign(['official_id']);
+            $table->dropColumn('official_id');
+        });
     }
 };

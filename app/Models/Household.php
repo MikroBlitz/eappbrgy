@@ -15,6 +15,11 @@ class Household extends Model
     protected array $searchable = ['id', 'address', 'household_no'];
 
     // Relationships
+    public function barangay(): BelongsTo
+    {
+        return $this->belongsTo(Barangay::class);
+    }
+
     public function residents(): HasMany
     {
         return $this->hasMany(Resident::class);

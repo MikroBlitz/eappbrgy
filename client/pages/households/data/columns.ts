@@ -46,6 +46,26 @@ export const columns: Column[] = [
         label: "Address",
         sortable: true,
     },
+    {
+        class: "w-[250px]",
+        key: "barangay",
+        label: "Barangay",
+        render: (row) =>
+            h("div", { class: "flex items-center space-x-2" }, [
+                h(
+                    "a",
+                    {
+                        class: "text-blue-600 cursor-pointer",
+                        onClick: () => {
+                            copyToClipboard("barangay", row.barangay?.name);
+                            navigateTo("/barangays");
+                        },
+                    },
+                    row.barangay?.name,
+                ),
+            ]),
+        sortable: false,
+    },
     // {
     //     key: "created_at",
     //     label: "Created At",

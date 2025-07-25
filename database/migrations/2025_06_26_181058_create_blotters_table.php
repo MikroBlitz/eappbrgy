@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('blotters', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('barangay_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('complainant_id')->nullable()->constrained('residents')->nullOnDelete();
             $table->foreignId('respondent_id')->nullable()->constrained('residents')->nullOnDelete();
             $table->string('case_no')->unique();

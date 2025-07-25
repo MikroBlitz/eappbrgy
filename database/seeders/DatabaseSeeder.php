@@ -117,6 +117,11 @@ class DatabaseSeeder extends Seeder
             'pending document',
             'release document',
             'revoke document',
+
+            'view barangay',
+            'create barangay',
+            'edit barangay',
+            'delete barangay',
         ];
 
         // Create permissions if not exists

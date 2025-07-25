@@ -15,6 +15,18 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
         },
         {
             class: "col-span-full",
+            label: "Barangay",
+            multiple: false,
+            name: "barangay",
+            onSearch: handlers.barangay?.onSearch,
+            options: handlers.barangay?.options.value ?? [],
+            placeholder: "Select Barangay",
+            searchable: true,
+            type: "combobox",
+            validation: z.string().optional(),
+        },
+        {
+            class: "col-span-full",
             label: "Purok",
             multiple: false,
             name: "purok",
@@ -23,10 +35,7 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             placeholder: "Select Purok",
             searchable: true,
             type: "combobox",
-            validation: z.union([
-                z.string().min(1, "Purok is required"),
-                z.array(z.string()).min(1, "At least one purok is required"),
-            ]),
+            validation: z.string().optional(),
         },
         {
             class: "col-span-full",

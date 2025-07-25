@@ -14,13 +14,30 @@ trait HasGraphQLScopes
 
         $fields = $this->searchable ?? [];
 
-        if (empty($fields)) {
-            return $query;
-        }
-
         return $query->where(function (Builder $q) use ($search, $fields) {
             foreach ($fields as $field) {
-                $q->orWhere($field, 'like', "%{$search}%");
+                if (str_contains($field, '.')) {
+                    $parts = explode('.', $field);
+                    $fieldName = array_pop($parts); // last part is the actual column
+                    $this->applyDeepSearch($q, $parts, $fieldName, $search);
+                } else {
+                    $q->orWhere($field, 'like', "%{$search}%");
+                }
+            }
+        });
+    }
+
+    protected function applyDeepSearch($query, $relations, $field, $search): void
+    {
+        $relation = array_shift($relations);
+
+        $query->orWhereHas($relation, function ($relQuery) use ($relations, $field, $search) {
+            if (empty($relations)) {
+                // Final level - search field
+                $relQuery->where($field, 'like', "%{$search}%");
+            } else {
+                // Still has nested relations - go deeper
+                $this->applyDeepSearch($relQuery, $relations, $field, $search);
             }
         });
     }

@@ -30,28 +30,34 @@ export const useLinks = () => {
             to: "/households",
         },
         {
-            icon: "solar:document-add-broken",
-            label: "Blotters",
-            permission: auth.can("view blotter"),
-            to: "/blotters",
-        },
-        {
-            icon: "solar:documents-broken",
-            label: "Documents",
-            permission: auth.can("view document"),
-            to: "/documents",
-        },
-        {
             icon: "solar:users-group-two-rounded-broken",
             label: "Residents",
             permission: auth.can("view resident"),
             to: "/residents",
         },
         {
+            icon: "solar:document-add-broken",
+            label: "Blotters",
+            permission: auth.can("view blotter"),
+            to: "/blotters",
+        },
+        {
+            icon: "solar:home-broken",
+            label: "Barangays",
+            permission: auth.can("view barangay"),
+            to: "/barangays",
+        },
+        {
             icon: "solar:crown-star-broken",
             label: "Officials",
             permission: auth.can("view official"),
             to: "/officials",
+        },
+        {
+            icon: "solar:documents-broken",
+            label: "Documents",
+            permission: auth.can("view document"),
+            to: "/documents",
         },
         {
             icon: "solar:chat-round-dots-outline",

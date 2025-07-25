@@ -2,6 +2,7 @@ type Household {
     id: ID!
     household_no: String!
     address: String
+    barangay: Barangay @belongsTo
     purok: Purok @belongsTo
     created_at: DateTime!
     updated_at: DateTime!
@@ -11,6 +12,7 @@ input HouseholdInput {
     id: ID
     household_no: String
     address: String
+    barangay: ConnectBarangayRelation
     purok: ConnectPurokRelation
 }
 

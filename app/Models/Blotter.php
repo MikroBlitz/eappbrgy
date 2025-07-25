@@ -15,6 +15,11 @@ class Blotter extends Model
     protected array $searchable = ['id', 'case_no', 'complaint', 'details'];
 
     // Relationships
+    public function barangay(): BelongsTo
+    {
+        return $this->belongsTo(Barangay::class);
+    }
+
     public function complainant(): BelongsTo
     {
         return $this->belongsTo(Resident::class);

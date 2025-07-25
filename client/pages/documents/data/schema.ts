@@ -23,51 +23,90 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             label: "Document Type",
             name: "type",
             options: [
+                // ✅ Barangay-level documents
                 {
-                    category: "permit",
+                    category: "barangay_permit",
                     label: "Barangay Clearance",
                     value: "barangay_clearance",
                 },
                 {
-                    category: "certificate",
+                    category: "barangay_certificate",
                     label: "Certificate of Residency",
                     value: "certificate_of_residency",
                 },
                 {
-                    category: "certificate",
+                    category: "barangay_certificate",
                     label: "Certificate of Indigency",
                     value: "certificate_of_indigency",
                 },
                 {
-                    category: "permit",
-                    label: "Business Clearance",
-                    value: "business_clearance",
-                },
-                { category: "id", label: "Barangay ID", value: "barangay_id" },
-                {
-                    category: "certificate",
+                    category: "barangay_certificate",
                     label: "Certificate of Solo Parent",
                     value: "certificate_of_solo_parent",
                 },
                 {
-                    category: "permit",
-                    label: "Permit for Construction",
-                    value: "permit_construction",
+                    category: "barangay_id",
+                    label: "Barangay ID",
+                    value: "barangay_id",
                 },
                 {
-                    category: "permit",
-                    label: "Permit for Events",
-                    value: "permit_events",
-                },
-                {
-                    category: "certificate",
+                    category: "barangay_certificate",
                     label: "Certificate of Good Moral",
                     value: "certificate_good_moral",
                 },
                 {
-                    category: "certificate",
+                    category: "barangay_certificate",
                     label: "Certificate of Calamity Victim",
                     value: "certificate_calamity_victim",
+                },
+
+                // ✅ City-level permits
+                {
+                    category: "city_permit",
+                    label: "Business Permit",
+                    value: "business_permit",
+                },
+                {
+                    category: "city_permit",
+                    label: "Real Property Tax Clearance",
+                    value: "real_property_tax_clearance",
+                },
+                {
+                    category: "city_permit",
+                    label: "Zoning/Construction Permit",
+                    value: "zoning_construction_permit",
+                },
+                {
+                    category: "city_permit",
+                    label: "Sanitary Permit",
+                    value: "sanitary_permit",
+                },
+                {
+                    category: "city_permit",
+                    label: "Permit for Large-Scale Events",
+                    value: "city_event_permit",
+                },
+
+                // ✅ City-level certificates
+                {
+                    category: "city_certificate",
+                    label: "Mayor’s Clearance",
+                    value: "mayors_clearance",
+                },
+                {
+                    category: "city_certificate",
+                    label: "Certificate of Business Registration",
+                    value: "certificate_business_registration",
+                },
+                {
+                    category: "city_certificate",
+                    label: "Certificate of No Pending Case",
+                    value: "certificate_no_pending_case",
+                },
+                {
+                    category: "city_certificate",
+                    label: "Certificate of Tax Payment",
+                    value: "certificate_tax_payment",
                 },
             ],
             type: "select",
