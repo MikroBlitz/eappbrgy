@@ -1,109 +1,71 @@
-# Fullstack APP
-
 ## Project Overview
-This project is a full stack monolith built using **Nuxt.js** on the frontend and **Laravel** on the backend, with **Apollo GraphQL** for data fetching and **Laravel Lighthouse** handling GraphQL on the server. The state management is handled by **Pinia**, and **Sanctum** provides secure authentication.
+This project is a **full-stack monolithic application** that seamlessly integrates **Nuxt.js** for the frontend with a **Laravel-powered API** on the backend. It provides a unified, efficient, and maintainable development workflow within a single codebase.
 
-### Features
-- **Nuxt.js**: A Vue.js framework that supports SSR (Server Side Rendering) and static site generation.
-- **Laravel**: A powerful PHP framework for backend logic and API handling.
-- **Apollo GraphQL**: Frontend data management using GraphQL queries and mutations.
-- **Laravel Lighthouse**: Integrates GraphQL API into Laravel.
-- **Pinia**: Provides an intuitive and powerful state management solution.
-- **Sanctum**: Implements secure authentication for API access.
-- **ShadCn-Vue**: A lightweight and customizable UI library for Vue.js.
-- **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
-- **Vite**: A fast and lightweight build tool for modern web development.
-- **Codegen**: Automatically generates GraphQL types from your Laravel models.
-
-## Tech Stack
+### Tech Stack
 ![Nuxt.js](https://img.shields.io/badge/Nuxt.js-00C58E?style=for-the-badge&logo=nuxt.js&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![Apollo GraphQL](https://img.shields.io/badge/Apollo%20GraphQL-311C87?style=for-the-badge&logo=apollo-graphql&logoColor=white)
 ![Pinia](https://img.shields.io/badge/Pinia-2C3E50?style=for-the-badge&logo=pinia&logoColor=yellow)
 ![Lighthouse](https://img.shields.io/badge/Laravel%20Lighthouse-10B981?style=for-the-badge&logo=graphql&logoColor=white)
 ![Sanctum](https://img.shields.io/badge/Sanctum-3498DB?style=for-the-badge&logo=laravel&logoColor=white)
-
-### Frontend:
-- [Nuxt.js](https://nuxtjs.org/)
-- [Pinia](https://pinia.vuejs.org/)
-- [Apollo GraphQL](https://www.apollographql.com/)
-
-### Backend:
-- [Laravel](https://laravel.com/)
-- [Laravel Lighthouse](https://lighthouse-php.com/)
-- [Sanctum](https://laravel.com/docs/sanctum)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ## Setup Instructions
 
 ### Prerequisites
-
 Make sure you have the following software installed on your system:
-- [Composer](https://getcomposer.org/) - PHP dependency manager
-- [Node.js](https://nodejs.org/) - JavaScript runtime environment
+- [Composer](https://getcomposer.org/) – PHP dependency manager
+- [Node.js](https://nodejs.org/) – JavaScript runtime environment
 - [XAMPP](https://www.apachefriends.org/index.html) or another local server environment
 - [PHP 8.2](https://www.php.net/) or a compatible version
-- [GitHub CLI](https://cli.github.com/) (optional)
-- [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm) (optional)
+- [PHP Redis Extension](https://pecl.php.net/package/redis) – Required for PHP to communicate with Redis
+- [GitHub CLI](https://cli.github.com/) *(optional)*
+- [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm) *(optional)*
 
-### Backend (Laravel + Lighthouse), Frontend (Nuxt.js)
 
 1. Clone the repository:
-
     ```bash
     git clone https://github.com/MikroBlitz/govana.git
+   
     cd govana
     ```
 
 2. Install the backend dependencies:
-
     ```bash
     composer install
     ```
 
 3. Copy the example environment file and set up environment variables:
-
     ```bash
-    cp .env.example .env && php artisan key:generate
+    cp .env.example .env && php artisan key:generate && php artisan otp:generate-key
     ```
 
 4. Set up the database configuration in the `.env` file and run migration and seeders:
-
     ```bash
     php artisan migrate:fresh --seed
     ```
 
-5. Install Laravel Lighthouse for GraphQL:
-
-    ```bash
-    composer require nuwave/lighthouse
-    ```
-
-6. Install the frontend dependencies:
-
+5. Install the frontend dependencies:
     ```bash
     bun install
     ```
 
-7. Start the Nuxt.js development server and Laravel server:
-
+6. Start the Nuxt.js development server and Laravel server:
     ```bash
     bun start
     ```
 
-8. Open your browser and navigate to `http://localhost:3000` & `http://localhost:8000` for the front-end and back-end respectively
+7. Open your browser and navigate to `http://localhost:3000` & `http://localhost:8000` for the front-end and back-end respectively
 
-9. To run cron job:
-
+8. To run cron job:
     ```bash
     php artisan schedule:run
     ```
-
    For production, add the following to your system's crontab to run the scheduler every minute:
-
     ```bash
     * * * * * cd /path-to-app && php artisan schedule:run >> /dev/null 2>&1
     ```
-
    This ensures all scheduled tasks (e.g., auto-expiring permits) run automatically based on their defined schedule.
 
 ### Testing API performance
@@ -116,10 +78,6 @@ bun octane
 bun api:test
 ```
 
-## Authentication
-
-This application uses **Laravel Sanctum** for API authentication. To authenticate a user, make a POST request to `/api/login` with the necessary credentials, and use the generated token for authenticated API requests.
-
 ## GraphQL API
 
 GraphQL queries and mutations are handled by **Laravel Lighthouse**. You can explore and test the GraphQL API through the GraphQL Playground available at:
@@ -128,7 +86,6 @@ http://localhost:8000/graphiql
 ```
 
 ## Generating GraphQL Types
-
 To generate the GraphQL types, run the following command:
 
 ```bash
@@ -136,7 +93,6 @@ bun codegen
 ```
 
 ## Clear backend cache
-
 This will clear all the cache files in the backend.
 
 ```bash
@@ -144,9 +100,7 @@ bun clear
 ```
 
 ## Contributing
-
 Contributions are welcome! Please follow the guidelines outlined in the [contributing guidelines](CONTRIBUTING.md).
 
 ## License
-
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
