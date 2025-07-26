@@ -10,7 +10,10 @@ class Document extends Model
 {
     use HasGraphQLScopes;
 
-    protected array $searchable = ['id'];
+    protected array $searchable = [
+        'id',
+        'resident.name',
+    ];
 
     protected $fillable = [
         'id',

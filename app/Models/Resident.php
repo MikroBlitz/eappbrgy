@@ -20,6 +20,7 @@ class Resident extends Model
         'middle_name',
         'last_name',
         'email',
+        'barangay.name',
     ];
 
     protected static function boot(): void

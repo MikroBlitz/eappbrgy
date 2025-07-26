@@ -14,7 +14,12 @@ class Barangay extends Model
     protected array $searchable = [
         'id',
         'name',
-//        'official.resident.name',
+        'resident.name',
+    ];
+
+    protected $fillable = [
+        'id',
+        'official_id',
     ];
 
     public function residents(): HasMany

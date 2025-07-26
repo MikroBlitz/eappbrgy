@@ -12,7 +12,13 @@ class Blotter extends Model
 {
     use HasGraphQLScopes;
 
-    protected array $searchable = ['id', 'case_no', 'complaint', 'details'];
+    protected array $searchable = [
+        'id',
+        'case_no',
+        'complaint',
+        'details',
+        'barangay.name'
+    ];
 
     // Relationships
     public function barangay(): BelongsTo
