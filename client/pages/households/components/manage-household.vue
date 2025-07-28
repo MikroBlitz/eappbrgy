@@ -16,7 +16,6 @@ import { puroksPaginate } from "~/graphql/Purok";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = "household";
 const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
     queryKey: "barangaysPaginate",
 });
@@ -44,14 +43,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Household>(
     {
         icon: "solar:home-broken",
-        permissions: {
-            // permissions
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            view: `view ${permission}`,
-        },
-        singular: "Household",
+        permission: "household",
         title: "Households",
     },
     {

@@ -49,7 +49,6 @@ const selectedStatus = ref("");
 const isConfirmModal = ref(false);
 const isOtpModal = ref(false);
 const modalLoading = ref(false);
-const permission = "blotter";
 
 const createResidentSearchHandler = () =>
     useSearchQueryOptions(residentsPaginate, {
@@ -87,13 +86,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Blotter>(
     {
         icon: "solar:document-add-broken",
-        permissions: {
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            view: `view ${permission}`,
-        },
-        singular: "Blotter",
+        permission: "blotter",
         title: "Blotters",
     },
     {

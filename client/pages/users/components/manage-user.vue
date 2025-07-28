@@ -16,7 +16,6 @@ import {
 import { columns, filters } from "../data/user/columns";
 import { schema } from "../data/user/schema";
 
-const permission = "user";
 const roleSearch = useSearchQueryOptions(rolesPaginate, {
     queryKey: "rolesPaginate",
 });
@@ -34,14 +33,7 @@ const tableData = useTableData<User>(
     {
         hasStatus: true,
         icon: "solar:users-group-rounded-outline",
-        permissions: {
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            updateStatus: "update user status",
-            view: `view ${permission}`,
-        },
-        singular: "User",
+        permission: "user",
         title: "Users",
     },
     {
@@ -74,7 +66,6 @@ const tableData = useTableData<User>(
         getFormState: (user?: User) => {
             const roleIds = user?.roles?.map((role) => role?.id) || [];
             roleSearch.initializeOptions();
-
             return user
                 ? {
                       email: user.email || "",

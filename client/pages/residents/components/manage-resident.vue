@@ -18,7 +18,6 @@ import { formatDateTimeForGraphQL } from "~/utils/helpers";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = "resident";
 const purokSearch = useSearchQueryOptions(puroksPaginate, {
     queryKey: "puroksPaginate",
 });
@@ -59,14 +58,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Resident>(
     {
         icon: "solar:users-group-two-rounded-broken",
-        permissions: {
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            updateStatus: "update user status",
-            view: `view ${permission}`,
-        },
-        singular: "Resident",
+        permission: "resident",
         title: "Residents",
     },
     {

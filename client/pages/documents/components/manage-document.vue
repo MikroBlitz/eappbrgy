@@ -56,13 +56,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Document>(
     {
         icon: "solar:documents-broken",
-        permissions: {
-            create: `create document`,
-            delete: `delete document`,
-            edit: `edit document`,
-            view: `view document`,
-        },
-        singular: "Document",
+        permission: "document",
         title: "Documents",
     },
     {

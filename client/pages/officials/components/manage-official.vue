@@ -17,7 +17,6 @@ import { formatDateTimeForGraphQL } from "~/utils/helpers";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = "official";
 const residentSearch = useSearchQueryOptions(residentsPaginate, {
     queryKey: "residentsPaginate",
 });
@@ -46,13 +45,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Official>(
     {
         icon: "solar:crown-star-broken",
-        permissions: {
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            view: `view ${permission}`,
-        },
-        singular: "Official",
+        permission: "official",
         title: "Officials",
     },
     {

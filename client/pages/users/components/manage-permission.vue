@@ -14,20 +14,13 @@ import {
 import { columns, filter as filters } from "../data/permission/columns";
 import { schema } from "../data/permission/schema";
 
-const permission = "permission";
 const formSchema = computed(() => schema());
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
 const tableData = useTableData<Permission>(
     {
         icon: "solar:lock-outline",
-        permissions: {
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            view: `view ${permission}`,
-        },
-        singular: "Permission",
+        permission: "permission",
         title: "Permissions",
     },
     {

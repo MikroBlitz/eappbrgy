@@ -15,7 +15,6 @@ import { officialsPaginate } from "~/graphql/Official";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
-const permission = "barangay";
 const residentSearch = useSearchQueryOptions(officialsPaginate, {
     mapFn: (item) => ({
         label: `${item.position}: ${item.resident.name}`,
@@ -36,14 +35,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Barangay>(
     {
         icon: "solar:home-broken",
-        permissions: {
-            // permissions
-            create: `create ${permission}`,
-            delete: `delete ${permission}`,
-            edit: `edit ${permission}`,
-            view: `view ${permission}`,
-        },
-        singular: "Barangay",
+        permission: "barangay",
         title: "Barangays",
     },
     {
@@ -56,24 +48,21 @@ const tableData = useTableData<Barangay>(
         defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
-        getFormState: (brgy?: Barangay) => {
-            if (brgy) {
-                residentSearch.initializeOptions();
-                return {
-                    id: brgy.id,
-                    name: brgy.name,
-                    official: brgy.official,
-                    population: brgy.population,
-                };
-            } else {
-                residentSearch.initializeOptions();
-                return {
-                    id: undefined,
-                    name: "",
-                    official: null,
-                    population: 0,
-                };
-            }
+        getFormState: (row?: Barangay) => {
+            residentSearch.initializeOptions();
+            return row
+                ? {
+                      id: row.id,
+                      name: row.name,
+                      official: row.official,
+                      population: row.population,
+                  }
+                : {
+                      id: undefined,
+                      name: "",
+                      official: null,
+                      population: 0,
+                  };
         },
         optionLoading: residentSearch.loadingOptions,
         prepareSubmitData: (data, selectedRow?: Barangay) => {

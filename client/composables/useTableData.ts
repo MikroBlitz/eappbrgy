@@ -24,9 +24,10 @@ type Action<
 export function useTableData<T extends Record<string, unknown>>(
     config: {
         title: string;
-        singular: string;
+        singular?: string;
         icon: string;
-        permissions: {
+        permission?: string;
+        permissions?: {
             view: string;
             create: string;
             edit: string;
@@ -144,8 +145,25 @@ export function useTableData<T extends Record<string, unknown>>(
         // Config
         hasStatus: config.hasStatus,
         icon: config.icon,
-        permissions: config.permissions,
-        singular: config.singular,
+        permissions: computed(() => {
+            if (config.permissions) return config.permissions;
+            const base = config.permission;
+            return {
+                create: `create ${base}`,
+                delete: `delete ${base}`,
+                edit: `edit ${base}`,
+                view: `view ${base}`,
+            };
+        }).value,
+
+        singular: computed(() => {
+            if (config.singular) return config.singular;
+            if (!config.permission) return "";
+            return (
+                config.permission.charAt(0).toUpperCase() +
+                config.permission.slice(1)
+            );
+        }).value,
         title: config.title,
 
         // Operations

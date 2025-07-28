@@ -11,7 +11,6 @@ import { rolesPaginate, upsertRole, deleteRole } from "~/graphql/Role";
 import { columns, status } from "../data/role/columns";
 import { schema } from "../data/role/schema";
 
-const permissionName = "role";
 const permissionSearch = useSearchQueryOptions(permissionsPaginate, {
     queryKey: "permissionsPaginate",
 });
@@ -28,13 +27,7 @@ const zodSchema = computed(() => formZodSchema(formSchema.value));
 const tableData = useTableData<Role>(
     {
         icon: "solar:key-outline",
-        permissions: {
-            create: `create ${permissionName}`,
-            delete: `delete ${permissionName}`,
-            edit: `edit ${permissionName}`,
-            view: `view ${permissionName}`,
-        },
-        singular: "Role",
+        permission: "role",
         title: "Roles",
     },
     {
