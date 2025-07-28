@@ -1,13 +1,8 @@
 <template>
-    <CrudTable
-        :table-data="tableData"
-        :option-loading="loadingOptions"
-        :actions="customActions"
-    />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
-import type { TableAction } from "~/components/table/types";
 import type { Household, Resident } from "~/types/codegen/graphql";
 
 import { barangaysPaginate } from "~/graphql/Barangay";
@@ -37,7 +32,7 @@ const householdSearch = useSearchQueryOptions(householdsPaginate, {
 const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
     queryKey: "barangaysPaginate",
 });
-const loadingOptions = computed(
+const optionLoading = computed(
     () =>
         purokSearch.loadingOptions.value ||
         householdSearch.loadingOptions.value ||
@@ -81,6 +76,16 @@ const tableData = useTableData<Resident>(
     },
     {
         columns,
+        customActions: [
+            {
+                color: () => "orange",
+                condition: () => true,
+                icon: () => "solar:file-download-broken",
+                onClick: (row: Resident) => customFunction(row),
+                tooltip: (row: Resident) => `Log the Data ${row.name}`,
+            },
+        ],
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (row?: Resident) => {
@@ -120,6 +125,7 @@ const tableData = useTableData<Resident>(
                       suffix: "",
                   };
         },
+        optionLoading,
         prepareSubmitData: (data, selectedRow?: Resident) => {
             return {
                 ...data,
@@ -142,16 +148,6 @@ const tableData = useTableData<Resident>(
     },
 );
 
-// Custom actions
-const customActions: TableAction[] = [
-    {
-        color: () => "orange",
-        condition: () => true,
-        icon: () => "solar:file-download-broken",
-        onClick: (row: Resident) => customFunction(row),
-        tooltip: (row: Resident) => `Log the Data ${row.name}`,
-    },
-];
 const customFunction = (row: Resident) => {
     console.log("Resident Row Data:", row);
     useToast().add({

@@ -1,8 +1,5 @@
 <template>
-    <CrudTable
-        :table-data="tableData"
-        :option-loading="residentSearch.loadingOptions"
-    />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
@@ -56,6 +53,7 @@ const tableData = useTableData<Barangay>(
     },
     {
         columns,
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (brgy?: Barangay) => {
@@ -77,6 +75,7 @@ const tableData = useTableData<Barangay>(
                 };
             }
         },
+        optionLoading: residentSearch.loadingOptions,
         prepareSubmitData: (data, selectedRow?: Barangay) => {
             return {
                 ...data,
@@ -86,6 +85,7 @@ const tableData = useTableData<Barangay>(
                 },
             };
         },
+        whereConditions: {},
         zodSchema: zodSchema.value,
     },
 );

@@ -1,9 +1,5 @@
 <template>
-    <CrudTable
-        :table-data="tableData"
-        :option-loading="permissionSearch.loadingOptions"
-        :default-view-modal="false"
-    />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
@@ -66,6 +62,7 @@ const tableData = useTableData<Role>(
                       permissions: [],
                   };
         },
+        optionLoading: permissionSearch.loadingOptions,
         prepareSubmitData: (data, selectedRole?: Role) => ({
             ...data,
             id: selectedRole?.id,

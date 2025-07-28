@@ -3,7 +3,11 @@ import type { ZodSchema } from "zod";
 
 import { useToast } from "#ui/composables/useToast";
 
-import type { Column, FilterOption } from "~/components/table/types";
+import type {
+    Column,
+    FilterOption,
+    TableAction,
+} from "~/components/table/types";
 import type { WhereConditions } from "~/types/codegen/graphql";
 
 type Action<
@@ -53,6 +57,11 @@ export function useTableData<T extends Record<string, unknown>>(
         whereConditions?: WhereConditions;
         formSchema: any;
         zodSchema?: ZodSchema;
+        hideDefaultActions?: boolean;
+        isFormFullscreen?: boolean;
+        optionLoading?: Ref<boolean, boolean> | boolean;
+        defaultViewModal?: boolean;
+        customActions?: TableAction[];
     },
 ) {
     const defaultGetFormState = (item?: T): Record<string, unknown> => {
@@ -160,7 +169,12 @@ export function useTableData<T extends Record<string, unknown>>(
         zodSchema: options?.zodSchema,
 
         // Optional relations
+        customActions: options?.customActions,
+        defaultViewModal: options?.defaultViewModal,
         hasRelations: options?.hasRelations,
+        hideDefaultActions: options?.hideDefaultActions,
+        isFormFullscreen: options?.isFormFullscreen,
+        optionLoading: options?.optionLoading,
         relationKey: options?.relationKey,
     };
 }

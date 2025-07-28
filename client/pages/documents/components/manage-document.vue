@@ -1,10 +1,6 @@
 <template>
     <div>
-        <CrudTable
-            :table-data="tableData"
-            :option-loading="residentSearch.loadingOptions"
-            :actions="customActions"
-        />
+        <CrudTable :table-data="tableData" />
 
         <ModalConfirm
             v-model:is-open="isConfirmModal"
@@ -76,6 +72,39 @@ const tableData = useTableData<Document>(
     },
     {
         columns,
+        customActions: [
+            {
+                color: () => "gray",
+                condition: () => auth.can("pending document"),
+                icon: () => "solar:clock-square-broken",
+                onClick: (row: Document) => confirmUpdateStatus(row, "pending"),
+                tooltip: () => "Revert to pending",
+            },
+            {
+                color: () => "green",
+                condition: () => auth.can("approve document"),
+                icon: () => "solar:check-square-broken",
+                onClick: (row: Document) =>
+                    confirmUpdateStatus(row, "approved"),
+                tooltip: (row: Document) => `Approve ${toTitleCase(row.type)}`,
+            },
+            {
+                color: () => "emerald",
+                condition: () => auth.can("release document"),
+                icon: () => "solar:square-arrow-right-up-broken",
+                onClick: (row: Document) =>
+                    confirmUpdateStatus(row, "released"),
+                tooltip: (row: Document) => `Release ${toTitleCase(row.type)}`,
+            },
+            {
+                color: () => "orange",
+                condition: () => auth.can("revoke document"),
+                icon: () => "solar:close-square-broken",
+                onClick: (row: Document) => confirmUpdateStatus(row, "revoked"),
+                tooltip: (row: Document) => `Revoke ${toTitleCase(row.type)}`,
+            },
+        ],
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (row?: Document) => {
@@ -102,6 +131,7 @@ const tableData = useTableData<Document>(
                       valid_until: "",
                   };
         },
+        optionLoading: residentSearch.loadingOptions,
         prepareSubmitData: (data, selectedRow?: Document) => ({
             ...data,
             createdBy: selectedRow?.createdBy || { connect: auth.user?.id },
@@ -153,37 +183,6 @@ function conditions() {
         value: auth.user?.id,
     };
 }
-
-const customActions: TableAction[] = [
-    {
-        color: () => "gray",
-        condition: () => auth.can("pending document"),
-        icon: () => "solar:clock-square-broken",
-        onClick: (row: Document) => confirmUpdateStatus(row, "pending"),
-        tooltip: () => "Revert to pending",
-    },
-    {
-        color: () => "green",
-        condition: () => auth.can("approve document"),
-        icon: () => "solar:check-square-broken",
-        onClick: (row: Document) => confirmUpdateStatus(row, "approved"),
-        tooltip: (row: Document) => `Approve ${toTitleCase(row.type)}`,
-    },
-    {
-        color: () => "emerald",
-        condition: () => auth.can("release document"),
-        icon: () => "solar:square-arrow-right-up-broken",
-        onClick: (row: Document) => confirmUpdateStatus(row, "released"),
-        tooltip: (row: Document) => `Release ${toTitleCase(row.type)}`,
-    },
-    {
-        color: () => "orange",
-        condition: () => auth.can("revoke document"),
-        icon: () => "solar:close-square-broken",
-        onClick: (row: Document) => confirmUpdateStatus(row, "revoked"),
-        tooltip: (row: Document) => `Revoke ${toTitleCase(row.type)}`,
-    },
-];
 
 function confirmUpdateStatus(row: Document, status: string) {
     selectedRow.value = row;

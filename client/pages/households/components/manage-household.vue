@@ -1,5 +1,5 @@
 <template>
-    <CrudTable :table-data="tableData" :option-loading="loadingOptions" />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
@@ -23,7 +23,7 @@ const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
 const purokSearch = useSearchQueryOptions(puroksPaginate, {
     queryKey: "puroksPaginate",
 });
-const loadingOptions = computed(
+const optionLoading = computed(
     () =>
         purokSearch.loadingOptions.value || barangaySearch.loadingOptions.value,
 );
@@ -61,6 +61,7 @@ const tableData = useTableData<Household>(
     },
     {
         columns,
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (household?: Household) => {
@@ -84,6 +85,7 @@ const tableData = useTableData<Household>(
                 };
             }
         },
+        optionLoading,
         prepareSubmitData: (data, selectedRow?: Household) => {
             return {
                 ...data,

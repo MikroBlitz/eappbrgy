@@ -125,7 +125,7 @@ type Props<T> = {
     loading: boolean;
     optionLoading?: Ref<boolean, boolean> | boolean;
     onSubmit: (event: FormSubmitEvent<T>) => void;
-    isFullscreen: boolean;
+    isFullscreen?: boolean;
 };
 
 const props = defineProps<Props<unknown>>();

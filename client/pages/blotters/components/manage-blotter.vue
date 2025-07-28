@@ -1,10 +1,6 @@
 <template>
     <div>
-        <CrudTable
-            :table-data="tableData"
-            :option-loading="loadingOptions"
-            :actions="customActions"
-        />
+        <CrudTable :table-data="tableData" />
 
         <ModalConfirm
             v-model:is-open="isConfirmModal"
@@ -31,7 +27,6 @@
 <script setup lang="ts">
 import { useToast } from "#ui/composables/useToast";
 
-import type { TableAction } from "~/components/table/types";
 import type { Blotter } from "~/types/codegen/graphql";
 
 import { barangaysPaginate } from "~/graphql/Barangay";
@@ -65,7 +60,7 @@ const barangaySearch = useSearchQueryOptions(barangaysPaginate, {
 });
 const complainantSearch = createResidentSearchHandler();
 const respondentSearch = createResidentSearchHandler();
-const loadingOptions = computed(
+const optionLoading = computed(
     () =>
         complainantSearch.loadingOptions.value ||
         respondentSearch.loadingOptions.value ||
@@ -108,6 +103,30 @@ const tableData = useTableData<Blotter>(
     },
     {
         columns,
+        customActions: [
+            {
+                color: () => "blue",
+                condition: () => auth.can("open blotter"),
+                icon: () => "solar:file-broken",
+                onClick: (row: Blotter) => openOtpWith(row, "open"),
+                tooltip: () => "Open this blotter",
+            },
+            {
+                color: () => "emerald",
+                condition: () => auth.can("resolve blotter"),
+                icon: () => "solar:file-check-broken",
+                onClick: (row: Blotter) => openOtpWith(row, "resolved"),
+                tooltip: () => "Resolve this blotter",
+            },
+            {
+                color: () => "red",
+                condition: () => auth.can("dismiss blotter"),
+                icon: () => "solar:file-remove-broken",
+                onClick: (row: Blotter) => openOtpWith(row, "dismissed"),
+                tooltip: () => "Dismiss this blotter",
+            },
+        ],
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (row?: Blotter) => {
@@ -137,6 +156,7 @@ const tableData = useTableData<Blotter>(
                       status: "",
                   };
         },
+        optionLoading,
         prepareSubmitData: (data, row?: Blotter) => ({
             ...data,
             barangay: {
@@ -153,31 +173,6 @@ const tableData = useTableData<Blotter>(
         zodSchema: zodSchema.value,
     },
 );
-
-// Custom actions
-const customActions: TableAction[] = [
-    {
-        color: () => "blue",
-        condition: () => auth.can("open blotter"),
-        icon: () => "solar:file-broken",
-        onClick: (row: Blotter) => openOtpWith(row, "open"),
-        tooltip: () => "Open this blotter",
-    },
-    {
-        color: () => "emerald",
-        condition: () => auth.can("resolve blotter"),
-        icon: () => "solar:file-check-broken",
-        onClick: (row: Blotter) => openOtpWith(row, "resolved"),
-        tooltip: () => "Resolve this blotter",
-    },
-    {
-        color: () => "red",
-        condition: () => auth.can("dismiss blotter"),
-        icon: () => "solar:file-remove-broken",
-        onClick: (row: Blotter) => openOtpWith(row, "dismissed"),
-        tooltip: () => "Dismiss this blotter",
-    },
-];
 
 function openOtpWith(row: Blotter, status: string) {
     selectedRow.value = row;

@@ -74,12 +74,12 @@
             :state="formState"
             :on-submit="onSubmit"
             :loading="modalLoading"
-            :option-loading="optionLoading"
-            :is-fullscreen="isFormFullscreen"
+            :option-loading="tableData.optionLoading"
+            :is-fullscreen="tableData.isFormFullscreen"
         />
 
         <ModalView
-            v-if="defaultViewModal"
+            v-if="tableData.defaultViewModal"
             v-model:is-open="isViewModal"
             :title="`View ${tableData.singular}`"
             :form-schema="tableData.formSchema"
@@ -113,6 +113,8 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 import type { DocumentNode } from "@apollo/client";
+// eslint-disable-next-line vue/prefer-import-from-vue
+import type { UnwrapRefSimple } from "@vue/reactivity";
 import type { FormSubmitEvent } from "#ui/types";
 import type { ZodSchema } from "zod";
 
@@ -126,14 +128,7 @@ import type {
 import type { WhereConditions } from "~/types/codegen/graphql";
 import type { FormSchema } from "~/types/fields";
 
-interface Props<T extends Record<string, unknown>> {
-    actionPosition?: "start" | "end" | "both";
-    actions?: TableAction[];
-    defaultViewModal?: boolean;
-    hideDefaultActions?: boolean;
-    isFormFullscreen?: boolean;
-    maxVisibleActions?: number;
-    optionLoading?: Ref<boolean, boolean> | boolean;
+interface TableData<T extends Record<string, unknown>> {
     tableData: {
         // Config
         title: string;
@@ -169,24 +164,20 @@ interface Props<T extends Record<string, unknown>> {
         whereConditions?: WhereConditions;
         formSchema: FormSchema;
         zodSchema?: ZodSchema;
+
+        // Optional
+        hideDefaultActions?: boolean;
+        isFormFullscreen?: boolean;
+        optionLoading?: Ref<boolean, boolean> | boolean;
+        defaultViewModal?: boolean;
+        customActions?: TableAction[];
     };
-    useActionDropdown?: boolean;
 }
 
-const props = withDefaults(defineProps<Props<any>>(), {
-    actionPosition: "end",
-    actions: () => [],
-    defaultViewModal: true,
-    hideDefaultActions: false,
-    isFormFullscreen: false,
-    maxVisibleActions: 5,
-    optionLoading: false,
-    useActionDropdown: false,
-});
+const props = defineProps<TableData<T>>();
+const actions = computed(() => props.tableData.customActions ?? []);
 
 const auth = useAuthStore();
-
-// Refs
 const selectedColumns = ref(props.tableData.columns);
 const selectedRows = ref<T[]>([]);
 const sort = ref({ column: "id", direction: "asc" as "asc" | "desc" });
@@ -237,10 +228,10 @@ const pageTotal = computed(() => {
 });
 
 // Actions
-const computedActions = computed(() => {
-    const customActions = props.actions.map((action) => ({ ...action }));
+const computedActions: Ref<TableAction[]> = computed(() => {
+    const customActions = actions.value.map((action) => ({ ...action }));
 
-    if (props.hideDefaultActions) return customActions;
+    if (props.tableData.hideDefaultActions) return customActions;
 
     return [
         ...customActions,
@@ -265,7 +256,7 @@ const computedActions = computed(() => {
         {
             color: () => "yellow",
             condition: () =>
-                props.defaultViewModal &&
+                props.tableData.defaultViewModal &&
                 auth.can(props.tableData.permissions.view),
             icon: () => "solar:eye-broken",
             onClick: (row: T) => openViewModal(row),
@@ -298,7 +289,7 @@ const resetFilters = () => {
     sort.value = { column: "id", direction: "asc" };
 };
 
-const select = (row: T) => {
+const select = (row: UnwrapRefSimple<T>) => {
     const index = selectedRows.value.findIndex((item) => item.id === row.id);
     index === -1
         ? selectedRows.value.push(row)

@@ -1,13 +1,8 @@
 <template>
-    <CrudTable
-        :table-data="tableData"
-        :option-loading="roleSearch.loadingOptions"
-        :actions="customActions"
-    />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
-import type { TableAction } from "~/components/table/types";
 import type { User } from "~/types/codegen/graphql";
 
 import { rolesPaginate } from "~/graphql/Role";
@@ -57,6 +52,23 @@ const tableData = useTableData<User>(
     },
     {
         columns,
+        customActions: [
+            {
+                color: () => "orange",
+                condition: () => true,
+                icon: () => "solar:file-download-broken",
+                onClick: (row: User) => {
+                    console.log("User Row Data:", row);
+                    useToast().add({
+                        color: "green",
+                        description: `Row data for ${row.name} logged to console`,
+                        title: "Custom Action Triggered",
+                    });
+                },
+                tooltip: (row: User) => `Log the Data ${row.name}`,
+            },
+        ],
+        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (user?: User) => {
@@ -87,6 +99,7 @@ const tableData = useTableData<User>(
                       roles: [],
                   };
         },
+        optionLoading: roleSearch.loadingOptions,
         prepareSubmitData: (data, selectedUser?: User) => ({
             ...data,
             id: selectedUser?.id,
@@ -98,22 +111,4 @@ const tableData = useTableData<User>(
         zodSchema: zodSchema.value,
     },
 );
-
-// Custom actions
-const customActions: TableAction[] = [
-    {
-        color: () => "orange",
-        condition: () => true,
-        icon: () => "solar:file-download-broken",
-        onClick: (row: User) => {
-            console.log("User Row Data:", row);
-            useToast().add({
-                color: "green",
-                description: `Row data for ${row.name} logged to console`,
-                title: "Custom Action Triggered",
-            });
-        },
-        tooltip: (row: User) => `Log the Data ${row.name}`,
-    },
-];
 </script>

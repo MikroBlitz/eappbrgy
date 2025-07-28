@@ -1,5 +1,5 @@
 <template>
-    <CrudTable :table-data="tableData" :default-view-modal="false" />
+    <CrudTable :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
@@ -33,6 +33,7 @@ const tableData = useTableData<Purok>(
     },
     {
         columns,
+        defaultViewModal: false,
         filters,
         formSchema: formSchema.value,
         getFormState: (purok?: Purok) => {
