@@ -234,7 +234,7 @@
                             <p
                                 class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
                             >
-                                ₱ -----
+                                ₱ 198,486.00
                             </p>
                             <div class="flex items-center mt-2">
                                 <UBadge
@@ -242,7 +242,7 @@
                                     variant="subtle"
                                     size="sm"
                                 >
-                                    +0%
+                                    +12%
                                 </UBadge>
                                 <span
                                     class="text-gray-500 dark:text-gray-400 text-sm ml-2"
@@ -349,7 +349,7 @@
                                     <th
                                         class="px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                     >
-                                        #
+                                        Doc no.
                                     </th>
                                     <th
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
@@ -423,12 +423,15 @@
                                                 class="text-sm text-gray-500 dark:text-gray-400"
                                             >
                                                 <UButton
+                                                    class="flex w-[100px] text-xs overflow-hidden whitespace-nowrap truncate"
                                                     variant="ghost"
                                                     @click="
-                                                        copyClipboard(doc.id)
+                                                        copyClipboard(
+                                                            doc.doc_no,
+                                                        )
                                                     "
                                                 >
-                                                    {{ doc.id }}
+                                                    {{ doc.doc_no }}
                                                 </UButton>
                                             </span>
                                         </div>

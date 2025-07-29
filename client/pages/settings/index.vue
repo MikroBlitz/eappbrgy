@@ -44,32 +44,6 @@
                                 />
                             </div>
 
-                            <!-- Barangay Information -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label
-                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                                    >
-                                        Barangay Name
-                                    </label>
-                                    <UInput
-                                        v-model="settings.barangayName"
-                                        placeholder="Enter barangay name"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                                    >
-                                        Municipality/City
-                                    </label>
-                                    <UInput
-                                        v-model="settings.municipality"
-                                        placeholder="Enter municipality/city"
-                                    />
-                                </div>
-                            </div>
-
                             <!-- Contact Information -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>

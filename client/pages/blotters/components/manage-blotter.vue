@@ -36,7 +36,7 @@ import {
     deleteBlotter,
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
-import { generateCaseNumber, toTitleCase } from "~/utils/helpers";
+import { generateCustomId, toTitleCase } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
@@ -155,7 +155,7 @@ const tableData = useTableData<Blotter>(
             barangay: {
                 connect: data.barangay,
             },
-            case_no: row?.case_no || generateCaseNumber("Case"),
+            case_no: row?.case_no || generateCustomId("Case"),
             complainant: { connect: data.complainant },
             id: row?.id,
             incident_date: data.incident_date

@@ -12,6 +12,7 @@ class Document extends Model
 
     protected array $searchable = [
         'id',
+        'doc_no',
         'resident.name',
     ];
 
@@ -20,6 +21,7 @@ class Document extends Model
         'resident_id',
         'created_by',
         'updated_by',
+        'doc_no',
         'type',
         'category',
         'requested_at',

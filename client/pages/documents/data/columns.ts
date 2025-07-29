@@ -16,6 +16,29 @@ export const columns: Column[] = [
         label: "#",
         sortable: true,
     },
+    {
+        class: "w-52",
+        key: "doc_no",
+        label: "Doc no.",
+        render: (row: Document) => {
+            return h(
+                UBadge,
+                {
+                    color: "gray",
+                    label: row.doc_no,
+                    size: "sm",
+                    variant: "solid",
+                },
+                {
+                    default: () =>
+                        h("div", { class: "flex items-center space-x-1" }, [
+                            h("span", null, row.doc_no),
+                        ]),
+                },
+            );
+        },
+        sortable: true,
+    },
     // {
     //     class: "w-2",
     //     key: "category",

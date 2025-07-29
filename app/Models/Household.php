@@ -12,7 +12,12 @@ class Household extends Model
 {
     use HasGraphQLScopes;
 
-    protected array $searchable = ['id', 'address', 'household_no'];
+    protected array $searchable = [
+        'id',
+        'address',
+        'household_no',
+        'barangay.name',
+    ];
 
     // Relationships
     public function barangay(): BelongsTo

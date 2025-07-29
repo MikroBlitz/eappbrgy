@@ -301,7 +301,7 @@ export async function hmacSHA256(otp: string, secret: string): Promise<string> {
         .join("");
 }
 
-export function generateCaseNumber(text: string, date = new Date()) {
+export function generateCustomId(text: string, date = new Date()) {
     const d = new Date(date);
 
     const year = d.getFullYear();

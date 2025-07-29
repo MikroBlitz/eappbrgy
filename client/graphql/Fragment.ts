@@ -170,6 +170,7 @@ export const officialFragment = gql`
 export const documentFragment = gql`
     fragment document on Document {
         id
+        doc_no
         type
         category
         status

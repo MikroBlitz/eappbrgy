@@ -39,6 +39,7 @@ export const recentDocuments = gql`
         ) {
             data {
                 id
+                doc_no
                 resident {
                     name
                 }
@@ -74,13 +75,13 @@ export const documentsCount = gql`
 `;
 
 export const totalPendingDocuments = gql`
-    query {
+    query totalPendingDocuments {
         totalPendingDocuments
     }
 `;
 
 export const totalPendingNewToday = gql`
-    query {
+    query totalPendingNewToday {
         totalPendingNewToday
     }
 `;

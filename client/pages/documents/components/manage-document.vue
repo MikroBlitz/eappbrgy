@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TableAction } from "~/components/table/types";
 import type { SqlOperator, Document } from "~/types/codegen/graphql";
 
 import {
@@ -24,7 +23,7 @@ import {
     upsertDocument,
 } from "~/graphql/Document";
 import { residentsPaginate } from "~/graphql/Resident";
-import { formatDateTimeForGraphQL } from "~/utils/helpers";
+import { formatDateTimeForGraphQL, generateCustomId } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
@@ -106,6 +105,7 @@ const tableData = useTableData<Document>(
             return row
                 ? {
                       category: row.category,
+                      doc_no: row.doc_no,
                       id: row.id,
                       issued_at: row.issued_at,
                       requested_at: row.requested_at,
@@ -116,6 +116,7 @@ const tableData = useTableData<Document>(
                   }
                 : {
                       category: "",
+                      doc_no: "",
                       id: undefined,
                       issued_at: "",
                       requested_at: "",
@@ -129,6 +130,7 @@ const tableData = useTableData<Document>(
         prepareSubmitData: (data, selectedRow?: Document) => ({
             ...data,
             createdBy: selectedRow?.createdBy || { connect: auth.user?.id },
+            doc_no: selectedRow?.doc_no || generateCustomId("Doc"),
             id: selectedRow?.id,
             issued_at: data.issued_at
                 ? formatDateTimeForGraphQL(String(data.issued_at))

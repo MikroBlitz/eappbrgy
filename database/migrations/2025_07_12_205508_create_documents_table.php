@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('resident_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('doc_no')->unique();
             $table->string('type'); // e.g., Business, Residency
             $table->string('category')->default('document'); // e.g. 'permit', 'certificate', 'indigency'
             $table->dateTime('requested_at')->nullable();
