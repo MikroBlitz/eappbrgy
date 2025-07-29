@@ -21,13 +21,18 @@ export const login = gql`
             token
             user {
                 id
+                first_name
+                last_name
+                middle_name
                 name
                 email
                 is_admin
                 roles {
+                    id
                     name
                 }
                 permissions {
+                    id
                     name
                 }
             }

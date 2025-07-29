@@ -1,8 +1,5 @@
-import { useTimeoutFn } from "@vueuse/shared";
-
 export const useLinks = () => {
     const auth = useAuthStore();
-    const toast = useToast();
 
     const mainMenuItems = [
         {
@@ -73,38 +70,7 @@ export const useLinks = () => {
         },
     ];
 
-    const userMenuItems = [
-        [
-            {
-                icon: "solar:user-circle-outline",
-                label: "Profile",
-                to: "/dashboard",
-            },
-            {
-                icon: "solar:settings-outline",
-                label: "Settings",
-                to: "/settings",
-            },
-        ],
-        [
-            {
-                click: () => {
-                    auth.logout();
-                    useTimeoutFn(() => {
-                        toast.add({
-                            icon: "solar:check-circle-outline",
-                            title: "Logged out successfully",
-                        });
-                    }, 500);
-                },
-                icon: "solar:logout-outline",
-                label: "Logout",
-            },
-        ],
-    ];
-
     return {
         mainMenuItems,
-        userMenuItems,
     };
 };
