@@ -2,6 +2,7 @@
 |-- app
 |   |-- Console
 |   |   `-- Commands
+|   |       |-- GenerateOtpSecretKey.php
 |   |       `-- UpdateExpiredPermits.php
 |   |-- GraphQL
 |   |   |-- Mutations
@@ -26,6 +27,7 @@
 |   |   |-- SendOtpMail.php
 |   |   `-- UserStatusChanged.php
 |   |-- Models
+|   |   |-- Barangay.php
 |   |   |-- Blotter.php
 |   |   |-- Contact.php
 |   |   |-- Document.php
@@ -40,7 +42,6 @@
 |   |-- Providers
 |   |   |-- AppServiceProvider.php
 |   |   `-- AuthServiceProvider.php
-|   |-- Services
 |   `-- Traits
 |       `-- HasGraphQLScopes.php
 |-- artisan
@@ -78,8 +79,10 @@
 |   |   |-- useLinks.ts
 |   |   |-- useSearchQueryOptions.ts
 |   |   `-- useTableData.ts
+|   |-- Dockerfile
 |   |-- graphql
 |   |   |-- Auth.ts
+|   |   |-- Barangay.ts
 |   |   |-- Blotter.ts
 |   |   |-- Document.ts
 |   |   |-- Fragment.ts
@@ -99,6 +102,13 @@
 |   |-- middleware
 |   |   `-- auth.global.ts
 |   |-- pages
+|   |   |-- barangays
+|   |   |   |-- components
+|   |   |   |   `-- manage-barangay.vue
+|   |   |   |-- data
+|   |   |   |   |-- columns.ts
+|   |   |   |   `-- schema.ts
+|   |   |   `-- index.vue
 |   |   |-- blotters
 |   |   |   |-- components
 |   |   |   |   `-- manage-blotter.vue
@@ -167,6 +177,7 @@
 |   |       |   |   |-- columns.ts
 |   |       |   |   `-- schema.ts
 |   |       |   `-- user
+|   |       |       |-- authSchema.ts
 |   |       |       |-- columns.ts
 |   |       |       `-- schema.ts
 |   |       `-- index.vue
@@ -212,11 +223,13 @@
 |   |   |-- 2025_03_08_130917_create_permission_tables.php
 |   |   |-- 2025_06_18_212952_create_messages_table.php
 |   |   |-- 2025_06_18_213154_create_contacts_table.php
+|   |   |-- 2025_06_21_141151_create_barangays_table.php
 |   |   |-- 2025_06_21_141153_create_puroks_table.php
 |   |   |-- 2025_06_21_141154_create_households_table.php
 |   |   |-- 2025_06_21_141155_create_residents_table.php
 |   |   |-- 2025_06_26_181058_create_blotters_table.php
 |   |   |-- 2025_06_30_182649_create_officials_table.php
+|   |   |-- 2025_06_30_182650_add_captain_to_barangays_table.php
 |   |   `-- 2025_07_12_205508_create_documents_table.php
 |   `-- seeders
 |       |-- DatabaseSeeder.php
@@ -230,6 +243,7 @@
 |-- graphql
 |   |-- auth.graphql
 |   |-- Models
+|   |   |-- Barangay.graphql
 |   |   |-- Blotter.graphql
 |   |   |-- Contact.graphql
 |   |   |-- Document.graphql

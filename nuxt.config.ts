@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     apollo: {
         autoImports: true,
         clients: {
-            default: { httpEndpoint: import.meta.env.API_URL + "/graphql" },
+            default: { httpEndpoint: import.meta.env.APP_URL + "/graphql" },
         },
     },
     colorMode: {
@@ -35,15 +35,12 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            API_URL: import.meta.env.API_URL,
+            API_URL: import.meta.env.APP_URL,
             OTP_SECRET_KEY: import.meta.env.OTP_SECRET_KEY,
         },
     },
     srcDir: "client/",
     tailwindcss: {
         configPath: "./tailwind.config.js",
-    },
-    ui: {
-        primary: "amber",
     },
 });
