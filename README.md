@@ -23,7 +23,39 @@ Make sure you have the following software installed on your system:
 - [GitHub CLI](https://cli.github.com/) *(optional)*
 - [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm) *(optional)*
 
+---
 
+### Docker Setup *(Optional)*
+If you prefer using Docker:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/MikroBlitz/govana.git
+   
+    cd govana
+    ```
+2. Copy the `.env.example` file and generate the application key and OTP key:
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    php artisan otp:generate-key
+    ```
+
+3. Build and start the Docker containers:
+    ```bash
+    docker compose up -d --build
+    ```
+
+4. Run database migrations and seeders:
+    ```bash
+    docker compose exec backend php artisan migrate:fresh --seed
+    ```
+
+5. Access the frontend at `http://localhost:3000` and the backend at `http://localhost:8000`.
+
+---
+
+### Manual Setup
 1. Clone the repository:
     ```bash
     git clone https://github.com/MikroBlitz/govana.git
