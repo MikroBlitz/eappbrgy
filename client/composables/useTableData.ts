@@ -55,7 +55,7 @@ export function useTableData<T extends Record<string, unknown>>(
         relationKey?: string;
         columns: Column[];
         filters?: FilterOption[];
-        whereConditions?: WhereConditions;
+        whereConditions?: WhereConditions | {};
         formSchema: any;
         zodSchema?: ZodSchema;
         hideDefaultActions?: boolean;

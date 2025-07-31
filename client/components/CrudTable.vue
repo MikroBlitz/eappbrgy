@@ -161,7 +161,7 @@ interface TableData<T extends Record<string, unknown>> {
         // UI
         columns: Column[];
         filters?: FilterOption[];
-        whereConditions?: WhereConditions;
+        whereConditions?: WhereConditions | {};
         formSchema: FormSchema;
         zodSchema?: ZodSchema;
 
