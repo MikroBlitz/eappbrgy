@@ -8,39 +8,48 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     const columns = ref([
         {
             color: "gray" as BadgeColor,
+            first: 15,
+            hasMore: true,
             icon: "solar:server-minimalistic-broken",
             id: "TODO",
+            isLoading: false,
             tasks: [] as Task[],
             title: "To Do",
         },
         {
             color: "yellow" as BadgeColor,
+            first: 15,
+            hasMore: true,
             icon: "solar:server-minimalistic-broken",
-            id: "INPROGRESS",
+            id: "IN_PROGRESS",
+            isLoading: false,
             tasks: [] as Task[],
             title: "In Progress",
         },
         {
             color: "emerald" as BadgeColor,
+            first: 15,
+            hasMore: true,
             icon: "solar:checklist-minimalistic-broken",
             id: "DONE",
+            isLoading: false,
             tasks: [] as Task[],
             title: "Done",
         },
     ]);
 
-    function setTasks(tasks: Task[]) {
-        columns.value.forEach((col) => (col.tasks = []));
+    function setColumnTasks(columnId: string, tasks: Task[], append = false) {
+        const index = columns.value.findIndex((col) => col.id === columnId);
+        if (index === -1) return;
+        const col = columns.value[index];
 
-        tasks.forEach((task) => {
-            const col = columns.value.find((c) => c.id === task.status);
-            if (col) col.tasks.push(task);
-        });
+        const updatedTasks = append ? [...col.tasks, ...tasks] : [...tasks];
+        updatedTasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-        // Sort by order
-        columns.value.forEach((col) => {
-            col.tasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-        });
+        columns.value[index] = {
+            ...col,
+            tasks: updatedTasks,
+        };
     }
 
     function updateTask(task: Task) {
@@ -67,7 +76,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     return {
         columns,
         deleteTask,
-        setTasks,
+        setColumnTasks,
         updateTask,
     };
 });

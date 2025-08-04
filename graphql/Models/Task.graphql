@@ -6,14 +6,14 @@ type Task {
     description: String
     status: TaskStatus
     priority: TaskPriority
-    order: Int
+    order: Float
     created_at: DateTime!
     updated_at: DateTime!
 }
 
 enum TaskStatus {
     TODO @enum(value: "todo")
-    INPROGRESS @enum(value: "in_progress")
+    IN_PROGRESS @enum(value: "in_progress")
     DONE @enum(value: "done")
 }
 
@@ -31,7 +31,7 @@ input TaskInput {
     description: String
     status: TaskStatus
     priority: TaskPriority
-    order: Int
+    order: Float
     updated_at: DateTime
 }
 

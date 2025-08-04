@@ -1204,7 +1204,7 @@ export type Task = {
   created_at: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  order?: Maybe<Scalars['Int']['output']>;
+  order?: Maybe<Scalars['Float']['output']>;
   priority?: Maybe<TaskPriority>;
   status?: Maybe<TaskStatus>;
   title: Scalars['String']['output'];
@@ -1216,7 +1216,7 @@ export type TaskInput = {
   createdBy?: InputMaybe<ConnectUserRelation>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['Float']['input']>;
   priority?: InputMaybe<TaskPriority>;
   status?: InputMaybe<TaskStatus>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -1241,7 +1241,7 @@ export enum TaskPriority {
 
 export enum TaskStatus {
   Done = 'DONE',
-  Inprogress = 'INPROGRESS',
+  InProgress = 'IN_PROGRESS',
   Todo = 'TODO'
 }
 

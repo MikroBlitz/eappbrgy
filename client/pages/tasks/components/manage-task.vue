@@ -64,7 +64,7 @@ const tableData = useTableData<Task>(
                 condition: () => auth.can("edit task"),
                 icon: () => "solar:pen-new-square-broken",
                 onClick: (row: Task) =>
-                    confirmUpdateStatus(row, TaskStatus.INPROGRESS),
+                    confirmUpdateStatus(row, TaskStatus.IN_PROGRESS),
                 tooltip: () => "Update Task to In-Progress",
             },
             {
@@ -98,15 +98,29 @@ const tableData = useTableData<Task>(
                       title: "",
                   };
         },
-        prepareSubmitData: (data, selectedRow?: Task) => ({
-            ...data,
-            createdBy: data.createdBy || { connect: auth.user?.id },
-            id: selectedRow?.id,
-            order: data.order ?? 1,
-            priority: data.priority || TaskPriority.LOW,
-            status: data.status || TaskStatus.TODO,
-            updatedBy: { connect: auth.user?.id },
-        }),
+        prepareSubmitData: (data, selectedRow?: Task) => {
+            const taskBoard = useTaskBoardStore();
+            const tasksColumns = computed(() => taskBoard.columns);
+            const columnId = data.status || TaskStatus.TODO;
+            const column = tasksColumns.value.find(
+                (col) => col.id === columnId,
+            );
+            const tasksInColumn = column?.tasks ?? [];
+            const maxOrder =
+                tasksInColumn.length > 0
+                    ? Math.max(...tasksInColumn.map((t) => t.order ?? 0))
+                    : -1;
+
+            return {
+                ...data,
+                createdBy: data.createdBy || { connect: auth.user?.id },
+                id: selectedRow?.id,
+                order: data.order ?? maxOrder + 1,
+                priority: data.priority || TaskPriority.LOW,
+                status: data.status || TaskStatus.TODO,
+                updatedBy: { connect: auth.user?.id },
+            };
+        },
         whereConditions: conditions(auth),
         zodSchema: zodSchema.value,
     },
