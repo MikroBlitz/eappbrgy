@@ -13,6 +13,10 @@ export const userFragment = gql`
             id
             name
         }
+        #        tasks {
+        #            id
+        #            title
+        #        }
         #        messages {
         #            ...message
         #        }
@@ -207,6 +211,27 @@ export const barangayFragment = gql`
             position
         }
         population
+        created_at
+        updated_at
+    }
+`;
+
+export const taskFragment = gql`
+    fragment task on Task {
+        id
+        title
+        description
+        status
+        priority
+        order
+        createdBy {
+            id
+            name
+        }
+        updatedBy {
+            id
+            name
+        }
         created_at
         updated_at
     }

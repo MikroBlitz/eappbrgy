@@ -122,6 +122,11 @@ class DatabaseSeeder extends Seeder
             'create barangay',
             'edit barangay',
             'delete barangay',
+
+            'view task',
+            'create task',
+            'edit task',
+            'delete task',
         ];
 
         // Create permissions if not exists

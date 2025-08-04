@@ -37,3 +37,14 @@ a {
     color: var(--color-primary);
 }
 
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ghost-card {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}

@@ -47,7 +47,7 @@ class GenerateOtpSecretKey extends Command
 
         file_put_contents($path, $env);
 
-        $this->info("✅ OTP_SECRET_KEY generated and saved to .env:");
+        $this->info("OTP_SECRET_KEY generated and saved to .env:");
         $this->line($key);
 
         return 0;

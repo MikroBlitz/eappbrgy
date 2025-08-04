@@ -90,7 +90,7 @@ class OtpMutator
         $inputHashedOtp = hash_hmac('sha256', $inputOtp, $secret);
 
         if ($decoded['otp'] === $inputHashedOtp) {
-            // ✅ OTP VERIFIED
+            // OTP VERIFIED
             Cache::forget($sessionKey);
             Cache::forget("$clientIp:" . ($decoded['email'] ?? $decoded['user_id']) . "-general");
 
@@ -99,7 +99,7 @@ class OtpMutator
                 'remarks' => 'OTP verified successfully',
             ];
         } else {
-            // ❌ WRONG OTP
+            // WRONG OTP
             $decoded['tries'] += 1;
 
             if ($decoded['tries'] >= 3) {
