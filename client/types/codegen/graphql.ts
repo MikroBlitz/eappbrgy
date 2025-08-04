@@ -960,7 +960,6 @@ export type QueryUsersPaginateArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<SortInput>;
-  trashed?: InputMaybe<Trashed>;
 };
 
 /** Allowed column names for Query.documentsPaginate.where. */
@@ -1205,7 +1204,7 @@ export type Task = {
   created_at: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  order?: Maybe<Scalars['Int']['output']>;
+  order?: Maybe<Scalars['Float']['output']>;
   priority?: Maybe<TaskPriority>;
   status?: Maybe<TaskStatus>;
   title: Scalars['String']['output'];
@@ -1217,7 +1216,7 @@ export type TaskInput = {
   createdBy?: InputMaybe<ConnectUserRelation>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['Float']['input']>;
   priority?: InputMaybe<TaskPriority>;
   status?: InputMaybe<TaskStatus>;
   title?: InputMaybe<Scalars['String']['input']>;

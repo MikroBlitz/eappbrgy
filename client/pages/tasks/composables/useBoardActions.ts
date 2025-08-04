@@ -35,54 +35,53 @@ export const useBoardActions = () => {
 
         if (!draggedTask.value) return;
         const task = draggedTask.value;
-        draggedTask.value = null; // reset
+        draggedTask.value = null;
+
         const sourceColumn = columns.value.find((col) =>
-            col.tasks.find((t) => t.id === task.id),
+            col.tasks.some((t) => t.id === task.id),
         );
         const targetColumn = columns.value.find(
             (col) => col.id === targetColumnId,
         );
         if (!targetColumn || !sourceColumn) return;
+
         const newIndex = targetColumn.tasks.findIndex((t) => t.id === task.id);
         const isDifferentColumn = task.status !== sourceColumn.id;
 
         try {
-            const input = {
-                id: task.id,
-                order: newIndex,
-                status: sourceColumn.id,
-                updatedBy: { connect: auth.user?.id },
-            };
-            await mutate({ input });
-            // Reorder other tasks in target column
-            const tasksToUpdate = targetColumn.tasks
-                .filter((t) => t.id !== task.id)
-                .map((t, index) => ({
-                    ...t,
-                    order: index >= newIndex ? index + 1 : index,
-                }));
-
-            for (const t of tasksToUpdate) {
-                await mutate({
+            const mutations = [];
+            mutations.push(
+                mutate({
                     input: {
-                        id: t.id,
-                        order: t.order,
+                        id: task.id,
+                        order: newIndex,
+                        status: sourceColumn.id,
                         updatedBy: { connect: auth.user?.id },
                     },
+                }),
+            );
+            targetColumn.tasks
+                .filter((t) => t.id !== task.id)
+                .forEach((t, index) => {
+                    mutations.push(
+                        mutate({
+                            input: {
+                                id: t.id,
+                                order: index >= newIndex ? index + 1 : index,
+                                updatedBy: { connect: auth.user?.id },
+                            },
+                        }),
+                    );
                 });
-            }
 
+            await Promise.all(mutations);
             toast.add({
                 color: "green",
                 icon: "i-heroicons-check-circle",
                 title: isDifferentColumn ? "Task moved" : "Task reordered",
             });
         } catch (error) {
-            toast.add({
-                color: "red",
-                icon: "i-heroicons-exclamation-circle",
-                title: `Error updating task: ${error.message}`,
-            });
+            console.error(error);
         }
     };
 

@@ -6,7 +6,7 @@ type Task {
     description: String
     status: TaskStatus
     priority: TaskPriority
-    order: Int
+    order: Float
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -31,7 +31,7 @@ input TaskInput {
     description: String
     status: TaskStatus
     priority: TaskPriority
-    order: Int
+    order: Float
     updated_at: DateTime
 }
 

@@ -10,7 +10,7 @@
         >
             Add New Task
         </UButton>
-        <div class="flex gap-6 overflow-x-auto pb-4">
+        <div class="flex gap-4 space-x-4 overflow-x-auto pb-4">
             <div
                 v-for="column in columns"
                 :key="column.id"
@@ -82,6 +82,9 @@
                                         >
                                             {{ task.title }}
                                         </h3>
+                                        <span class="text-red-500">{{
+                                            task.order
+                                        }}</span>
 
                                         <p
                                             v-if="task.description"
@@ -291,7 +294,7 @@ const submitTask = async () => {
             status: status as TaskStatus,
             title: newTask.value.title,
             updatedBy: { connect: auth.user?.id },
-            ...(isNew && { order: tasksInColumn.length }),
+            ...(isNew && { order: tasksInColumn.length + 1 }),
             ...(isNew && { createdBy: { connect: auth.user?.id } }),
             ...(newTask.value.id && { id: newTask.value.id }),
         };
