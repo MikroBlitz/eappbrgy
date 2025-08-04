@@ -33,6 +33,7 @@
                                 {{ column.title }}
                             </h3>
                             <UBadge
+                                v-if="!column.isLoading"
                                 :color="column.color"
                                 variant="subtle"
                                 size="sm"
@@ -248,7 +249,7 @@ const { onDragStart, onScroll, onTaskDrop, taskQueries } = useBoardActions();
 const isModalOpen: Ref<boolean> = ref(false);
 const isSubmitting: Ref<boolean> = ref(false);
 const selectedColumnId: Ref<string | undefined> = ref("");
-const newTask = ref({
+const newTask: Ref<Partial<Task>> = ref({
     description: "",
     id: "",
     priority: undefined,
@@ -375,9 +376,7 @@ onMounted(() => {
             },
         }));
 
-        const query = useQuery(tasksPaginate, columnVariables, {
-            fetchPolicy: "network-only",
-        });
+        const query = useQuery(tasksPaginate, columnVariables);
 
         taskQueries[col.id] = query;
 

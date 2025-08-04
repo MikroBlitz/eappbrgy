@@ -1,3 +1,4 @@
+import { useTimeoutFn } from "@vueuse/shared";
 import { useToast } from "#ui/composables/useToast";
 
 import type { Task } from "~/types/codegen/graphql";
@@ -86,45 +87,52 @@ export const useBoardActions = () => {
     };
 
     const onScroll = async (e: Event, columnId: string) => {
-        const column = columns.value.find((c) => c.id === columnId);
-        if (!column || column.isLoading || !column.hasMore) return;
+        const columnIndex = columns.value.findIndex((c) => c.id === columnId);
+        if (!columns.value[columnIndex]) return;
+        if (
+            columnIndex === -1 ||
+            columns.value[columnIndex].isLoading ||
+            !columns.value[columnIndex].hasMore
+        )
+            return;
 
         const el = e.target as HTMLElement;
         const nearBottom =
             el.scrollTop + el.clientHeight >= el.scrollHeight - 50;
         if (!nearBottom) return;
 
-        column.isLoading = true;
-        column.first += 10;
+        columns.value[columnIndex].isLoading = true;
+        columns.value[columnIndex].first += 35;
 
         const variables = {
-            first: column.first,
+            first: columns.value[columnIndex].first,
             whereConditions: {
                 AND: [
-                    { column: "STATUS", operator: "EQ", value: column.id },
+                    { column: "STATUS", operator: "EQ", value: columnId },
                     ...(conditions(auth) ? [conditions(auth)] : []),
                 ],
             },
         };
 
         try {
-            // Use refetch with new first value
             const { data } = await taskQueries[columnId]?.refetch(variables);
 
-            // Replace tasks with the updated full list
             taskBoard.setColumnTasks(
                 columnId,
                 data?.tasksPaginate?.data ?? [],
                 false,
             );
 
-            column.hasMore =
+            // Update hasMore properly
+            columns.value[columnIndex].hasMore =
                 data?.tasksPaginate?.paginatorInfo?.hasMorePages ?? false;
         } catch (error) {
             console.error("Error loading tasks:", error);
-            column.hasMore = false;
+            columns.value[columnIndex].hasMore = false;
         } finally {
-            column.isLoading = false;
+            useTimeoutFn(() => {
+                columns.value[columnIndex].isLoading = false;
+            }, 1500);
         }
     };
 

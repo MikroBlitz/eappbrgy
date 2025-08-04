@@ -8,7 +8,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     const columns = ref([
         {
             color: "gray" as BadgeColor,
-            first: 10,
+            first: 15,
             hasMore: true,
             icon: "solar:server-minimalistic-broken",
             id: "TODO",
@@ -18,7 +18,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
         },
         {
             color: "yellow" as BadgeColor,
-            first: 10,
+            first: 15,
             hasMore: true,
             icon: "solar:server-minimalistic-broken",
             id: "IN_PROGRESS",
@@ -28,7 +28,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
         },
         {
             color: "emerald" as BadgeColor,
-            first: 10,
+            first: 15,
             hasMore: true,
             icon: "solar:checklist-minimalistic-broken",
             id: "DONE",
@@ -41,7 +41,6 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     function setColumnTasks(columnId: string, tasks: Task[], append = false) {
         const index = columns.value.findIndex((col) => col.id === columnId);
         if (index === -1) return;
-
         const col = columns.value[index];
 
         const updatedTasks = append ? [...col.tasks, ...tasks] : [...tasks];
