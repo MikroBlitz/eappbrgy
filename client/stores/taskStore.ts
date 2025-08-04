@@ -39,26 +39,18 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     ]);
 
     function setColumnTasks(columnId: string, tasks: Task[], append = false) {
-        const column = columns.value.find((col) => col.id === columnId);
-        if (!column) return;
-        if (append) column.tasks.push(...tasks);
-        else column.tasks = tasks;
+        const index = columns.value.findIndex((col) => col.id === columnId);
+        if (index === -1) return;
 
-        column.tasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    }
+        const col = columns.value[index];
 
-    function setTasks(tasks: Task[]) {
-        columns.value.forEach((col) => (col.tasks = []));
+        const updatedTasks = append ? [...col.tasks, ...tasks] : [...tasks];
+        updatedTasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-        tasks.forEach((task) => {
-            const col = columns.value.find((c) => c.id === task.status);
-            if (col) col.tasks.push(task);
-        });
-
-        // Sort by order
-        columns.value.forEach((col) => {
-            col.tasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-        });
+        columns.value[index] = {
+            ...col,
+            tasks: updatedTasks,
+        };
     }
 
     function updateTask(task: Task) {
@@ -86,7 +78,6 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
         columns,
         deleteTask,
         setColumnTasks,
-        setTasks,
         updateTask,
     };
 });

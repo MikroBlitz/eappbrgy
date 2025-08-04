@@ -64,7 +64,7 @@ const tableData = useTableData<Task>(
                 condition: () => auth.can("edit task"),
                 icon: () => "solar:pen-new-square-broken",
                 onClick: (row: Task) =>
-                    confirmUpdateStatus(row, TaskStatus.INPROGRESS),
+                    confirmUpdateStatus(row, TaskStatus.IN_PROGRESS),
                 tooltip: () => "Update Task to In-Progress",
             },
             {

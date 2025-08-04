@@ -61,6 +61,7 @@
                             >
                                 <div class="space-y-1 relative">
                                     <UDropdown
+                                        v-if="auth.can('edit task')"
                                         class="absolute -top-2 -right-2"
                                         :items="getTaskActions(task)"
                                         :popper="{
@@ -130,7 +131,6 @@
                         >
                             <UCard class="opacity-60">
                                 <div class="space-y-3">
-                                    <!-- Title skeleton -->
                                     <div
                                         class="flex items-center justify-between"
                                     >
@@ -141,18 +141,11 @@
                                             class="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded"
                                         />
                                     </div>
-
-                                    <!-- Description skeleton -->
                                     <div class="space-y-2">
                                         <div
                                             class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"
                                         />
-                                        <div
-                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"
-                                        />
                                     </div>
-
-                                    <!-- Footer skeleton -->
                                     <div
                                         class="flex items-center justify-between pt-2"
                                     >
@@ -235,6 +228,7 @@ import { z } from "zod";
 import type { Task, TaskStatus } from "~/types/codegen/graphql";
 
 import { deleteTask, tasksPaginate, upsertTask } from "~/graphql/Task";
+import { useBoardActions } from "~/pages/tasks/composables/useBoardActions";
 import { getFriendlyDate } from "~/utils/helpers";
 
 import { getPriorityColor, conditions, priorityOptions } from "../utils/helper";
@@ -249,6 +243,7 @@ const toast = useToast();
 const auth = useAuthStore();
 const taskBoard = useTaskBoardStore();
 const columns = computed(() => taskBoard.columns);
+const { onDragStart, onScroll, onTaskDrop, taskQueries } = useBoardActions();
 
 const isModalOpen: Ref<boolean> = ref(false);
 const isSubmitting: Ref<boolean> = ref(false);
@@ -260,36 +255,12 @@ const newTask = ref({
     status: undefined,
     title: "",
 });
-const draggedTask = ref<Task | null>(null);
 
-const queryVariables = ref({
-    first: 10,
-    page: 1,
-    ...(conditions(auth) && {
-        whereConditions: {
-            OR: [
-                {
-                    AND: [conditions(auth)],
-                },
-            ],
-        },
-    }),
-});
-
-const { refetch: refetchTasks, result: tasksResult } = useQuery(
-    tasksPaginate,
-    () => queryVariables.value,
-);
-
-watchEffect(() => {
-    const tasks = tasksResult.value?.tasksPaginate?.data;
-    if (tasks) {
-        const sorted = [...tasks].sort(
-            (a, b) => (a.order ?? 0) - (b.order ?? 0),
-        );
-        taskBoard.setTasks(sorted);
-    }
-});
+const refetchTasks = () => {
+    Object.values(taskQueries).forEach((query) => {
+        query?.refetch?.();
+    });
+};
 
 const addTask = (columnId: string) => {
     selectedColumnId.value = columnId;
@@ -303,13 +274,11 @@ const addTask = (columnId: string) => {
     isModalOpen.value = true;
 };
 
-const { mutate: saveTask } = useMutation(upsertTask);
-
 const submitTask = async () => {
+    const { mutate: saveTask } = useMutation(upsertTask);
     isSubmitting.value = true;
 
     try {
-        // If task is new, use selectedColumnId as status
         const isNew = !newTask.value.id;
         const status = isNew ? selectedColumnId.value : newTask.value.status;
         const tasksInColumn =
@@ -333,83 +302,11 @@ const submitTask = async () => {
             icon: "i-heroicons-check-circle",
             title: `Task ${isNew ? "created" : "updated"} successfully`,
         });
-        refetchTasks();
         resetForm();
-    } catch (error) {
-        toast.add({
-            color: "red",
-            icon: "i-heroicons-exclamation-circle",
-            title: `Error saving task: ${error.message}`,
-        });
-        refetchTasks();
-        console.error("Error saving task:", error);
+    } catch (e) {
+        console.error("Error saving task:", e);
     } finally {
         isSubmitting.value = false;
-    }
-};
-
-const onDragStart = (event: any) => {
-    const id = event?.item?.dataset?.id;
-    if (!id) return;
-
-    for (const col of columns.value) {
-        const found = col.tasks.find((t) => t.id === id);
-        if (found) {
-            draggedTask.value = found;
-            break;
-        }
-    }
-};
-
-const onTaskDrop = async (targetColumnId: string) => {
-    if (!draggedTask.value) return;
-    const task = draggedTask.value;
-    draggedTask.value = null; // reset
-    const sourceColumn = columns.value.find((col) =>
-        col.tasks.find((t) => t.id === task.id),
-    );
-    const targetColumn = columns.value.find((col) => col.id === targetColumnId);
-    if (!targetColumn || !sourceColumn) return;
-    const newIndex = targetColumn.tasks.findIndex((t) => t.id === task.id);
-    const isDifferentColumn = task.status !== sourceColumn.id;
-
-    try {
-        const input = {
-            id: task.id,
-            order: newIndex,
-            status: sourceColumn.id,
-            updatedBy: { connect: auth.user?.id },
-        };
-        await saveTask({ input });
-        // Reorder other tasks in target column
-        const tasksToUpdate = targetColumn.tasks
-            .filter((t) => t.id !== task.id)
-            .map((t, index) => ({
-                ...t,
-                order: index >= newIndex ? index + 1 : index,
-            }));
-
-        for (const t of tasksToUpdate) {
-            await saveTask({
-                input: {
-                    id: t.id,
-                    order: t.order,
-                    updatedBy: { connect: auth.user?.id },
-                },
-            });
-        }
-
-        toast.add({
-            color: "green",
-            icon: "i-heroicons-check-circle",
-            title: isDifferentColumn ? "Task moved" : "Task reordered",
-        });
-    } catch (error) {
-        toast.add({
-            color: "red",
-            icon: "i-heroicons-exclamation-circle",
-            title: `Error updating task: ${error.message}`,
-        });
     }
 };
 
@@ -422,11 +319,15 @@ const getTaskActions = (task: Task) => [
         },
     ],
     [
-        {
-            click: () => deleteTaskHandler(task.id),
-            icon: "solar:trash-bin-minimalistic-broken",
-            label: "Delete",
-        },
+        ...(auth.can("delete task")
+            ? [
+                  {
+                      click: () => deleteTaskHandler(task.id),
+                      icon: "solar:trash-bin-minimalistic-broken",
+                      label: "Delete",
+                  },
+              ]
+            : []),
     ],
 ];
 
@@ -439,16 +340,6 @@ const editTask = (task: Task) => {
 const deleteTaskHandler = async (taskId: string) => {
     const { mutate: removeTask } = useMutation(deleteTask);
 
-    if (!auth.can("delete task")) {
-        toast.add({
-            color: "red",
-            icon: "i-heroicons-exclamation-circle",
-            title: "Error: No permission to delete Task",
-        });
-
-        return;
-    }
-
     try {
         await removeTask({ id: [taskId] });
         toast.add({
@@ -456,16 +347,8 @@ const deleteTaskHandler = async (taskId: string) => {
             icon: "i-heroicons-check-circle",
             title: "Task deleted successfully",
         });
-
-        refetchTasks();
-    } catch (error) {
-        toast.add({
-            color: "red",
-            icon: "i-heroicons-exclamation-circle",
-            title: `Error deleting task: ${error.message}`,
-        });
-        console.error("Error deleting task:", error);
-        refetchTasks();
+    } catch (e) {
+        console.error("Error deleting task:", e);
     }
 };
 
@@ -480,88 +363,44 @@ const resetForm = () => {
     isModalOpen.value = false;
 };
 
-const taskQueries = reactive<Record<string, ReturnType<typeof useQuery>>>({});
-
 onMounted(() => {
-    columns.value.forEach((column) => {
-        const variables = {
-            first: column.first,
+    columns.value.forEach((col) => {
+        const columnVariables = computed(() => ({
+            first: col.first,
             whereConditions: {
                 AND: [
-                    { column: "STATUS", operator: "EQ", value: column.id },
+                    { column: "STATUS", operator: "EQ", value: col.id },
                     ...(conditions(auth) ? [conditions(auth)] : []),
                 ],
             },
-        };
+        }));
 
-        const query = useQuery(tasksPaginate, variables, {
+        const query = useQuery(tasksPaginate, columnVariables, {
             fetchPolicy: "network-only",
         });
 
-        taskQueries[column.id] = query;
+        taskQueries[col.id] = query;
 
-        watchEffect(() => {
-            const data = query.result.value?.tasksPaginate?.data;
-            if (data && data.length > 0) {
-                taskBoard.setColumnTasks(column.id, data);
-                column.hasMore =
-                    query.result.value?.tasksPaginate?.paginatorInfo
-                        ?.hasMorePages ?? false;
-            }
-        });
+        const column = columns.value.find((c) => c.id === col.id);
+        if (!column) return;
+
+        watch(
+            () => query.result.value?.tasksPaginate,
+            (val) => {
+                const data = val?.data;
+                // console.log("Watcher data:", col.id, data);
+                taskBoard.setColumnTasks(col.id, data ?? []);
+                column.hasMore = val?.paginatorInfo?.hasMorePages ?? false;
+            },
+            { immediate: true },
+        );
     });
 });
-
-const onScroll = async (e: Event, columnId: string) => {
-    const column = columns.value.find((c) => c.id === columnId);
-    if (!column || column.isLoading || !column.hasMore) return;
-
-    const el = e.target as HTMLElement;
-    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 50;
-    if (!nearBottom) return;
-
-    column.isLoading = true;
-    column.first += 10;
-
-    const variables = {
-        first: column.first,
-        whereConditions: {
-            AND: [
-                { column: "STATUS", operator: "EQ", value: column.id },
-                ...(conditions(auth) ? [conditions(auth)] : []),
-            ],
-        },
-    };
-
-    try {
-        // Use refetch with new first value
-        const { data } = await taskQueries[columnId]?.refetch(variables);
-
-        // Replace tasks with the updated full list
-        taskBoard.setColumnTasks(
-            columnId,
-            data?.tasksPaginate?.data ?? [],
-            false, // replace entire list instead of append
-        );
-
-        column.hasMore =
-            data?.tasksPaginate?.paginatorInfo?.hasMorePages ?? false;
-    } catch (error) {
-        console.error("Error loading tasks:", error);
-        toast.add({
-            color: "red",
-            icon: "i-heroicons-exclamation-circle",
-            title: "Failed to load more tasks",
-        });
-    } finally {
-        column.isLoading = false;
-    }
-};
 
 const { $echo } = useNuxtApp();
 onMounted(() => {
     $echo.channel("tasks").listen(".TaskUpdated", (e) => {
-        // console.log("Got update:", e.task);
+        // console.log("Broadcast Event:", e.task);
         taskBoard.updateTask(e.task);
         refetchTasks();
     });

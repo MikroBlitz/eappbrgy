@@ -960,6 +960,7 @@ export type QueryUsersPaginateArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<SortInput>;
+  trashed?: InputMaybe<Trashed>;
 };
 
 /** Allowed column names for Query.documentsPaginate.where. */
@@ -1241,7 +1242,7 @@ export enum TaskPriority {
 
 export enum TaskStatus {
   Done = 'DONE',
-  Inprogress = 'INPROGRESS',
+  InProgress = 'IN_PROGRESS',
   Todo = 'TODO'
 }
 
