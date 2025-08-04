@@ -18,6 +18,7 @@
             >
                 <div
                     class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 h-full overflow-auto"
+                    @scroll.passive="onScroll($event, column.id)"
                 >
                     <!-- Column Header -->
                     <div class="flex items-center justify-between mb-4">
@@ -119,6 +120,53 @@
                             </UCard>
                         </template>
                     </VueDraggable>
+
+                    <!-- Skeleton Loading State -->
+                    <div v-if="column.isLoading" class="space-y-3 mt-3">
+                        <div
+                            v-for="n in 3"
+                            :key="`skeleton-${n}`"
+                            class="animate-pulse"
+                        >
+                            <UCard class="opacity-60">
+                                <div class="space-y-3">
+                                    <!-- Title skeleton -->
+                                    <div
+                                        class="flex items-center justify-between"
+                                    >
+                                        <div
+                                            class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"
+                                        />
+                                        <div
+                                            class="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded"
+                                        />
+                                    </div>
+
+                                    <!-- Description skeleton -->
+                                    <div class="space-y-2">
+                                        <div
+                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"
+                                        />
+                                        <div
+                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"
+                                        />
+                                    </div>
+
+                                    <!-- Footer skeleton -->
+                                    <div
+                                        class="flex items-center justify-between pt-2"
+                                    >
+                                        <div
+                                            class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"
+                                        />
+                                        <div
+                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"
+                                        />
+                                    </div>
+                                </div>
+                            </UCard>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -215,7 +263,7 @@ const newTask = ref({
 const draggedTask = ref<Task | null>(null);
 
 const queryVariables = ref({
-    first: 50,
+    first: 10,
     page: 1,
     ...(conditions(auth) && {
         whereConditions: {
@@ -430,6 +478,84 @@ const resetForm = () => {
         title: "",
     };
     isModalOpen.value = false;
+};
+
+const taskQueries = reactive<Record<string, ReturnType<typeof useQuery>>>({});
+
+onMounted(() => {
+    columns.value.forEach((column) => {
+        const variables = {
+            first: column.first,
+            whereConditions: {
+                AND: [
+                    { column: "STATUS", operator: "EQ", value: column.id },
+                    ...(conditions(auth) ? [conditions(auth)] : []),
+                ],
+            },
+        };
+
+        const query = useQuery(tasksPaginate, variables, {
+            fetchPolicy: "network-only",
+        });
+
+        taskQueries[column.id] = query;
+
+        watchEffect(() => {
+            const data = query.result.value?.tasksPaginate?.data;
+            if (data && data.length > 0) {
+                taskBoard.setColumnTasks(column.id, data);
+                column.hasMore =
+                    query.result.value?.tasksPaginate?.paginatorInfo
+                        ?.hasMorePages ?? false;
+            }
+        });
+    });
+});
+
+const onScroll = async (e: Event, columnId: string) => {
+    const column = columns.value.find((c) => c.id === columnId);
+    if (!column || column.isLoading || !column.hasMore) return;
+
+    const el = e.target as HTMLElement;
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 50;
+    if (!nearBottom) return;
+
+    column.isLoading = true;
+    column.first += 10;
+
+    const variables = {
+        first: column.first,
+        whereConditions: {
+            AND: [
+                { column: "STATUS", operator: "EQ", value: column.id },
+                ...(conditions(auth) ? [conditions(auth)] : []),
+            ],
+        },
+    };
+
+    try {
+        // Use refetch with new first value
+        const { data } = await taskQueries[columnId]?.refetch(variables);
+
+        // Replace tasks with the updated full list
+        taskBoard.setColumnTasks(
+            columnId,
+            data?.tasksPaginate?.data ?? [],
+            false, // replace entire list instead of append
+        );
+
+        column.hasMore =
+            data?.tasksPaginate?.paginatorInfo?.hasMorePages ?? false;
+    } catch (error) {
+        console.error("Error loading tasks:", error);
+        toast.add({
+            color: "red",
+            icon: "i-heroicons-exclamation-circle",
+            title: "Failed to load more tasks",
+        });
+    } finally {
+        column.isLoading = false;
+    }
 };
 
 const { $echo } = useNuxtApp();

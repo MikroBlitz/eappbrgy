@@ -242,6 +242,7 @@ class DatabaseSeeder extends Seeder
             PurokSeeder::class,
             HouseholdSeeder::class,
             ResidentSeeder::class,
+            TaskSeeder::class,
         ]);
     }
 }

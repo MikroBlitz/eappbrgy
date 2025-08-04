@@ -8,26 +8,44 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     const columns = ref([
         {
             color: "gray" as BadgeColor,
+            first: 10,
+            hasMore: true,
             icon: "solar:server-minimalistic-broken",
             id: "TODO",
+            isLoading: false,
             tasks: [] as Task[],
             title: "To Do",
         },
         {
             color: "yellow" as BadgeColor,
+            first: 10,
+            hasMore: true,
             icon: "solar:server-minimalistic-broken",
-            id: "INPROGRESS",
+            id: "IN_PROGRESS",
+            isLoading: false,
             tasks: [] as Task[],
             title: "In Progress",
         },
         {
             color: "emerald" as BadgeColor,
+            first: 10,
+            hasMore: true,
             icon: "solar:checklist-minimalistic-broken",
             id: "DONE",
+            isLoading: false,
             tasks: [] as Task[],
             title: "Done",
         },
     ]);
+
+    function setColumnTasks(columnId: string, tasks: Task[], append = false) {
+        const column = columns.value.find((col) => col.id === columnId);
+        if (!column) return;
+        if (append) column.tasks.push(...tasks);
+        else column.tasks = tasks;
+
+        column.tasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    }
 
     function setTasks(tasks: Task[]) {
         columns.value.forEach((col) => (col.tasks = []));
@@ -67,6 +85,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
     return {
         columns,
         deleteTask,
+        setColumnTasks,
         setTasks,
         updateTask,
     };
