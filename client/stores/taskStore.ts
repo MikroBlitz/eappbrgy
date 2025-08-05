@@ -7,20 +7,20 @@ import type { Task } from "~/types/codegen/graphql";
 export const useTaskBoardStore = defineStore("taskBoard", () => {
     const columns = ref([
         {
-            color: "gray" as BadgeColor,
+            color: "orange" as BadgeColor,
             first: 15,
             hasMore: true,
             icon: "solar:server-minimalistic-broken",
             id: "TODO",
             isLoading: false,
             tasks: [] as Task[],
-            title: "To Do",
+            title: "Todo",
         },
         {
-            color: "yellow" as BadgeColor,
+            color: "blue" as BadgeColor,
             first: 15,
             hasMore: true,
-            icon: "solar:server-minimalistic-broken",
+            icon: "solar:document-add-outline",
             id: "IN_PROGRESS",
             isLoading: false,
             tasks: [] as Task[],
@@ -34,7 +34,7 @@ export const useTaskBoardStore = defineStore("taskBoard", () => {
             id: "DONE",
             isLoading: false,
             tasks: [] as Task[],
-            title: "Done",
+            title: "Completed",
         },
     ]);
 

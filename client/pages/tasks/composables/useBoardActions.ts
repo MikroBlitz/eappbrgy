@@ -5,6 +5,8 @@ import type { Task } from "~/types/codegen/graphql";
 
 import { upsertTask } from "~/graphql/Task";
 
+import { taskPermissions } from "../utils/helper";
+
 export const useBoardActions = () => {
     const auth = useAuthStore();
     const toast = useToast();
@@ -107,7 +109,9 @@ export const useBoardActions = () => {
             whereConditions: {
                 AND: [
                     { column: "STATUS", operator: "EQ", value: columnId },
-                    ...(conditions() ? [conditions()] : []),
+                    ...(conditions(taskPermissions)
+                        ? [conditions(taskPermissions)]
+                        : []),
                 ],
             },
         };

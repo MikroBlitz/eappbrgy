@@ -124,6 +124,7 @@ class DatabaseSeeder extends Seeder
             'delete barangay',
 
             'view task',
+            'view all task',
             'create task',
             'edit task',
             'delete task',

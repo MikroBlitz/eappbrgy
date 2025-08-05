@@ -1,16 +1,26 @@
 <template>
-    <div class="p-4">
-        <UButton
-            icon="i-heroicons-plus"
-            size="sm"
-            class="mb-4"
-            color="emerald"
-            variant="outline"
-            @click="addTask('TODO')"
-        >
-            Add New Task
-        </UButton>
-        <div class="flex gap-4 space-x-4 overflow-x-auto pb-4">
+    <div class="px-2 md:px-0">
+        <div class="flex gap-1 w-full mb-2 mt-1">
+            <UButton
+                icon="solar:add-square-broken"
+                size="sm"
+                color="emerald"
+                variant="ghost"
+                @click="addTask('TODO')"
+            >
+                New Task
+            </UButton>
+            <UButton
+                icon="solar:refresh-bold"
+                size="sm"
+                color="yellow"
+                variant="ghost"
+                @click="manualRefetchTasks()"
+            >
+                Refetch
+            </UButton>
+        </div>
+        <div class="flex space-x-4 overflow-x-auto pb-4">
             <div
                 v-for="column in columns"
                 :key="column.id"
@@ -25,15 +35,16 @@
                         <div class="flex items-center gap-2">
                             <UIcon
                                 :name="column.icon"
-                                class="w-5 h-5 text-primary"
+                                class="w-5 h-5"
+                                :class="`text-${column.color}-500`"
                             />
                             <h3
-                                class="font-semibold text-gray-900 dark:text-white"
+                                class="font-semibold text-gray-900 dark:text-gray-100"
                             >
                                 {{ column.title }}
                             </h3>
                             <UBadge
-                                v-if="!column.isLoading"
+                                v-if="!column.isLoading && !isLoading"
                                 :color="column.color"
                                 variant="solid"
                                 class="font-bold rounded-full px-2.5"
@@ -44,8 +55,47 @@
                         </div>
                     </div>
 
+                    <div v-if="isLoading" class="space-y-3 mt-3">
+                        <div
+                            v-for="n in 3"
+                            :key="`skeleton-${n}`"
+                            class="animate-pulse"
+                        >
+                            <UCard class="opacity-60">
+                                <div class="space-y-3">
+                                    <div
+                                        class="flex items-center justify-between"
+                                    >
+                                        <div
+                                            class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"
+                                        />
+                                        <div
+                                            class="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"
+                                        />
+                                    </div>
+                                    <div
+                                        class="flex items-center justify-between pt-2"
+                                    >
+                                        <div
+                                            class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"
+                                        />
+                                        <div
+                                            class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"
+                                        />
+                                    </div>
+                                </div>
+                            </UCard>
+                        </div>
+                    </div>
+
                     <!-- Draggable Task List -->
                     <VueDraggable
+                        v-if="!isLoading"
                         v-model="column.tasks"
                         :group="{ name: 'tasks', pull: true, put: true }"
                         :animation="200"
@@ -63,6 +113,20 @@
                             />
                         </template>
                     </VueDraggable>
+
+                    <!-- Empty State -->
+                    <div
+                        v-if="!column.tasks.length && !isLoading"
+                        class="flex flex-col items-center justify-center py-12 text-center text-gray-500"
+                    >
+                        <Icon :name="column.icon" size="40" class="mb-2" />
+                        <p class="text-lg font-semibold">
+                            {{ emptyStateTitle(column.id) }}
+                        </p>
+                        <p class="text-sm">
+                            {{ emptyStateMessage(column.id) }}
+                        </p>
+                    </div>
 
                     <!-- Skeleton Loading State -->
                     <div v-if="column.isLoading" class="space-y-3 mt-3">
@@ -163,6 +227,7 @@
 </template>
 
 <script setup lang="ts">
+import { useTimeoutFn } from "@vueuse/shared";
 import { useToast } from "#ui/composables/useToast";
 import { VueDraggable } from "vue-draggable-plus";
 import { z } from "zod";
@@ -173,7 +238,12 @@ import { deleteTask, tasksPaginate, upsertTask } from "~/graphql/Task";
 import KanbanCard from "~/pages/tasks/components/ui/KanbanCard.vue";
 import { useBoardActions } from "~/pages/tasks/composables/useBoardActions";
 
-import { priorityOptions } from "../utils/helper";
+import {
+    emptyStateMessage,
+    emptyStateTitle,
+    priorityOptions,
+    taskPermissions,
+} from "../utils/helper";
 
 const taskSchema = z.object({
     description: z.string().min(1, "Description is required"),
@@ -187,6 +257,7 @@ const taskBoard = useTaskBoardStore();
 const columns = computed(() => taskBoard.columns);
 const { onDragStart, onScroll, onTaskDrop, taskQueries } = useBoardActions();
 
+const isLoading = ref(false);
 const isModalOpen: Ref<boolean> = ref(false);
 const isSubmitting: Ref<boolean> = ref(false);
 const selectedColumnId: Ref<string | undefined> = ref("");
@@ -197,6 +268,21 @@ const newTask: Ref<Partial<Task>> = ref({
     status: undefined,
     title: "",
 });
+
+const manualRefetchTasks = () => {
+    isLoading.value = true;
+    try {
+        Object.values(taskQueries).forEach((query) => {
+            query?.refetch?.();
+        });
+    } catch (e) {
+        console.error(e);
+    } finally {
+        useTimeoutFn(() => {
+            isLoading.value = false;
+        }, 1000);
+    }
+};
 
 const refetchTasks = () => {
     Object.values(taskQueries).forEach((query) => {
@@ -312,7 +398,9 @@ onMounted(() => {
             whereConditions: {
                 AND: [
                     { column: "STATUS", operator: "EQ", value: col.id },
-                    ...(conditions() ? [conditions()] : []),
+                    ...(conditions(taskPermissions)
+                        ? [conditions(taskPermissions)]
+                        : []),
                 ],
             },
         }));
