@@ -38,7 +38,7 @@ class UpdateExpiredPermits extends Command
             ->where('valid_until', '>=', now())
             ->update(['status' => 'active']);
 
-        $this->info("Updated $expiredCount expired permits.");
-        $this->info("Updated $reactivatedCount reactivated permits.");
+        $this->info("Updated $expiredCount expired docs.");
+        $this->info("Updated $reactivatedCount reactivated docs.");
     }
 }

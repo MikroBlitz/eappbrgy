@@ -4,7 +4,6 @@ import { useToast } from "#ui/composables/useToast";
 import type { Task } from "~/types/codegen/graphql";
 
 import { upsertTask } from "~/graphql/Task";
-import { conditions } from "~/pages/tasks/utils/helper";
 
 export const useBoardActions = () => {
     const auth = useAuthStore();
@@ -108,7 +107,7 @@ export const useBoardActions = () => {
             whereConditions: {
                 AND: [
                     { column: "STATUS", operator: "EQ", value: columnId },
-                    ...(conditions(auth) ? [conditions(auth)] : []),
+                    ...(conditions() ? [conditions()] : []),
                 ],
             },
         };

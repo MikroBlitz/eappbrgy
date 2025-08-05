@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SqlOperator, Document } from "~/types/codegen/graphql";
+import type { Document } from "~/types/codegen/graphql";
 
 import {
     deleteDocument,
@@ -23,7 +23,11 @@ import {
     upsertDocument,
 } from "~/graphql/Document";
 import { residentsPaginate } from "~/graphql/Resident";
-import { formatDateTimeForGraphQL, generateCustomId } from "~/utils/helpers";
+import {
+    conditions,
+    formatDateTimeForGraphQL,
+    generateCustomId,
+} from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
@@ -129,7 +133,9 @@ const tableData = useTableData<Document>(
         optionLoading: residentSearch.loadingOptions,
         prepareSubmitData: (data, selectedRow?: Document) => ({
             ...data,
-            createdBy: selectedRow?.createdBy || { connect: auth.user?.id },
+            createdBy: selectedRow?.createdBy
+                ? undefined
+                : { connect: auth.user?.id },
             doc_no: selectedRow?.doc_no || generateCustomId("Doc"),
             id: selectedRow?.id,
             issued_at: data.issued_at
@@ -148,37 +154,24 @@ const tableData = useTableData<Document>(
                           Date.now()
                         ? data.status
                         : "expired",
-            updatedBy: selectedRow?.updatedBy || { connect: auth.user?.id },
+            updatedBy: { connect: auth.user?.id },
             valid_until: data.valid_until
                 ? formatDateTimeForGraphQL(String(data.valid_until))
                 : null,
         }),
-        whereConditions: conditions(),
+        whereConditions: conditions([
+            "view document",
+            "create document",
+            "edit document",
+            "delete document",
+            "approve document",
+            "pending document",
+            "release document",
+            "revoke document",
+        ]),
         zodSchema: zodSchema.value,
     },
 );
-
-function conditions() {
-    const isAdmin = auth.user?.roles?.some((r) => r?.name === "Admin");
-    const requiredPermissions = [
-        "view document",
-        "create document",
-        "edit document",
-        "delete document",
-        "approve document",
-        "pending document",
-        "release document",
-        "revoke document",
-    ];
-    const hasPermissions = requiredPermissions.every((perm) => auth.can(perm));
-    if (isAdmin || hasPermissions) return undefined;
-
-    return {
-        column: "CREATED_BY",
-        operator: "EQ" as SqlOperator, // TODO: Fix GraphQL enum issue
-        value: auth.user?.id,
-    };
-}
 
 function confirmUpdateStatus(row: Document, status: string) {
     selectedRow.value = row;

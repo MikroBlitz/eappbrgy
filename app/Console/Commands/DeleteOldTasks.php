@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\TaskUpdated;
 use App\Models\Task;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -14,7 +15,7 @@ class DeleteOldTasks extends Command
      *
      * @var string
      */
-    protected $signature = 'app:delete-old-tasks';
+    protected $signature = 'tasks:delete-check';
 
     /**
      * The console command description.
@@ -30,7 +31,7 @@ class DeleteOldTasks extends Command
     {
         $thresholdDate = Carbon::now()->subDays(30);
 
-        $oldTasks = Task::where('status', 'completed')
+        $oldTasks = Task::where('status', 'done')
             ->where('created_at', '<', $thresholdDate)
             ->get();
 
@@ -41,6 +42,7 @@ class DeleteOldTasks extends Command
 
         foreach ($oldTasks as $task) {
             Log::channel('task_deletions')->info("Deleted Task ID {$task->id}, Title: {$task->title}, Created At: {$task->created_at}");
+            event(new TaskUpdated(['id' => $task->id]));
             $task->delete();
         }
 

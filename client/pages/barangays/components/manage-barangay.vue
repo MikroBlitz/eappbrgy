@@ -74,7 +74,6 @@ const tableData = useTableData<Barangay>(
                 },
             };
         },
-        whereConditions: {},
         zodSchema: zodSchema.value,
     },
 );

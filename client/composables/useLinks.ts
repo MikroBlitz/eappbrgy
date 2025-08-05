@@ -58,7 +58,7 @@ export const useLinks = () => {
         },
         {
             icon: "solar:checklist-minimalistic-broken",
-            label: "Tasks Management",
+            label: "Tasks",
             permission: auth.can("view task"),
             to: "/tasks",
         },

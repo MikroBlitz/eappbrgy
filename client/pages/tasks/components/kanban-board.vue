@@ -35,7 +35,8 @@
                             <UBadge
                                 v-if="!column.isLoading"
                                 :color="column.color"
-                                variant="subtle"
+                                variant="solid"
+                                class="font-bold rounded-full px-2.5"
                                 size="sm"
                             >
                                 {{ column.tasks.length }}
@@ -50,76 +51,16 @@
                         :animation="200"
                         item-key="id"
                         ghost-class="ghost-card"
-                        class="space-y-3 min-h-[200px]"
+                        class="space-y-3"
                         :data-column-id="column.id"
                         @start="onDragStart($event)"
                         @end="onTaskDrop(column.id)"
                     >
                         <template v-for="task in column.tasks" :key="task.id">
-                            <UCard
-                                class="cursor-move hover:shadow-md transition-shadow"
-                                :data-id="task.id"
-                            >
-                                <div class="space-y-1 relative">
-                                    <UDropdown
-                                        v-if="auth.can('edit task')"
-                                        class="absolute -top-2 -right-2"
-                                        :items="getTaskActions(task)"
-                                        :popper="{
-                                            placement: 'bottom-end',
-                                        }"
-                                    >
-                                        <UButton
-                                            icon="solar:menu-dots-bold-duotone"
-                                            color="blue"
-                                            variant="ghost"
-                                        />
-                                    </UDropdown>
-
-                                    <div class="flex flex-col items-start">
-                                        <h3
-                                            class="font-medium text-sm text-gray-900 dark:text-white line-clamp-2"
-                                        >
-                                            {{ task.title }}
-                                        </h3>
-
-                                        <p
-                                            v-if="task.description"
-                                            class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2"
-                                        >
-                                            {{ task.description }}
-                                        </p>
-                                    </div>
-
-                                    <div
-                                        class="flex items-center justify-between pt-2"
-                                    >
-                                        <div class="flex gap-2">
-                                            <UBadge
-                                                v-if="task.priority"
-                                                :color="
-                                                    getPriorityColor(
-                                                        task.priority,
-                                                    )
-                                                "
-                                                variant="subtle"
-                                                size="xs"
-                                            >
-                                                {{ task.priority }}
-                                            </UBadge>
-                                        </div>
-
-                                        <span
-                                            v-if="task.created_at"
-                                            class="text-xs text-gray-500"
-                                        >
-                                            {{
-                                                getFriendlyDate(task.created_at)
-                                            }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </UCard>
+                            <KanbanCard
+                                :task="task"
+                                :task-actions="getTaskActions(task)"
+                            />
                         </template>
                     </VueDraggable>
 
@@ -229,10 +170,10 @@ import { z } from "zod";
 import type { Task, TaskStatus } from "~/types/codegen/graphql";
 
 import { deleteTask, tasksPaginate, upsertTask } from "~/graphql/Task";
+import KanbanCard from "~/pages/tasks/components/ui/KanbanCard.vue";
 import { useBoardActions } from "~/pages/tasks/composables/useBoardActions";
-import { getFriendlyDate } from "~/utils/helpers";
 
-import { getPriorityColor, conditions, priorityOptions } from "../utils/helper";
+import { priorityOptions } from "../utils/helper";
 
 const taskSchema = z.object({
     description: z.string().min(1, "Description is required"),
@@ -371,7 +312,7 @@ onMounted(() => {
             whereConditions: {
                 AND: [
                     { column: "STATUS", operator: "EQ", value: col.id },
-                    ...(conditions(auth) ? [conditions(auth)] : []),
+                    ...(conditions() ? [conditions()] : []),
                 ],
             },
         }));

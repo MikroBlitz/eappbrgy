@@ -19,8 +19,6 @@ import type { Task } from "~/types/codegen/graphql";
 
 import { deleteTask, tasksPaginate, upsertTask } from "~/graphql/Task";
 import { TaskPriority, TaskStatus } from "~/pages/tasks/data/types";
-import { conditions } from "~/pages/tasks/utils/helper";
-import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
@@ -121,7 +119,7 @@ const tableData = useTableData<Task>(
                 updatedBy: { connect: auth.user?.id },
             };
         },
-        whereConditions: conditions(auth),
+        whereConditions: conditions(),
         zodSchema: zodSchema.value,
     },
 );

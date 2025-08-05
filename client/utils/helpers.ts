@@ -1,35 +1,35 @@
 import type { BadgeColor } from "#ui/types";
 
 import {
-    Shield,
+    AlertCircle,
+    AlertTriangle,
     Briefcase,
+    Clipboard,
+    Crown,
+    Database,
+    Eye,
+    FileText,
+    Gavel,
+    Handshake,
+    Heart,
+    LifeBuoy,
+    Mars as Male,
+    Medal,
+    Settings,
+    Shield,
+    ShieldCheck,
+    Smile,
     User as UserIcon,
     Users,
-    Gavel,
-    Clipboard,
-    FileText,
-    Medal,
-    Heart,
-    ShieldCheck,
-    Handshake,
-    Smile,
-    Eye,
-    Settings,
-    Database,
-    LifeBuoy,
-    AlertCircle,
-    Crown,
-    Wallet,
-    AlertTriangle,
-    Wrench,
-    Mars as Male,
     Venus as Female,
+    Wallet,
+    Wrench,
 } from "lucide-vue-next";
 import { z } from "zod";
 
+import type { SqlOperator } from "~/types/codegen/graphql";
 import type { FormSchema } from "~/types/fields";
 
-// It is used for logging out via gql it can be improved.
 export const authContext = () => {
     const authStore = useAuthStore();
     if (!authStore.token) throw new Error("Missing auth token");
@@ -154,7 +154,7 @@ export function getDocumentStatusColor(
     }
 }
 
-export function parseGraphQLError(e: any): string {
+export function parseGraphQLError(e): string {
     const graphQLErrors = e?.graphQLErrors || e?.response?.errors;
     if (Array.isArray(graphQLErrors)) {
         const messages = graphQLErrors.map((error) => {
@@ -314,4 +314,17 @@ export function generateCustomId(text: string, date = new Date()) {
     const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
 
     return `${text}-${timestamp}`;
+}
+
+export function conditions(permissions: string[] = []) {
+    const auth = useAuthStore();
+    const isAdmin = auth.user?.roles?.some((r) => r?.name === "Admin");
+    const hasPermissions = permissions.every((perm) => auth.can(perm));
+    if (isAdmin || hasPermissions) return undefined;
+
+    return {
+        column: "CREATED_BY",
+        operator: "EQ" as SqlOperator, // TODO: Fix GraphQL enum issue
+        value: auth.user?.id,
+    };
 }

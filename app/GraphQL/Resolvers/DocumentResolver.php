@@ -39,10 +39,10 @@ class DocumentResolver
             }
 
             // Prevent updates if already finalized
-            if (in_array($document->status, ['released', 'revoked', 'expired'])) {
+            if (in_array($document->status, ['released', 'revoked'])) {
                 throw ValidationException::withMessages([
                     'status' => [
-                        "Cannot update '{$document->status}' document. Only pending or approved can be updated."
+                        "Cannot update '{$document->status}' document. Only pending, approved and expired can be updated."
                     ]
                 ]);
             }
