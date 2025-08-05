@@ -23,8 +23,11 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Ensure ownership
 RUN chown -R www-data:www-data /var/www
 
-# Expose Octane port
-EXPOSE 8000
+# Expose ports
+EXPOSE 8000 6001
 
-# Run Octane using Swoole
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"]
+# Run Octane using Swoole and Websocket
+COPY run_server.sh /run_server.sh
+RUN chmod +x /run_server.sh
+
+CMD ["/run_server.sh"]

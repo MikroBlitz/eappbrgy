@@ -82,9 +82,6 @@
                                         >
                                             {{ task.title }}
                                         </h3>
-                                        <span class="text-red-500">{{
-                                            task.order
-                                        }}</span>
 
                                         <p
                                             v-if="task.description"
