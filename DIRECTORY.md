@@ -2,8 +2,11 @@
 |-- app
 |   |-- Console
 |   |   `-- Commands
+|   |       |-- DeleteOldTasks.php
 |   |       |-- GenerateOtpSecretKey.php
 |   |       `-- UpdateExpiredPermits.php
+|   |-- Events
+|   |   `-- TaskUpdated.php
 |   |-- GraphQL
 |   |   |-- Mutations
 |   |   |   |-- Login.php
@@ -14,6 +17,8 @@
 |   |   `-- Resolvers
 |   |       |-- BlotterResolver.php
 |   |       |-- DocumentResolver.php
+|   |       |-- FaceResolver.php
+|   |       |-- TaskResolver.php
 |   |       `-- UserResolver.php
 |   |-- Http
 |   |   |-- Controllers
@@ -38,6 +43,7 @@
 |   |   |-- Purok.php
 |   |   |-- Resident.php
 |   |   |-- Role.php
+|   |   |-- Task.php
 |   |   `-- User.php
 |   |-- Providers
 |   |   |-- AppServiceProvider.php
@@ -48,6 +54,8 @@
 |-- bootstrap
 |   |-- app.php
 |   |-- cache
+|   |   |-- packages.php
+|   |   `-- services.php
 |   `-- providers.php
 |-- bun.lock
 |-- client
@@ -93,6 +101,7 @@
 |   |   |-- Purok.ts
 |   |   |-- Resident.ts
 |   |   |-- Role.ts
+|   |   |-- Task.ts
 |   |   `-- User.ts
 |   |-- layouts
 |   |   |-- app-layout.vue
@@ -108,6 +117,8 @@
 |   |   |   |-- data
 |   |   |   |   |-- columns.ts
 |   |   |   |   `-- schema.ts
+|   |   |   `-- index.vue
+|   |   |-- biometrics
 |   |   |   `-- index.vue
 |   |   |-- blotters
 |   |   |   |-- components
@@ -163,6 +174,21 @@
 |   |   |   `-- index.vue
 |   |   |-- settings
 |   |   |   `-- index.vue
+|   |   |-- tasks
+|   |   |   |-- components
+|   |   |   |   |-- kanban-board.vue
+|   |   |   |   |-- manage-task.vue
+|   |   |   |   `-- ui
+|   |   |   |       `-- KanbanCard.vue
+|   |   |   |-- composables
+|   |   |   |   `-- useBoardActions.ts
+|   |   |   |-- data
+|   |   |   |   |-- columns.ts
+|   |   |   |   |-- schema.ts
+|   |   |   |   `-- types.ts
+|   |   |   |-- index.vue
+|   |   |   `-- utils
+|   |   |       `-- helper.ts
 |   |   |-- unauthorized.vue
 |   |   `-- users
 |   |       |-- components
@@ -181,8 +207,11 @@
 |   |       |       |-- columns.ts
 |   |       |       `-- schema.ts
 |   |       `-- index.vue
+|   |-- plugins
+|   |   `-- echo.client.js
 |   |-- stores
-|   |   `-- authStore.ts
+|   |   |-- authStore.ts
+|   |   `-- taskStore.ts
 |   |-- types
 |   |   |-- codegen
 |   |   |   |-- fragment-masking.ts
@@ -199,6 +228,7 @@
 |-- config
 |   |-- app.php
 |   |-- auth.php
+|   |-- broadcasting.php
 |   |-- cache.php
 |   |-- cors.php
 |   |-- database.php
@@ -209,6 +239,7 @@
 |   |-- octane.php
 |   |-- permission.php
 |   |-- queue.php
+|   |-- reverb.php
 |   |-- sanctum.php
 |   |-- services.php
 |   `-- session.php
@@ -230,12 +261,14 @@
 |   |   |-- 2025_06_26_181058_create_blotters_table.php
 |   |   |-- 2025_06_30_182649_create_officials_table.php
 |   |   |-- 2025_06_30_182650_add_captain_to_barangays_table.php
-|   |   `-- 2025_07_12_205508_create_documents_table.php
+|   |   |-- 2025_07_12_205508_create_documents_table.php
+|   |   `-- 2025_08_04_102115_create_tasks_table.php
 |   `-- seeders
 |       |-- DatabaseSeeder.php
 |       |-- HouseholdSeeder.php
 |       |-- PurokSeeder.php
-|       `-- ResidentSeeder.php
+|       |-- ResidentSeeder.php
+|       `-- TaskSeeder.php
 |-- DIRECTORY.md
 |-- docker-compose.yml
 |-- Dockerfile
@@ -254,6 +287,7 @@
 |   |   |-- Purok.graphql
 |   |   |-- Resident.graphql
 |   |   |-- Role.graphql
+|   |   |-- Task.graphql
 |   |   `-- User.graphql
 |   `-- schema.graphql
 |-- _lighthouse_ide_helper.php
@@ -264,9 +298,20 @@
 |-- phpunit.xml
 |-- programmatic-types.graphql
 |-- public
+|   |-- client
+|   |   `-- models
+|   |       |-- face_landmark_68
+|   |       |   |-- face_landmark_68_model-shard1
+|   |       |   `-- face_landmark_68_model-weights_manifest.json
+|   |       |-- face_recognition
+|   |       |   |-- face_recognition_model-shard1
+|   |       |   |-- face_recognition_model-shard2
+|   |       |   `-- face_recognition_model-weights_manifest.json
+|   |       `-- tiny_face_detector
+|   |           |-- tiny_face_detector_model-shard1
+|   |           `-- tiny_face_detector_model-weights_manifest.json
 |   |-- favicon.ico
 |   |-- index.php
-|   |-- nuxt
 |   `-- robots.txt
 |-- README.md
 |-- resources
@@ -282,8 +327,10 @@
 |       `-- welcome.blade.php
 |-- routes
 |   |-- api.php
+|   |-- channels.php
 |   |-- console.php
 |   `-- web.php
+|-- run_server.sh
 |-- schema-directives.graphql
 |-- server
 |   `-- tsconfig.json

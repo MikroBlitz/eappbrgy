@@ -128,6 +128,8 @@ class DatabaseSeeder extends Seeder
             'create task',
             'edit task',
             'delete task',
+
+            'view biometric',
         ];
 
         // Create permissions if not exists

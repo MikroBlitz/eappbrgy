@@ -47,4 +47,9 @@ export default defineNuxtConfig({
     tailwindcss: {
         configPath: "./tailwind.config.js",
     },
+    vite: {
+        optimizeDeps: {
+            include: ["graphql-tag"],
+        },
+    },
 });

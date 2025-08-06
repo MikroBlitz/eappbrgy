@@ -89,3 +89,21 @@ export const usersCount = gql`
         usersCount
     }
 `;
+
+export const registerFace = gql`
+    mutation registerFace($userId: ID!, $descriptor: [Float!]!) {
+        registerFace(user_id: $userId, descriptor: $descriptor)
+    }
+`;
+
+export const recognizeFace = gql`
+    mutation recognizeFace($descriptor: [Float!]!) {
+        recognizeFace(descriptor: $descriptor) {
+            id
+            name
+            roles {
+                name
+            }
+        }
+    }
+`;

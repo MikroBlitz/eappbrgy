@@ -10,6 +10,7 @@ type User {
     is_active: Boolean
     is_admin: Boolean! @method(name: "is_admin")
     usersCount: Int
+    face_descriptors: JSON
     roles: [Role]! @morphToMany
     messages: [Message] @hasMany
     contacts: [Contact] @hasMany
@@ -31,6 +32,7 @@ input UserInput {
     email: String
     password: String
     is_active: Boolean
+    face_descriptors: JSON
     roles: ConnectRolesRelation
     resident: ConnectResidentRelation
 }
@@ -72,6 +74,7 @@ extend type Mutation {
     deleteUser(id: [ID!] @eq): [User] @forceDelete @guard
     restoreUser(id: ID!): User! @restore @guard
     updateUserStatus(id: ID!, is_active: Boolean!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@updateStatus") @guard
+
+    registerFace(user_id: ID!, descriptor: [Float!]!): Boolean @field(resolver: "App\\GraphQL\\Resolvers\\FaceResolver@register")
+    recognizeFace(descriptor: [Float!]!): User @field(resolver: "App\\GraphQL\\Resolvers\\FaceResolver@recognize")
 }
-
-

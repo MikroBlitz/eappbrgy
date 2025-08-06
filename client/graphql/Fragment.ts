@@ -9,6 +9,7 @@ export const userFragment = gql`
         phone
         password
         is_admin
+        face_descriptors
         roles {
             id
             name
