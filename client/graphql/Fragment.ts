@@ -24,6 +24,9 @@ export const userFragment = gql`
         #        contacts {
         #            id
         #        }
+        #        attendances {
+        #            id
+        #        }
         resident {
             id
         }
@@ -233,6 +236,27 @@ export const taskFragment = gql`
             id
             name
         }
+        created_at
+        updated_at
+    }
+`;
+
+export const attendanceFragment = gql`
+    fragment attendance on Attendance {
+        id
+        date
+        user {
+            id
+            name
+        }
+        am_time_in
+        am_time_out
+        pm_time_in
+        pm_time_out
+        extra_time_in_1
+        extra_time_out_1
+        extra_time_in_2
+        extra_time_out_2
         created_at
         updated_at
     }
