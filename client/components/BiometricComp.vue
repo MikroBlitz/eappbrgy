@@ -23,12 +23,6 @@
                         height="480"
                     />
 
-                    <!-- Scanning Line Animation -->
-                    <div
-                        v-if="isDetecting"
-                        class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent animate-pulse"
-                    />
-
                     <!-- Status Indicator -->
                     <div class="absolute top-2 right-2">
                         <div
@@ -51,20 +45,14 @@
 
                 <!-- Controls -->
                 <template #footer>
-                    <div class="flex items-center justify-center gap-3 py-2">
+                    <div class="flex items-center justify-center gap-3">
                         <UButton
                             color="blue"
                             size="sm"
                             :loading="isProcessing"
-                            class="px-6"
+                            class="px-4 py-2"
                             @click="detectFace"
                         >
-                            <template #leading>
-                                <Icon
-                                    name="i-heroicons-camera"
-                                    class="w-4 h-4"
-                                />
-                            </template>
                             Scan Face
                         </UButton>
 
@@ -72,15 +60,9 @@
                             color="primary"
                             size="sm"
                             :loading="isRecognizing"
-                            class="px-6"
+                            class="px-4 py-2"
                             @click="recognizeFaceHandler"
                         >
-                            <template #leading>
-                                <Icon
-                                    name="i-heroicons-user-circle"
-                                    class="w-4 h-4"
-                                />
-                            </template>
                             Recognize
                         </UButton>
                     </div>
@@ -88,7 +70,7 @@
             </UCard>
 
             <!-- Quick Stats -->
-            <div class="mt-6 grid grid-cols-3 gap-4">
+            <div class="mt-2 grid grid-cols-3 gap-4">
                 <div
                     class="text-center p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur-sm"
                 >
@@ -136,8 +118,6 @@ import * as faceapi from "face-api.js";
 
 import { recognizeFace } from "~/graphql/User.js";
 
-import { loadModels } from "../utils/helpers";
-
 const videoRef = ref<HTMLVideoElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 
@@ -171,9 +151,8 @@ async function startVideo() {
 
         if (!videoTrack) return;
         videoTrack.onended = () => {
-            console.warn("Video stream ended. Attempting to restart...");
+            console.warn("Video stream ended.");
             stopLiveDetection();
-            startVideo();
         };
     } catch (err) {
         console.error("Failed to access webcam:", err);
@@ -387,5 +366,13 @@ onMounted(async () => {
     videoRef.value.addEventListener("playing", () => {
         startLiveDetectionLoop();
     });
+});
+
+onUnmounted(() => {
+    stopLiveDetection();
+    if (mediaStream.value) {
+        mediaStream.value.getTracks().forEach((track) => track.stop());
+        mediaStream.value = null;
+    }
 });
 </script>
