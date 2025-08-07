@@ -11,7 +11,11 @@
                     />
                     <span
                         class="text-lg text-gray-600 dark:text-gray-100 font-medium"
-                        >Update Face Data
+                        >Update
+                        <span class="text-primary">{{
+                            selectedUser.name
+                        }}</span>
+                        Face Data
                     </span>
                 </div>
 
