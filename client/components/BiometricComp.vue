@@ -44,6 +44,7 @@
                 <!-- Controls -->
                 <div class="flex items-center justify-center gap-2 mt-4">
                     <UButton
+                        v-if="hasDetectFace"
                         variant="outline"
                         color="blue"
                         size="sm"
@@ -54,6 +55,7 @@
                     </UButton>
 
                     <UButton
+                        v-if="hasRecognizeFace"
                         variant="outline"
                         color="orange"
                         size="sm"
@@ -73,6 +75,11 @@ import { useToast } from "#ui/composables/useToast";
 import * as faceapi from "face-api.js";
 
 import { recognizeFace } from "~/graphql/User.js";
+
+defineProps<{
+    hasDetectFace: boolean;
+    hasRecognizeFace: boolean;
+}>();
 
 const emit = defineEmits<{
     (e: "descriptorScanned", descriptor: number[]): void;
@@ -217,7 +224,7 @@ async function detectFace() {
         );
 
         toast.add({
-            color: "green",
+            color: "blue",
             description: `${toTitleCase(gender)}, ${Math.round(age)} years, ${toTitleCase(topExpression[0])}`,
             title: "Face scan complete",
         });

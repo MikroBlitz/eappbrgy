@@ -15,7 +15,10 @@
                     </span>
                 </div>
 
-                <BiometricComp @descriptor-scanned="onDescriptorScanned" />
+                <BiometricComp
+                    :has-detect-face="true"
+                    @descriptor-scanned="onDescriptorScanned"
+                />
 
                 <div class="flex justify-end space-x-3">
                     <UButton
@@ -77,6 +80,12 @@ const formSchema = computed(() =>
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
+const openModal = (row: User) => {
+    scannedDescriptor.value = null;
+    selectedUser.value = row;
+    isOpen.value = true;
+};
+
 const tableData = useTableData<User>(
     {
         hasStatus: true,
@@ -97,10 +106,7 @@ const tableData = useTableData<User>(
                 color: () => "orange",
                 condition: () => true,
                 icon: () => "solar:face-scan-square-broken",
-                onClick: (row: User) => {
-                    selectedUser.value = row;
-                    isOpen.value = true;
-                },
+                onClick: (row: User) => openModal(row),
                 tooltip: (row: User) => `Update Face Data of ${row.name}`,
             },
         ],
@@ -153,16 +159,15 @@ const handleSaveFace = async () => {
     const { refetch } = useQuery(usersPaginate, { first: 10 });
     loading.value = true;
 
-    if (!selectedUser.value || !scannedDescriptor.value) {
-        useToast().add({
-            color: "orange",
-            description: "No face descriptor please scan first.",
-            title: "Missing Data",
-        });
-        return;
-    }
-
     try {
+        if (!selectedUser.value || !scannedDescriptor.value) {
+            useToast().add({
+                color: "orange",
+                title: "Missing Data: Please scan face first",
+            });
+            return;
+        }
+
         const { mutate: register } = useMutation(registerFace);
 
         await register({
@@ -178,11 +183,9 @@ const handleSaveFace = async () => {
 
         isOpen.value = false;
     } catch (e) {
-        console.error(e);
         useToast().add({
             color: "red",
-            description: "Failed to save face descriptor",
-            title: "Save Failed",
+            title: `Save Failed: ${e}`,
         });
     } finally {
         loading.value = false;

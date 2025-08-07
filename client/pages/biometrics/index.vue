@@ -1,5 +1,5 @@
 <template>
-    <BiometricComp />
+    <BiometricComp :has-recognize-face="true" />
 </template>
 
 <script setup>
