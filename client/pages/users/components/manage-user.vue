@@ -48,7 +48,7 @@ const tableData = useTableData<User>(
             {
                 color: () => "orange",
                 condition: () => true,
-                icon: () => "solar:file-download-broken",
+                icon: () => "solar:face-scan-square-broken",
                 onClick: (row: User) => {
                     console.log("User Row Data:", row);
                     useToast().add({
@@ -57,7 +57,7 @@ const tableData = useTableData<User>(
                         title: "Custom Action Triggered",
                     });
                 },
-                tooltip: (row: User) => `Log the Data ${row.name}`,
+                tooltip: (row: User) => `Update Face Data of ${row.name}`,
             },
         ],
         defaultViewModal: true,
@@ -69,6 +69,7 @@ const tableData = useTableData<User>(
             return user
                 ? {
                       email: user.email || "",
+                      face_descriptors: user.face_descriptors || undefined,
                       first_name: user.first_name || "",
                       id: user.id,
                       is_active: user.is_active || false,
@@ -80,6 +81,7 @@ const tableData = useTableData<User>(
                   }
                 : {
                       email: "",
+                      face_descriptors: undefined,
                       first_name: "",
                       id: undefined,
                       is_active: false,
