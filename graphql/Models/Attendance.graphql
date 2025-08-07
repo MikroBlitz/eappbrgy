@@ -1,0 +1,58 @@
+type Attendance {
+    id: ID!
+    date: DateTime
+    user: User! @belongsTo
+
+    am_time_in: DateTime
+    am_time_out: DateTime
+    pm_time_in: DateTime
+    pm_time_out: DateTime
+
+    extra_time_in_1: DateTime
+    extra_time_out_1: DateTime
+    extra_time_in_2: DateTime
+    extra_time_out_2: DateTime
+
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input AttendanceInput {
+    id: ID
+    date: DateTime
+    user: ConnectUserRelation
+
+    am_time_in: DateTime
+    am_time_out: DateTime
+    pm_time_in: DateTime
+    pm_time_out: DateTime
+
+    extra_time_in_1: DateTime
+    extra_time_out_1: DateTime
+    extra_time_in_2: DateTime
+    extra_time_out_2: DateTime
+}
+
+input ConnectAttendanceRelation {
+    id: ID
+    connect: ID
+    sync: ID
+    upsert: AttendanceInput
+    delete: ID
+}
+
+extend type Query {
+    attendances: [Attendance]! @all
+    attendancePaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Attendance]! @paginate
+}
+
+extend type Mutation @guard {
+    upsertAttendance(input: AttendanceInput! @spread): Attendance! @upsert
+    deleteAttendance(id: [ID!] @eq): [Attendance] @delete
+}

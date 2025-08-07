@@ -28,6 +28,46 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type Attendance = {
+  __typename?: 'Attendance';
+  am_time_in?: Maybe<Scalars['DateTime']['output']>;
+  am_time_out?: Maybe<Scalars['DateTime']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  date?: Maybe<Scalars['DateTime']['output']>;
+  extra_time_in_1?: Maybe<Scalars['DateTime']['output']>;
+  extra_time_in_2?: Maybe<Scalars['DateTime']['output']>;
+  extra_time_out_1?: Maybe<Scalars['DateTime']['output']>;
+  extra_time_out_2?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  pm_time_in?: Maybe<Scalars['DateTime']['output']>;
+  pm_time_out?: Maybe<Scalars['DateTime']['output']>;
+  updated_at: Scalars['DateTime']['output'];
+  user: User;
+};
+
+export type AttendanceInput = {
+  am_time_in?: InputMaybe<Scalars['DateTime']['input']>;
+  am_time_out?: InputMaybe<Scalars['DateTime']['input']>;
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  extra_time_in_1?: InputMaybe<Scalars['DateTime']['input']>;
+  extra_time_in_2?: InputMaybe<Scalars['DateTime']['input']>;
+  extra_time_out_1?: InputMaybe<Scalars['DateTime']['input']>;
+  extra_time_out_2?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  pm_time_in?: InputMaybe<Scalars['DateTime']['input']>;
+  pm_time_out?: InputMaybe<Scalars['DateTime']['input']>;
+  user?: InputMaybe<ConnectUserRelation>;
+};
+
+/** A paginated list of Attendance items. */
+export type AttendancePaginator = {
+  __typename?: 'AttendancePaginator';
+  /** A list of Attendance items. */
+  data: Array<Attendance>;
+  /** Pagination information about the list of items. */
+  paginatorInfo: PaginatorInfo;
+};
+
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   token: Scalars['String']['output'];
@@ -113,6 +153,14 @@ export enum CivilStatus {
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
 }
+
+export type ConnectAttendanceRelation = {
+  connect?: InputMaybe<Scalars['ID']['input']>;
+  delete?: InputMaybe<Scalars['ID']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  sync?: InputMaybe<Scalars['ID']['input']>;
+  upsert?: InputMaybe<AttendanceInput>;
+};
 
 export type ConnectBarangayRelation = {
   connect?: InputMaybe<Scalars['ID']['input']>;
@@ -447,6 +495,7 @@ export type MessagePaginator = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteAttendance?: Maybe<Array<Maybe<Attendance>>>;
   deleteBarangay?: Maybe<Array<Maybe<Barangay>>>;
   deleteBlotter?: Maybe<Array<Maybe<Blotter>>>;
   deleteContact?: Maybe<Contact>;
@@ -470,6 +519,7 @@ export type Mutation = {
   updateUserStatus?: Maybe<User>;
   /** Upload a file that is publicly available. */
   upload?: Maybe<Scalars['String']['output']>;
+  upsertAttendance: Attendance;
   upsertBarangay: Barangay;
   upsertBlotter: Blotter;
   upsertContact: Contact;
@@ -484,6 +534,11 @@ export type Mutation = {
   upsertTask?: Maybe<Task>;
   upsertUser: User;
   verifyOtp?: Maybe<OtpResponse>;
+};
+
+
+export type MutationDeleteAttendanceArgs = {
+  id?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 
@@ -594,6 +649,11 @@ export type MutationUpdateUserStatusArgs = {
 
 export type MutationUploadArgs = {
   file: Scalars['Upload']['input'];
+};
+
+
+export type MutationUpsertAttendanceArgs = {
+  input: AttendanceInput;
 };
 
 
@@ -811,6 +871,8 @@ export type PurokPaginator = {
 
 export type Query = {
   __typename?: 'Query';
+  attendancePaginate: AttendancePaginator;
+  attendances: Array<Maybe<Attendance>>;
   barangays: Array<Maybe<Barangay>>;
   barangaysCount: Scalars['Int']['output'];
   barangaysPaginate: BarangayPaginator;
@@ -851,6 +913,15 @@ export type Query = {
   users: Array<Maybe<User>>;
   usersCount: Scalars['Int']['output'];
   usersPaginate: UserPaginator;
+};
+
+
+export type QueryAttendancePaginateArgs = {
+  filter?: InputMaybe<Array<InputMaybe<FilterInput>>>;
+  first: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortInput>;
 };
 
 
@@ -1272,6 +1343,7 @@ export enum Trashed {
 
 export type User = {
   __typename?: 'User';
+  attendances?: Maybe<Array<Maybe<Attendance>>>;
   contacts?: Maybe<Array<Maybe<Contact>>>;
   created_at: Scalars['DateTime']['output'];
   deleted_at?: Maybe<Scalars['DateTime']['output']>;
@@ -1346,6 +1418,37 @@ export type WhereConditionsRelation = {
   /** The relation that is checked. */
   relation: Scalars['String']['input'];
 };
+
+export type AttendancePaginateQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortInput>;
+  filter?: InputMaybe<Array<InputMaybe<FilterInput>> | InputMaybe<FilterInput>>;
+}>;
+
+
+export type AttendancePaginateQuery = { __typename?: 'Query', attendancePaginate: { __typename?: 'AttendancePaginator', data: Array<(
+      { __typename?: 'Attendance' }
+      & { ' $fragmentRefs'?: { 'AttendanceFragment': AttendanceFragment } }
+    )>, paginatorInfo: { __typename?: 'PaginatorInfo', currentPage: number, lastPage: number, perPage: number, total: number } } };
+
+export type UpsertAttendanceMutationVariables = Exact<{
+  input: AttendanceInput;
+}>;
+
+
+export type UpsertAttendanceMutation = { __typename?: 'Mutation', upsertAttendance: (
+    { __typename?: 'Attendance' }
+    & { ' $fragmentRefs'?: { 'AttendanceFragment': AttendanceFragment } }
+  ) };
+
+export type DeleteAttendanceMutationVariables = Exact<{
+  id?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+}>;
+
+
+export type DeleteAttendanceMutation = { __typename?: 'Mutation', deleteAttendance?: Array<{ __typename?: 'Attendance', id: string } | null> | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1533,6 +1636,8 @@ export type DocumentFragment = { __typename?: 'Document', id: string, doc_no: st
 export type BarangayFragment = { __typename?: 'Barangay', id: string, name: string, population?: number | null, created_at: any, updated_at: any, official?: { __typename?: 'Official', id: string, position: string, resident?: { __typename?: 'Resident', id: string, name?: string | null } | null } | null } & { ' $fragmentName'?: 'BarangayFragment' };
 
 export type TaskFragment = { __typename?: 'Task', id: string, title: string, description?: string | null, status?: TaskStatus | null, priority?: TaskPriority | null, order?: number | null, created_at: any, updated_at: any, createdBy: { __typename?: 'User', id: string, name?: string | null }, updatedBy?: { __typename?: 'User', id: string, name?: string | null } | null } & { ' $fragmentName'?: 'TaskFragment' };
+
+export type AttendanceFragment = { __typename?: 'Attendance', id: string, date?: any | null, am_time_in?: any | null, am_time_out?: any | null, pm_time_in?: any | null, pm_time_out?: any | null, extra_time_in_1?: any | null, extra_time_out_1?: any | null, extra_time_in_2?: any | null, extra_time_out_2?: any | null, created_at: any, updated_at: any, user: { __typename?: 'User', id: string, name?: string | null } } & { ' $fragmentName'?: 'AttendanceFragment' };
 
 export type HouseholdsPaginateQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1858,6 +1963,10 @@ export const OfficialFragmentDoc = {"kind":"Document","definitions":[{"kind":"Fr
 export const DocumentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"document"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Document"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"doc_no"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"requested_at"}},{"kind":"Field","name":{"kind":"Name","value":"issued_at"}},{"kind":"Field","name":{"kind":"Name","value":"valid_until"}},{"kind":"Field","name":{"kind":"Name","value":"resident"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<DocumentFragment, unknown>;
 export const BarangayFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"barangay"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Barangay"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"official"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"resident"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"position"}}]}},{"kind":"Field","name":{"kind":"Name","value":"population"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<BarangayFragment, unknown>;
 export const TaskFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"task"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Task"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"priority"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<TaskFragment, unknown>;
+export const AttendanceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AttendanceFragment, unknown>;
+export const AttendancePaginateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"attendancePaginate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SortInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attendancePaginate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"attendance"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paginatorInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentPage"}},{"kind":"Field","name":{"kind":"Name","value":"lastPage"}},{"kind":"Field","name":{"kind":"Name","value":"perPage"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AttendancePaginateQuery, AttendancePaginateQueryVariables>;
+export const UpsertAttendanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"upsertAttendance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AttendanceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertAttendance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"attendance"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<UpsertAttendanceMutation, UpsertAttendanceMutationVariables>;
+export const DeleteAttendanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteAttendance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAttendance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteAttendanceMutation, DeleteAttendanceMutationVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"is_admin"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"middle_name"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"is_admin"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;

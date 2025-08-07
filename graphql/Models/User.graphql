@@ -16,6 +16,7 @@ type User {
     contacts: [Contact] @hasMany
     documents: [Document] @hasMany
     tasks: [Task] @hasMany
+    attendances: [Attendance] @hasMany
     resident: Resident @belongsTo
     permissions: [Permission] @field(resolver: "App\\GraphQL\\Resolvers\\UserResolver@permissions")
     created_at: DateTime!
