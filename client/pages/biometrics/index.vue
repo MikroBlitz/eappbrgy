@@ -1,10 +1,8 @@
 <template>
-    <Biometric />
+    <BiometricComp :has-recognize-face="true" />
 </template>
 
 <script setup>
-import Biometric from "./components/biometric.vue";
-
 definePageMeta({ layout: "app-layout", permission: ["view biometric"] });
 
 const route = useRoute();

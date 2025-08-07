@@ -1,10 +1,8 @@
 <template>
-    <div class="min-h-[calc(90vh-100px)] p-4 flex items-center justify-center">
+    <div class="p-4 flex items-center justify-center">
         <div class="w-full max-w-2xl">
-            <UCard
-                class="overflow-hidden shadow-lg border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm"
-            >
-                <div class="relative bg-gray-900 rounded-xl overflow-hidden">
+            <UCard class="overflow-hidden">
+                <div class="relative rounded overflow-hidden">
                     <!-- Video Stream -->
                     <video
                         ref="videoRef"
@@ -21,12 +19,6 @@
                         class="absolute inset-0 w-full h-full pointer-events-none"
                         width="640"
                         height="480"
-                    />
-
-                    <!-- Scanning Line Animation -->
-                    <div
-                        v-if="isDetecting"
-                        class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent animate-pulse"
                     />
 
                     <!-- Status Indicator -->
@@ -50,82 +42,30 @@
                 </div>
 
                 <!-- Controls -->
-                <template #footer>
-                    <div class="flex items-center justify-center gap-3 py-2">
-                        <UButton
-                            color="blue"
-                            size="sm"
-                            :loading="isProcessing"
-                            class="px-6"
-                            @click="detectFace"
-                        >
-                            <template #leading>
-                                <Icon
-                                    name="i-heroicons-camera"
-                                    class="w-4 h-4"
-                                />
-                            </template>
-                            Scan Face
-                        </UButton>
+                <div class="flex items-center justify-center gap-2 mt-4">
+                    <UButton
+                        v-if="hasDetectFace"
+                        variant="outline"
+                        color="blue"
+                        size="sm"
+                        :loading="isProcessing"
+                        @click="detectFace"
+                    >
+                        Scan Face
+                    </UButton>
 
-                        <UButton
-                            color="primary"
-                            size="sm"
-                            :loading="isRecognizing"
-                            class="px-6"
-                            @click="recognizeFaceHandler"
-                        >
-                            <template #leading>
-                                <Icon
-                                    name="i-heroicons-user-circle"
-                                    class="w-4 h-4"
-                                />
-                            </template>
-                            Recognize
-                        </UButton>
-                    </div>
-                </template>
+                    <UButton
+                        v-if="hasRecognizeFace"
+                        variant="outline"
+                        color="orange"
+                        size="sm"
+                        :loading="isRecognizing"
+                        @click="recognizeFaceHandler"
+                    >
+                        Recognize
+                    </UButton>
+                </div>
             </UCard>
-
-            <!-- Quick Stats -->
-            <div class="mt-6 grid grid-cols-3 gap-4">
-                <div
-                    class="text-center p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur-sm"
-                >
-                    <div
-                        class="text-lg font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ detectionCount }}
-                    </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">
-                        Scans
-                    </div>
-                </div>
-                <div
-                    class="text-center p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur-sm"
-                >
-                    <div
-                        class="text-lg font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ recognitionCount }}
-                    </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">
-                        Recognized
-                    </div>
-                </div>
-                <div
-                    class="text-center p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg backdrop-blur-sm"
-                >
-                    <div
-                        class="text-lg font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ Math.round(accuracy) }}%
-                    </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">
-                        Accuracy
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -136,7 +76,14 @@ import * as faceapi from "face-api.js";
 
 import { recognizeFace } from "~/graphql/User.js";
 
-import { loadModels } from "../utils/helpers";
+defineProps<{
+    hasDetectFace: boolean;
+    hasRecognizeFace: boolean;
+}>();
+
+const emit = defineEmits<{
+    (e: "descriptorScanned", descriptor: number[]): void;
+}>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
@@ -147,9 +94,6 @@ const toast = useToast();
 const isDetecting = ref(false);
 const isProcessing = ref(false);
 const isRecognizing = ref(false);
-const detectionCount = ref(0);
-const recognitionCount = ref(0);
-const accuracy = ref(0);
 
 const detectionLoopId: Ref<number | null> = ref(null);
 
@@ -171,9 +115,8 @@ async function startVideo() {
 
         if (!videoTrack) return;
         videoTrack.onended = () => {
-            console.warn("Video stream ended. Attempting to restart...");
+            console.warn("Video stream ended.");
             stopLiveDetection();
-            startVideo();
         };
     } catch (err) {
         console.error("Failed to access webcam:", err);
@@ -280,12 +223,9 @@ async function detectFace() {
             (prev, curr) => (curr[1] > prev[1] ? curr : prev),
         );
 
-        detectionCount.value++;
-        accuracy.value = Math.random() * 20 + 80; // Mock accuracy
-
         toast.add({
-            color: "green",
-            description: `${gender}, ${Math.round(age)} years, ${topExpression[0]}`,
+            color: "blue",
+            description: `${toTitleCase(gender)}, ${Math.round(age)} years, ${toTitleCase(topExpression[0])}`,
             title: "Face scan complete",
         });
 
@@ -349,7 +289,6 @@ async function recognizeFaceHandler() {
         }
 
         const { id, name, roles } = data.recognizeFace;
-        recognitionCount.value++;
 
         toast.add({
             color: "green",
@@ -369,8 +308,8 @@ async function recognizeFaceHandler() {
 }
 
 async function sendDescriptorToBackend(descriptor: number[]) {
-    console.log(descriptor);
-    await navigator.clipboard.writeText(JSON.stringify(descriptor));
+    // console.log("Descriptor:", descriptor);
+    emit("descriptorScanned", descriptor);
 }
 
 onMounted(async () => {
@@ -387,5 +326,13 @@ onMounted(async () => {
     videoRef.value.addEventListener("playing", () => {
         startLiveDetectionLoop();
     });
+});
+
+onUnmounted(() => {
+    stopLiveDetection();
+    if (mediaStream.value) {
+        mediaStream.value.getTracks().forEach((track) => track.stop());
+        mediaStream.value = null;
+    }
 });
 </script>

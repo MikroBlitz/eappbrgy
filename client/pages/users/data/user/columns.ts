@@ -56,6 +56,27 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-[100px]",
+        key: "face_descriptors",
+        label: "Face Data",
+        render: (row: UserType) => {
+            const hasFaceData = !!row.face_descriptors;
+
+            return h("div", { class: "flex justify-center" }, [
+                h(
+                    "span",
+                    {
+                        class: hasFaceData
+                            ? "text-green-100 bg-green-600 px-2 py-1 rounded-full font-bold"
+                            : "text-red-100 bg-red-600 px-2 py-1 rounded-full font-bold",
+                    },
+                    hasFaceData ? "✓" : "✕",
+                ),
+            ]);
+        },
+        sortable: false,
+    },
+    {
         key: "email",
         label: "Email",
         render: (row: UserType) =>

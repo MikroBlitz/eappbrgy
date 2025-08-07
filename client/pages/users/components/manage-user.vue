@@ -1,5 +1,46 @@
 <template>
-    <CrudTable :table-data="tableData" />
+    <div>
+        <CrudTable :table-data="tableData" />
+
+        <UModal v-model="isOpen">
+            <div class="p-6 space-y-4">
+                <div class="flex items-center">
+                    <UIcon
+                        name="solar:face-scan-square-broken"
+                        class="mr-3 text-primary"
+                    />
+                    <span
+                        class="text-lg text-gray-600 dark:text-gray-100 font-medium"
+                        >Update Face Data
+                    </span>
+                </div>
+
+                <BiometricComp
+                    :has-detect-face="true"
+                    @descriptor-scanned="onDescriptorScanned"
+                />
+
+                <div class="flex justify-end space-x-3">
+                    <UButton
+                        color="red"
+                        variant="outline"
+                        @click="isOpen = false"
+                    >
+                        Cancel
+                    </UButton>
+                    <UButton
+                        icon="solar:face-scan-square-broken"
+                        color="green"
+                        variant="solid"
+                        :loading="loading"
+                        @click="handleSaveFace"
+                    >
+                        Save Face
+                    </UButton>
+                </div>
+            </div>
+        </UModal>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -11,10 +52,20 @@ import {
     upsertUser,
     deleteUser,
     updateUserStatus,
+    registerFace,
 } from "~/graphql/User";
 
 import { columns, filters } from "../data/user/columns";
 import { schema } from "../data/user/schema";
+
+const isOpen = ref(false);
+const loading = ref(false);
+const selectedUser = ref<User | null>(null);
+const scannedDescriptor = ref<number[] | null>(null);
+
+const onDescriptorScanned = (descriptor: number[]) => {
+    scannedDescriptor.value = descriptor;
+};
 
 const roleSearch = useSearchQueryOptions(rolesPaginate, {
     queryKey: "rolesPaginate",
@@ -28,6 +79,12 @@ const formSchema = computed(() =>
     }),
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
+
+const openModal = (row: User) => {
+    scannedDescriptor.value = null;
+    selectedUser.value = row;
+    isOpen.value = true;
+};
 
 const tableData = useTableData<User>(
     {
@@ -48,16 +105,9 @@ const tableData = useTableData<User>(
             {
                 color: () => "orange",
                 condition: () => true,
-                icon: () => "solar:file-download-broken",
-                onClick: (row: User) => {
-                    console.log("User Row Data:", row);
-                    useToast().add({
-                        color: "green",
-                        description: `Row data for ${row.name} logged to console`,
-                        title: "Custom Action Triggered",
-                    });
-                },
-                tooltip: (row: User) => `Log the Data ${row.name}`,
+                icon: () => "solar:face-scan-square-broken",
+                onClick: (row: User) => openModal(row),
+                tooltip: (row: User) => `Update Face Data of ${row.name}`,
             },
         ],
         defaultViewModal: true,
@@ -69,6 +119,7 @@ const tableData = useTableData<User>(
             return user
                 ? {
                       email: user.email || "",
+                      face_descriptors: user.face_descriptors || undefined,
                       first_name: user.first_name || "",
                       id: user.id,
                       is_active: user.is_active || false,
@@ -80,6 +131,7 @@ const tableData = useTableData<User>(
                   }
                 : {
                       email: "",
+                      face_descriptors: undefined,
                       first_name: "",
                       id: undefined,
                       is_active: false,
@@ -102,4 +154,43 @@ const tableData = useTableData<User>(
         zodSchema: zodSchema.value,
     },
 );
+
+const handleSaveFace = async () => {
+    const { refetch } = useQuery(usersPaginate, { first: 10 });
+    loading.value = true;
+
+    try {
+        if (!selectedUser.value || !scannedDescriptor.value) {
+            useToast().add({
+                color: "orange",
+                title: "Missing Data: Please scan face first",
+            });
+            return;
+        }
+
+        const { mutate: register } = useMutation(registerFace);
+
+        await register({
+            descriptor: scannedDescriptor.value,
+            userId: selectedUser.value.id,
+        });
+
+        useToast().add({
+            color: "green",
+            description: `Face data updated for ${selectedUser.value.name}`,
+            title: "Face Saved",
+        });
+
+        isOpen.value = false;
+    } catch (e) {
+        useToast().add({
+            color: "red",
+            title: `Save Failed: ${e}`,
+        });
+    } finally {
+        loading.value = false;
+        scannedDescriptor.value = null;
+        refetch();
+    }
+};
 </script>
