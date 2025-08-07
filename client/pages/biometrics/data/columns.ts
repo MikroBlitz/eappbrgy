@@ -1,7 +1,7 @@
 import { UBadge } from "#components";
 
 import type { Column } from "~/components/table/types";
-import type { Blotter } from "~/types/codegen/graphql";
+import type { Attendance } from "~/types/codegen/graphql";
 
 export const columns: Column[] = [
     {
@@ -15,21 +15,21 @@ export const columns: Column[] = [
     },
     {
         class: "w-52",
-        key: "case_no",
-        label: "Case no.",
-        render: (row: Blotter) => {
+        key: "user",
+        label: "User",
+        render: (row: Attendance) => {
             return h(
                 UBadge,
                 {
                     color: "gray",
-                    label: row.case_no,
+                    label: row.user.name,
                     size: "sm",
                     variant: "solid",
                 },
                 {
                     default: () =>
                         h("div", { class: "flex items-center space-x-1" }, [
-                            h("span", null, row.case_no),
+                            h("span", null, row.user.name),
                         ]),
                 },
             );
@@ -37,83 +37,27 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
-        key: "complaint",
-        label: "Complaint",
-        sortable: false,
-    },
-    {
-        key: "complainant",
-        label: "Complainant",
-        render: (row: Blotter) => row.complainant?.name,
+        key: "am_time_in",
+        label: "Time in (AM)",
+        render: (row) => h("div", getFriendlyDate(row.am_time_in)),
         sortable: true,
     },
     {
-        key: "respondent",
-        label: "Respondent",
-        render: (row: Blotter) => row.respondent?.name,
+        key: "am_time_out",
+        label: "Time in (AM)",
+        render: (row) => h("div", getFriendlyDate(row.am_time_out)),
         sortable: true,
     },
     {
-        key: "incident_date",
-        label: "Incident Date",
-        render: (row) => h("div", getDateOnly(row.incident_date)),
+        key: "pm_time_in",
+        label: "Time in (AM)",
+        render: (row) => h("div", getFriendlyDate(row.pm_time_in)),
         sortable: true,
     },
     {
-        key: "status",
-        label: "Status",
-        render: (row: Blotter) =>
-            h(UBadge, {
-                color:
-                    row.status === "resolved"
-                        ? "green"
-                        : row.status === "open"
-                          ? "blue"
-                          : row.status === "dismissed"
-                            ? "red"
-                            : "gray",
-                label:
-                    row.status === "resolved"
-                        ? "Resolved"
-                        : row.status === "open"
-                          ? "Open"
-                          : row.status === "dismissed"
-                            ? "Dismissed"
-                            : "Unknown",
-                size: "sm",
-                variant: "subtle",
-            }),
-        sortable: true,
-    },
-    {
-        key: "barangay",
-        label: "Barangay",
-        render: (row) =>
-            h("div", { class: "flex items-center space-x-2" }, [
-                h(
-                    "a",
-                    {
-                        class: "text-blue-600 cursor-pointer",
-                        onClick: () => {
-                            copyToClipboard("barangay", row.barangay?.name);
-                            navigateTo("/barangays");
-                        },
-                    },
-                    row.barangay?.name,
-                ),
-            ]),
-        sortable: false,
-    },
-    // {
-    //     key: "created_at",
-    //     label: "Created At",
-    //     render: (row) => h("div", getFriendlyDate(row.created_at)),
-    //     sortable: true,
-    // },
-    {
-        key: "updated_at",
-        label: "Updated At",
-        render: (row) => h("div", getFriendlyDate(row.updated_at)),
+        key: "pm_time_out",
+        label: "Time in (AM)",
+        render: (row) => h("div", getFriendlyDate(row.pm_time_out)),
         sortable: true,
     },
     {
@@ -123,20 +67,4 @@ export const columns: Column[] = [
     },
 ];
 
-export const filters = [
-    {
-        key: "status",
-        label: "Open",
-        value: "open",
-    },
-    {
-        key: "status",
-        label: "Resolved",
-        value: "resolved",
-    },
-    {
-        key: "status",
-        label: "Dismissed",
-        value: "dismissed",
-    },
-];
+export const filters = [];

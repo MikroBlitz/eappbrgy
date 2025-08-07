@@ -7,6 +7,7 @@ export const attendancePaginate = gql`
         $search: String
         $sort: SortInput
         $filter: [FilterInput]
+        $whereConditions: QueryAttendancePaginateWhereWhereConditions
     ) {
         attendancePaginate(
             first: $first
@@ -14,6 +15,7 @@ export const attendancePaginate = gql`
             search: $search
             sort: $sort
             filter: $filter
+            where: $whereConditions
         ) {
             data {
                 ...attendance

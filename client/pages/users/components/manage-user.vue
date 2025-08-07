@@ -13,7 +13,7 @@
                         class="text-lg text-gray-600 dark:text-gray-100 font-medium"
                         >Update
                         <span class="text-primary">{{
-                            selectedUser.name
+                            selectedUser?.name || "User"
                         }}</span>
                         Face Data
                     </span>
@@ -21,6 +21,7 @@
 
                 <BiometricComp
                     :has-detect-face="true"
+                    :has-recognize-face="false"
                     @descriptor-scanned="onDescriptorScanned"
                 />
 

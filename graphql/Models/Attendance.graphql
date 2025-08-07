@@ -49,6 +49,7 @@ extend type Query {
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
+        where: _ @whereConditions(columns: ["created_at"])
     ): [Attendance]! @paginate
 }
 

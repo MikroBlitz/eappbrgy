@@ -1,7 +1,7 @@
 <template>
-    <div class="p-4 flex items-center justify-center">
+    <div class="flex items-center justify-center">
         <div class="w-full max-w-2xl">
-            <UCard class="overflow-hidden">
+            <UCard class="relative overflow-hidden">
                 <div class="relative rounded overflow-hidden">
                     <!-- Video Stream -->
                     <video
@@ -42,10 +42,13 @@
                 </div>
 
                 <!-- Controls -->
-                <div class="flex items-center justify-center gap-2 mt-4">
+                <div
+                    v-if="hasDetectFace || hasRecognizeFace"
+                    class="absolute bottom-8 left-8 flex items-center justify-center gap-2 mt-4"
+                >
                     <UButton
                         v-if="hasDetectFace"
-                        variant="outline"
+                        variant="soft"
                         color="blue"
                         size="sm"
                         :loading="isProcessing"
@@ -56,7 +59,7 @@
 
                     <UButton
                         v-if="hasRecognizeFace"
-                        variant="outline"
+                        variant="soft"
                         color="orange"
                         size="sm"
                         :loading="isRecognizing"
