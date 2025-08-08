@@ -17,6 +17,7 @@ const documents = {
     "\n    query attendancePaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryAttendancePaginateWhereWhereConditions\n    ) {\n        attendancePaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...attendance\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.AttendancePaginateDocument,
     "\n    mutation upsertAttendance($input: AttendanceInput!) {\n        upsertAttendance(input: $input) {\n            ...attendance\n        }\n    }\n    \n": types.UpsertAttendanceDocument,
     "\n    mutation deleteAttendance($id: [ID!]) {\n        deleteAttendance(id: $id) {\n            id\n        }\n    }\n": types.DeleteAttendanceDocument,
+    "\n    query attendanceByDate($user_id: ID!, $date: String!) {\n        attendanceByDate(user_id: $user_id, date: $date) {\n            id\n        }\n    }\n": types.AttendanceByDateDocument,
     "\n    query me {\n        me {\n            id\n            name\n            email\n            is_admin\n            roles {\n                name\n            }\n            permissions {\n                name\n            }\n        }\n    }\n": types.MeDocument,
     "\n    mutation login($email: String!, $password: String!) {\n        login(email: $email, password: $password) {\n            token\n            user {\n                id\n                first_name\n                last_name\n                middle_name\n                name\n                email\n                is_admin\n                roles {\n                    id\n                    name\n                }\n                permissions {\n                    id\n                    name\n                }\n            }\n        }\n    }\n": types.LoginDocument,
     "\n    mutation logout {\n        logout {\n            message\n        }\n    }\n": types.LogoutDocument,
@@ -112,6 +113,10 @@ export function graphql(source: "\n    mutation upsertAttendance($input: Attenda
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation deleteAttendance($id: [ID!]) {\n        deleteAttendance(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteAttendance($id: [ID!]) {\n        deleteAttendance(id: $id) {\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query attendanceByDate($user_id: ID!, $date: String!) {\n        attendanceByDate(user_id: $user_id, date: $date) {\n            id\n        }\n    }\n"): (typeof documents)["\n    query attendanceByDate($user_id: ID!, $date: String!) {\n        attendanceByDate(user_id: $user_id, date: $date) {\n            id\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

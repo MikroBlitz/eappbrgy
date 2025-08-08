@@ -51,6 +51,7 @@ extend type Query {
         filter: [FilterInput] @scope(name: "filter")
         where: _ @whereConditions(columns: ["created_at"])
     ): [Attendance]! @paginate
+    attendanceByDate(user_id: ID!, date: String!): Attendance @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@byDate")
 }
 
 extend type Mutation @guard {

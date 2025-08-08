@@ -3,42 +3,9 @@
         <div
             class="flex flex-col lg:flex-row items-center max-w-[1600px] gap-4 mt-4 w-full mx-auto"
         >
-            <!-- Clock -->
+            <!-- Clock Section -->
             <div class="w-full lg:flex-1">
-                <div class="text-center p-4 sm:p-8 lg:p-20 lg:px-56">
-                    <!-- Time Display -->
-                    <div class="relative lg:pr-16 lg:pt-4 inline-block">
-                        <!-- Main Time -->
-                        <div
-                            class="font-bold text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] text-gray-800 dark:text-gray-100 tracking-tight leading-none"
-                        >
-                            {{ hourMinute }}
-                        </div>
-
-                        <!-- Date -->
-                        <div
-                            class="text-sm sm:text-base md:text-lg lg:text-[2rem] text-gray-800 dark:text-gray-100 mb-2 lg:mb-0 lg:absolute lg:top-0 lg:left-0"
-                        >
-                            {{ currentDate }}
-                        </div>
-
-                        <!-- AM/PM -->
-                        <div
-                            class="flex justify-center gap-4 mt-2 lg:mt-0 text-gray-800 dark:text-gray-100"
-                        >
-                            <div
-                                class="text-lg sm:text-xl md:text-2xl lg:text-[2.5rem] lg:absolute lg:top-11 lg:right-0"
-                            >
-                                {{ ampm }}
-                            </div>
-                            <div
-                                class="text-lg sm:text-xl md:text-2xl lg:text-[2.5rem] lg:absolute lg:bottom-4 lg:right-0"
-                            >
-                                {{ seconds }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ClockDisplay />
 
                 <!-- Buttons -->
                 <div
@@ -48,6 +15,7 @@
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('am_time_in')"
                     >
                         Time In (AM)
                     </UButton>
@@ -55,6 +23,7 @@
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('am_time_out')"
                     >
                         Time Out (AM)
                     </UButton>
@@ -62,6 +31,7 @@
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('pm_time_in')"
                     >
                         Time In (PM)
                     </UButton>
@@ -69,6 +39,7 @@
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('pm_time_out')"
                     >
                         Time Out (PM)
                     </UButton>
@@ -77,23 +48,32 @@
 
             <div class="w-full lg:w-auto">
                 <BiometricComp
+                    ref="biometricRef"
                     :has-detect-face="false"
-                    :has-recognize-face="true"
+                    :has-recognize-face="false"
+                    @recognize-scanned-face="onRecognized"
                 />
             </div>
         </div>
 
         <div class="mt-4">
-            <ManageAttendance />
+            <ManageAttendance ref="manageAttendanceRef" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from "#ui/composables/useToast";
+
+import { findAttendanceByDate, upsertAttendance } from "~/graphql/Attendance";
+
+import ClockDisplay from "./components/clock-display.vue";
 import ManageAttendance from "./components/manage-attendance.vue";
+import { formatAttendanceLabel } from "./utils/helpers";
 
 definePageMeta({ layout: "app-layout", permission: ["view biometric"] });
 
+const toast = useToast();
 const route = useRoute();
 const routeName = computed(() => route.name ?? "Page");
 const { appTitle, metaDescription } = useConstants();
@@ -102,52 +82,70 @@ useHead({
     title: `${appTitle} - ${toTitleCase(String(routeName.value))}`,
 });
 
-// Clock functionality
-const currentTime = ref("");
-const currentDate = ref("");
+const manageAttendanceRef = ref();
+const biometricRef = ref();
+const selectedType = ref<
+    null | "am_time_in" | "am_time_out" | "pm_time_in" | "pm_time_out"
+>(null);
 
-// Computed: "03:21"
-const hourMinute = computed(() => {
-    const parts = currentTime.value.split(":");
-    return `${parts[0]}:${parts[1]}`;
-});
+function handleButtonClick(type: typeof selectedType.value) {
+    selectedType.value = type;
+    biometricRef.value?.recognizeFaceHandler?.();
+}
 
-// Computed: "AM" or "PM"
-const ampm = computed(() => {
-    const parts = currentTime.value.split(":");
-    return parts[2]?.slice(3) ?? "";
-});
-
-const seconds = computed(() => {
-    return currentTime.value.split(":")[2]?.slice(0, 2) ?? "--";
-});
-
-let timeInterval = null;
-
-const updateTime = () => {
-    const now = new Date();
-    currentTime.value = now.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        hour12: true,
-        minute: "2-digit",
-        second: "2-digit",
-    });
-    currentDate.value = now.toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "long",
-        weekday: "long",
-        year: "numeric",
-    });
-};
-
-onMounted(() => {
-    updateTime();
-    timeInterval = setInterval(updateTime, 1000);
-});
-
-onUnmounted(() => {
-    if (timeInterval) {
-        clearInterval(timeInterval);
+async function onRecognized(userId: string) {
+    if (!selectedType.value) {
+        toast.add({
+            color: "amber",
+            description: "Please click a button before recognizing a face.",
+            title: "No action selected",
+        });
+        return;
     }
-});
+
+    const now = new Date();
+    const fullDateTime = formatDateTimeForGraphQL(now);
+    const dateOnly = now.toISOString().split("T")[0];
+
+    try {
+        const { data } = await useAsyncQuery(findAttendanceByDate, {
+            date: dateOnly,
+            user_id: userId,
+        });
+
+        const existingId = data.value?.attendanceByDate?.id;
+
+        console.log("DATE:", dateOnly);
+        console.log("USER ID:", userId);
+        console.log("Existing ID:", existingId);
+
+        const input: Record<string, any> = {
+            date: fullDateTime,
+            [selectedType.value]: fullDateTime,
+            user: { connect: userId },
+        };
+
+        if (existingId) input.id = existingId;
+
+        const { mutate } = useMutation(upsertAttendance);
+        const { data: mutationData } = await mutate({ input });
+
+        if (mutationData?.upsertAttendance) {
+            toast.add({
+                color: "green",
+                title: formatAttendanceLabel(selectedType.value, !!existingId),
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        toast.add({
+            color: "red",
+            description: "Failed to submit attendance.",
+            title: "Error",
+        });
+    } finally {
+        selectedType.value = null;
+        manageAttendanceRef.value?.refetch?.();
+    }
+}
 </script>

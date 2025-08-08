@@ -1,10 +1,8 @@
 <template>
-    <CrudTable :table-data="tableData" />
+    <CrudTable ref="crudTableRef" :table-data="tableData" />
 </template>
 
 <script setup lang="ts">
-import { useToast } from "#ui/composables/useToast";
-
 import type { Attendance } from "~/types/codegen/graphql";
 
 import {
@@ -17,7 +15,8 @@ import { usersPaginate } from "~/graphql/User";
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
-const toast = useToast();
+defineExpose({ refetch: () => crudTableRef.value?.refetch?.() });
+const crudTableRef = ref();
 
 const createUserSearchHandler = () =>
     useSearchQueryOptions(usersPaginate, {
@@ -93,27 +92,27 @@ const tableData = useTableData<Attendance>(
                 : null,
             user: { connect: data.user },
         }),
-        whereConditions: condition(),
+        // whereConditions: condition(),
         zodSchema: zodSchema.value,
     },
 );
 
-function condition() {
-    const now = new Date();
-
-    const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    return {
-        column: "CREATED_AT",
-        operator: "BETWEEN",
-        value: [
-            startOfDay.toISOString().slice(0, 19).replace("T", " "),
-            endOfDay.toISOString().slice(0, 19).replace("T", " "),
-        ],
-    };
-}
+// function condition() {
+//     const now = new Date();
+//
+//     const startOfDay = new Date(now);
+//     startOfDay.setHours(0, 0, 0, 0);
+//
+//     const endOfDay = new Date(now);
+//     endOfDay.setHours(23, 59, 59, 999);
+//
+//     return {
+//         column: "CREATED_AT",
+//         operator: "BETWEEN",
+//         value: [
+//             startOfDay.toISOString().slice(0, 19).replace("T", " "),
+//             endOfDay.toISOString().slice(0, 19).replace("T", " "),
+//         ],
+//     };
+// }
 </script>
