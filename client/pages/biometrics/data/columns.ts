@@ -14,6 +14,12 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        key: "date",
+        label: "Date",
+        render: (row) => h("div", row.date ? getDateOnly(row.date) : ""),
+        sortable: true,
+    },
+    {
         class: "w-52",
         key: "user",
         label: "User",
@@ -37,27 +43,35 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
+        class: "w-48",
         key: "am_time_in",
         label: "Time in (AM)",
-        render: (row) => h("div", getFriendlyDate(row.am_time_in)),
+        render: (row) =>
+            h("div", row.am_time_in ? getFriendlyTime(row.am_time_in) : ""),
         sortable: true,
     },
     {
+        class: "w-48",
         key: "am_time_out",
-        label: "Time in (AM)",
-        render: (row) => h("div", getFriendlyDate(row.am_time_out)),
+        label: "Time out (AM)",
+        render: (row) =>
+            h("div", row.am_time_out ? getFriendlyTime(row.am_time_out) : ""),
         sortable: true,
     },
     {
+        class: "w-48",
         key: "pm_time_in",
-        label: "Time in (AM)",
-        render: (row) => h("div", getFriendlyDate(row.pm_time_in)),
+        label: "Time in (PM)",
+        render: (row) =>
+            h("div", row.pm_time_in ? getFriendlyTime(row.pm_time_in) : ""),
         sortable: true,
     },
     {
+        class: "w-48",
         key: "pm_time_out",
-        label: "Time in (AM)",
-        render: (row) => h("div", getFriendlyDate(row.pm_time_out)),
+        label: "Time out (PM)",
+        render: (row) =>
+            h("div", row.pm_time_out ? getFriendlyTime(row.pm_time_out) : ""),
         sortable: true,
     },
     {

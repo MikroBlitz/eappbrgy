@@ -206,6 +206,16 @@ export const getFriendlyDate = (datetimeStr: string): string => {
     return date.toLocaleString(undefined, options);
 };
 
+export const getFriendlyTime = (datetimeStr: string): string => {
+    const date = new Date(datetimeStr.replace(" ", "T"));
+
+    return date.toLocaleTimeString(undefined, {
+        hour: "numeric",
+        hour12: true,
+        minute: "2-digit",
+    });
+};
+
 export const getDateOnly = (datetimeStr: string): string => {
     const date = new Date(datetimeStr.replace(" ", "T"));
 

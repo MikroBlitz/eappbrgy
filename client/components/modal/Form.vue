@@ -111,6 +111,7 @@ import { UInput, USelectMenu, UTextarea } from "#components";
 import type { FieldType, FormSchema } from "~/types/fields";
 
 import DatePicker from "~/components/DatePickerButton.vue";
+import TimePicker from "~/components/TimePickerButton.vue";
 
 const emit = defineEmits<{
     (e: "update:is-open", value: boolean): void;
@@ -145,6 +146,7 @@ const componentMap: Record<FieldType, Component> = {
     tel: UInput,
     text: UInput,
     textarea: UTextarea,
+    time: TimePicker,
 };
 
 function resolveComponent(type: FieldType): Component {

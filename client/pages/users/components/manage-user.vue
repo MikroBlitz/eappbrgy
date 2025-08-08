@@ -49,6 +49,8 @@
 </template>
 
 <script setup lang="ts">
+import { useTimeoutFn } from "@vueuse/shared";
+
 import type { User } from "~/types/codegen/graphql";
 
 import { rolesPaginate } from "~/graphql/Role";
@@ -193,7 +195,9 @@ const handleSaveFace = async () => {
             title: `Save Failed: ${e}`,
         });
     } finally {
-        loading.value = false;
+        useTimeoutFn(() => {
+            loading.value = false;
+        }, 500);
         scannedDescriptor.value = null;
         refetch();
     }

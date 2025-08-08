@@ -86,6 +86,7 @@ defineProps<{
 
 const emit = defineEmits<{
     (e: "descriptorScanned", descriptor: number[]): void;
+    (e: "recognizeScannedFace", userId: string): void;
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
@@ -293,18 +294,21 @@ async function recognizeFaceHandler() {
 
         const { id, name, roles } = data.recognizeFace;
 
-        toast.add({
-            color: "green",
-            description: `ID: ${id} • ${roles.map((r: { name: string }) => r.name).join(", ")}`,
-            title: `Welcome, ${name}!`,
-        });
+        emit("recognizeScannedFace", id);
+
+        // toast.add({
+        //     color: "green",
+        //     description: `ID: ${id} • ${roles.map((r: { name: string }) => r.name).join(", ")}`,
+        //     title: `Welcome, ${name}!`,
+        // });
+        console.log(name, roles[0]);
     } catch (error) {
         console.error(error);
-        toast.add({
-            color: "red",
-            description: "Please try again",
-            title: "Recognition failed",
-        });
+        // toast.add({
+        //     color: "red",
+        //     description: "Please try again",
+        //     title: "Recognition failed",
+        // });
     } finally {
         isRecognizing.value = false;
     }
@@ -337,5 +341,9 @@ onUnmounted(() => {
         mediaStream.value.getTracks().forEach((track) => track.stop());
         mediaStream.value = null;
     }
+});
+
+defineExpose({
+    recognizeFaceHandler,
 });
 </script>

@@ -47,3 +47,11 @@ export const deleteAttendance = gql`
         }
     }
 `;
+
+export const findAttendanceByDate = gql`
+    query attendanceByDate($user_id: ID!, $date: String!) {
+        attendanceByDate(user_id: $user_id, date: $date) {
+            id
+        }
+    }
+`;
