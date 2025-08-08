@@ -12,6 +12,7 @@
                     class="flex flex-col sm:flex-row items-center justify-center gap-2 p-5 w-full mx-auto"
                 >
                     <UButton
+                        v-if="activeButton === 'am_time_in'"
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -19,7 +20,9 @@
                     >
                         Time In (AM)
                     </UButton>
+
                     <UButton
+                        v-else-if="activeButton === 'am_time_out'"
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -27,7 +30,9 @@
                     >
                         Time Out (AM)
                     </UButton>
+
                     <UButton
+                        v-else-if="activeButton === 'pm_time_in'"
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -35,7 +40,9 @@
                     >
                         Time In (PM)
                     </UButton>
+
                     <UButton
+                        v-else-if="activeButton === 'pm_time_out'"
                         size="xl"
                         variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -43,10 +50,15 @@
                     >
                         Time Out (PM)
                     </UButton>
+
+                    <span v-else class="text-gray-600 dark:text-gray-400"
+                        >No available action at this time. Please come back
+                        tomorrow.</span
+                    >
                 </div>
             </div>
 
-            <div class="w-full lg:w-auto">
+            <div v-if="activeButton" class="w-full lg:w-auto">
                 <BiometricComp
                     ref="biometricRef"
                     :has-detect-face="false"
@@ -56,7 +68,7 @@
             </div>
         </div>
 
-        <div class="mt-4">
+        <div v-if="activeButton" class="mt-4">
             <ManageAttendance ref="manageAttendanceRef" />
         </div>
     </div>
@@ -145,4 +157,34 @@ async function onRecognized(userId: string) {
         manageAttendanceRef.value?.refetch?.();
     }
 }
+
+const now = ref<Date>(new Date());
+let interval: ReturnType<typeof setInterval>;
+onMounted(() => {
+    interval = setInterval(() => {
+        now.value = new Date();
+    }, 60000);
+});
+onBeforeUnmount(() => clearInterval(interval));
+function isBetween(start: string, end: string): boolean {
+    const current = now.value;
+    const startTime = new Date(current);
+    const endTime = new Date(current);
+
+    const [sh, sm] = start.split(":").map(Number);
+    const [eh, em] = end.split(":").map(Number);
+
+    startTime.setHours(sh, sm, 0, 0);
+    endTime.setHours(eh, em, 59, 999);
+
+    return current >= startTime && current <= endTime;
+}
+
+const activeButton = computed(() => {
+    if (isBetween("06:00", "09:59")) return "am_time_in";
+    if (isBetween("10:00", "12:00")) return "am_time_out";
+    if (isBetween("12:15", "14:59")) return "pm_time_in";
+    if (isBetween("15:00", "19:00")) return "pm_time_out";
+    return null;
+});
 </script>
