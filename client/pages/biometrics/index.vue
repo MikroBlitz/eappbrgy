@@ -108,16 +108,12 @@ async function onRecognized(userId: string) {
     const dateOnly = now.toISOString().split("T")[0];
 
     try {
-        const { data } = await useAsyncQuery(findAttendanceByDate, {
+        const { refetch, result: data } = useQuery(findAttendanceByDate, {
             date: dateOnly,
             user_id: userId,
         });
 
         const existingId = data.value?.attendanceByDate?.id;
-
-        console.log("DATE:", dateOnly);
-        console.log("USER ID:", userId);
-        console.log("Existing ID:", existingId);
 
         const input: Record<string, any> = {
             date: fullDateTime,
@@ -136,6 +132,7 @@ async function onRecognized(userId: string) {
                 title: formatAttendanceLabel(selectedType.value, !!existingId),
             });
         }
+        refetch();
     } catch (error) {
         console.error(error);
         toast.add({
