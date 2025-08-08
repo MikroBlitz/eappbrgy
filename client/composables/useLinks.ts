@@ -9,6 +9,12 @@ export const useLinks = () => {
             to: "/dashboard",
         },
         {
+            icon: "solar:face-scan-square-broken",
+            label: "Biometrics",
+            permission: auth.can("view biometric"),
+            to: "/biometrics",
+        },
+        {
             icon: "solar:users-group-rounded-outline",
             label: "Users",
             permission: auth.can("view user"),
@@ -67,12 +73,6 @@ export const useLinks = () => {
             label: "Messages",
             permission: auth.can("view message"),
             to: "/messages",
-        },
-        {
-            icon: "solar:face-scan-square-broken",
-            label: "Biometrics",
-            permission: auth.can("view biometric"),
-            to: "/biometrics",
         },
         {
             icon: "solar:settings-outline",

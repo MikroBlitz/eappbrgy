@@ -17,7 +17,7 @@
 import { format } from "date-fns";
 import { ref, watch } from "vue";
 
-import DatePicker from "~/components/ui/DatePicker.vue";
+import DatePicker from "./ui/DatePicker.vue";
 
 const props = defineProps<{
     modelValue: Date | null;

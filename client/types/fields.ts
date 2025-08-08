@@ -9,6 +9,7 @@ export type FieldType =
     | "tel"
     | "number"
     | "date"
+    | "time"
     | "textarea";
 
 export interface FieldOption {
