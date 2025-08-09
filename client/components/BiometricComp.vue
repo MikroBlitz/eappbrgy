@@ -301,7 +301,7 @@ async function recognizeFaceHandler() {
         //     description: `ID: ${id} • ${roles.map((r: { name: string }) => r.name).join(", ")}`,
         //     title: `Welcome, ${name}!`,
         // });
-        console.log(name, roles[0]);
+        // console.log(name, roles[0]);
     } catch (error) {
         console.error(error);
         // toast.add({

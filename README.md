@@ -36,9 +36,7 @@ If you prefer using Docker:
     ```
 2. Copy the `.env.example` file and generate the application key and OTP key:
     ```bash
-    cp .env.example .env
-    php artisan key:generate
-    php artisan otp:generate-key
+    composer install && cp .env.example .env && php artisan key:generate && php artisan otp:generate-key
     ```
 
 3. Build and start the Docker containers:

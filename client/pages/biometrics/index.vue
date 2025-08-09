@@ -9,12 +9,12 @@
 
                 <!-- Buttons -->
                 <div
-                    class="flex flex-col sm:flex-row items-center justify-center gap-2 p-5 w-full mx-auto"
+                    class="flex flex-col sm:flex-row items-center justify-center gap-4 p-5 w-full mx-auto"
                 >
                     <UButton
                         v-if="activeButton === 'am_time_in'"
+                        :loading="isLoading"
                         size="xl"
-                        variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
                         @click="() => handleButtonClick('am_time_in')"
                     >
@@ -22,9 +22,9 @@
                     </UButton>
 
                     <UButton
-                        v-else-if="activeButton === 'am_time_out'"
+                        v-if="activeButton === 'am_time_out_pm_time_in'"
+                        :loading="isLoading"
                         size="xl"
-                        variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
                         @click="() => handleButtonClick('am_time_out')"
                     >
@@ -32,9 +32,9 @@
                     </UButton>
 
                     <UButton
-                        v-else-if="activeButton === 'pm_time_in'"
+                        v-if="activeButton === 'am_time_out_pm_time_in'"
+                        :loading="isLoading"
                         size="xl"
-                        variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
                         @click="() => handleButtonClick('pm_time_in')"
                     >
@@ -43,8 +43,8 @@
 
                     <UButton
                         v-else-if="activeButton === 'pm_time_out'"
+                        :loading="isLoading"
                         size="xl"
-                        variant="outline"
                         class="w-full sm:w-auto text-sm sm:text-base"
                         @click="() => handleButtonClick('pm_time_out')"
                     >
@@ -99,6 +99,7 @@ const biometricRef = ref();
 const selectedType = ref<
     null | "am_time_in" | "am_time_out" | "pm_time_in" | "pm_time_out"
 >(null);
+const isLoading = ref(false);
 
 function handleButtonClick(type: typeof selectedType.value) {
     selectedType.value = type;
@@ -106,10 +107,11 @@ function handleButtonClick(type: typeof selectedType.value) {
 }
 
 async function onRecognized(userId: string) {
+    isLoading.value = true;
+
     if (!selectedType.value) {
         toast.add({
             color: "amber",
-            description: "Please click a button before recognizing a face.",
             title: "No action selected",
         });
         return;
@@ -120,12 +122,18 @@ async function onRecognized(userId: string) {
     const dateOnly = now.toISOString().split("T")[0];
 
     try {
-        const { refetch, result: data } = useQuery(findAttendanceByDate, {
+        const { refetch } = useQuery(
+            findAttendanceByDate,
+            {},
+            { fetchPolicy: "network-only" },
+        );
+
+        const res = await refetch({
             date: dateOnly,
             user_id: userId,
         });
 
-        const existingId = data.value?.attendanceByDate?.id;
+        const existingId = res?.data?.attendanceByDate?.id;
 
         const input: Record<string, any> = {
             date: fullDateTime,
@@ -144,7 +152,6 @@ async function onRecognized(userId: string) {
                 title: formatAttendanceLabel(selectedType.value, !!existingId),
             });
         }
-        refetch();
     } catch (error) {
         console.error(error);
         toast.add({
@@ -155,6 +162,7 @@ async function onRecognized(userId: string) {
     } finally {
         selectedType.value = null;
         manageAttendanceRef.value?.refetch?.();
+        isLoading.value = false;
     }
 }
 
@@ -182,8 +190,7 @@ function isBetween(start: string, end: string): boolean {
 
 const activeButton = computed(() => {
     if (isBetween("06:00", "09:59")) return "am_time_in";
-    if (isBetween("10:00", "12:00")) return "am_time_out";
-    if (isBetween("12:15", "14:59")) return "pm_time_in";
+    if (isBetween("10:00", "14:59")) return "am_time_out_pm_time_in";
     if (isBetween("15:00", "19:00")) return "pm_time_out";
     return null;
 });
