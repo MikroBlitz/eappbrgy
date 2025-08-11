@@ -55,7 +55,7 @@ export function useTableData<T extends Record<string, unknown>>(
         relationKey?: string;
         columns: Column[];
         filters?: FilterOption[];
-        whereConditions?: WhereConditions | {};
+        whereConditions?: WhereConditions | object;
         formSchema: any;
         zodSchema?: ZodSchema;
         hideDefaultActions?: boolean;
@@ -63,6 +63,7 @@ export function useTableData<T extends Record<string, unknown>>(
         optionLoading?: Ref<boolean, boolean> | boolean;
         defaultViewModal?: boolean;
         customActions?: TableAction[];
+        headerActions?: boolean;
     },
 ) {
     const defaultGetFormState = (item?: T): Record<string, unknown> => {
@@ -186,10 +187,11 @@ export function useTableData<T extends Record<string, unknown>>(
         whereConditions: options?.whereConditions || [],
         zodSchema: options?.zodSchema,
 
-        // Optional relations
+        // Optional
         customActions: options?.customActions,
         defaultViewModal: options?.defaultViewModal,
         hasRelations: options?.hasRelations,
+        headerActions: options?.headerActions,
         hideDefaultActions: options?.hideDefaultActions,
         isFormFullscreen: options?.isFormFullscreen,
         optionLoading: options?.optionLoading,

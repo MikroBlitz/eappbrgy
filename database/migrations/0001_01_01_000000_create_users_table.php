@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('is_active')->default(false);
+            $table->decimal('hourly_rate', 8, 2)->default(0);
             $table->json('face_descriptors')->nullable();
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();

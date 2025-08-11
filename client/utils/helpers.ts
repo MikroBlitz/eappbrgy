@@ -262,6 +262,35 @@ export function formatDateTimeForGraphQL(date: string | Date): string {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+export const mergeDateAndTime = (
+    date: Date | null,
+    timeValue: Date | string | null,
+) => {
+    if (!date) return null;
+    const merged = new Date(date);
+
+    if (timeValue) {
+        if (
+            typeof timeValue === "string" &&
+            /^\d{2}:\d{2}:\d{2}$/.test(timeValue)
+        ) {
+            // If time is just "HH:mm:ss"
+            const [h, m, s] = timeValue.split(":").map(Number);
+            merged.setHours(h, m, s, 0);
+        } else {
+            // Assume it's a Date or datetime string
+            const time = new Date(timeValue);
+            merged.setHours(
+                time.getHours(),
+                time.getMinutes(),
+                time.getSeconds(),
+            );
+        }
+    }
+
+    return formatDateTimeForGraphQL(String(merged));
+};
+
 export const toTitleCase = (text: string) => {
     if (!text) return "";
     return text
@@ -346,15 +375,23 @@ export function generateCustomId(text: string, date = new Date()) {
     return `${text}-${timestamp}`;
 }
 
-export function conditions(permissions: string[] = []) {
+export function conditions(
+    permissions: string[] = [],
+    value: any,
+    column: string = "CREATED_BY",
+    operator: string = "EQ",
+) {
     const auth = useAuthStore();
-    const isAdmin = auth.user?.roles?.some((r) => r?.name === "Admin");
     const hasPermissions = permissions.every((perm) => auth.can(perm));
-    if (isAdmin || hasPermissions) return undefined;
+    if (auth.is("Admin") || hasPermissions) return undefined;
 
-    return {
-        column: "CREATED_BY",
-        operator: "EQ" as SqlOperator, // TODO: Fix GraphQL enum issue
-        value: auth.user?.id,
-    };
+    return { column, operator, value };
 }
+
+const now = new Date();
+
+export const startOfDay = new Date(now);
+startOfDay.setHours(0, 0, 0, 0); // 12:00 AM
+
+export const endOfDay = new Date(now);
+endOfDay.setHours(23, 59, 59, 0); // 11:59:59 PM

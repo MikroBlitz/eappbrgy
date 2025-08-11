@@ -54,6 +54,30 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
             name: "pm_time_out",
             type: "time",
         },
+        {
+            class: "col-span-6",
+            label: "Extra Time In 1",
+            name: "extra_time_in_1",
+            type: "time",
+        },
+        {
+            class: "col-span-6",
+            label: "Extra Time Out 1",
+            name: "extra_time_out_1",
+            type: "time",
+        },
+        {
+            class: "col-span-6",
+            label: "Extra Time In 2",
+            name: "extra_time_in_2",
+            type: "time",
+        },
+        {
+            class: "col-span-6",
+            label: "Extra Time Out 2",
+            name: "extra_time_out_2",
+            type: "time",
+        },
     ],
 });
 

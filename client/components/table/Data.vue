@@ -26,6 +26,7 @@
                 </template>
 
                 <div
+                    v-if="headerActions"
                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full px-4 py-2 gap-3"
                 >
                     <!-- Filters -->
@@ -475,6 +476,10 @@ const props = defineProps({
     filters: {
         default: () => [],
         type: Array as PropType<FilterOption[]>,
+    },
+    headerActions: {
+        default: true,
+        type: Boolean,
     },
     loading: {
         default: false,

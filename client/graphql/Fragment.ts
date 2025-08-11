@@ -31,6 +31,7 @@ export const userFragment = gql`
             id
         }
         is_active
+        hourly_rate
         created_at
         updated_at
         deleted_at
@@ -248,6 +249,7 @@ export const attendanceFragment = gql`
         user {
             id
             name
+            hourly_rate
         }
         am_time_in
         am_time_out

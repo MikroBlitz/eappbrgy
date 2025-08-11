@@ -17,6 +17,7 @@
                 :filters="tableData.filters || []"
                 :total-items="pageTotal"
                 :actions="computedActions"
+                :header-actions="headerActions"
                 class="flex flex-col h-full overflow-auto"
                 @reset-filters="resetFilters"
                 @select="select"
@@ -171,11 +172,13 @@ interface TableData<T extends Record<string, unknown>> {
         optionLoading?: Ref<boolean, boolean> | boolean;
         defaultViewModal?: boolean;
         customActions?: TableAction[];
+        headerActions?: boolean;
     };
 }
 
 const props = defineProps<TableData<T>>();
 const actions = computed(() => props.tableData.customActions ?? []);
+const headerActions = computed(() => props.tableData.headerActions ?? true);
 
 const auth = useAuthStore();
 const selectedColumns = ref(props.tableData.columns);

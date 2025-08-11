@@ -11,13 +11,13 @@ import {
     upsertAttendance,
 } from "~/graphql/Attendance";
 import { usersPaginate } from "~/graphql/User";
-import { formatDateTimeForGraphQL } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
 import { schema } from "../data/schema";
 
 defineExpose({ refetch: () => crudTableRef.value?.refetch?.() });
 const crudTableRef = ref();
+const auth = useAuthStore();
 
 const createUserSearchHandler = () =>
     useSearchQueryOptions(usersPaginate, {
@@ -57,6 +57,10 @@ const tableData = useTableData<Attendance>(
                       am_time_in: row.am_time_in || "",
                       am_time_out: row.am_time_out || "",
                       date: row.date,
+                      extra_time_in_1: row.extra_time_in_1,
+                      extra_time_in_2: row.extra_time_in_2,
+                      extra_time_out_1: row.extra_time_out_1,
+                      extra_time_out_2: row.extra_time_out_2,
                       id: row.id,
                       pm_time_in: row.pm_time_in || "",
                       pm_time_out: row.pm_time_out || "",
@@ -66,54 +70,71 @@ const tableData = useTableData<Attendance>(
                       am_time_in: "",
                       am_time_out: "",
                       date: "",
+                      extra_time_in_1: "",
+                      extra_time_in_2: "",
+                      extra_time_out_1: "",
+                      extra_time_out_2: "",
                       id: undefined,
                       pm_time_in: "",
                       pm_time_out: "",
                       user: null,
                   };
         },
+        headerActions: auth.is("Admin"),
         optionLoading: userSearch.loadingOptions,
-        prepareSubmitData: (data, row?: Attendance) => ({
-            ...data,
-            am_time_in: data.am_time_in
-                ? formatDateTimeForGraphQL(String(data.am_time_in))
-                : null,
-            am_time_out: data.am_time_out
-                ? formatDateTimeForGraphQL(String(data.am_time_out))
-                : null,
-            date: data.date
-                ? formatDateTimeForGraphQL(String(data.date))
-                : null,
-            id: row?.id,
-            pm_time_in: data.pm_time_in
-                ? formatDateTimeForGraphQL(String(data.pm_time_in))
-                : null,
-            pm_time_out: data.pm_time_out
-                ? formatDateTimeForGraphQL(String(data.pm_time_out))
-                : null,
-            user: { connect: data.user },
-        }),
-        whereConditions: condition(),
+        prepareSubmitData: (data, row?: Attendance) => {
+            const datePart = data.date ? new Date(data.date as string) : null;
+
+            return {
+                ...data,
+                am_time_in: mergeDateAndTime(datePart, data.am_time_in as Date),
+
+                am_time_out: mergeDateAndTime(
+                    datePart,
+                    data.am_time_out as Date,
+                ),
+                date: mergeDateAndTime(datePart, "00:00:00"),
+                extra_time_in_1: mergeDateAndTime(
+                    datePart,
+                    data.extra_time_in_1 as Date,
+                ),
+                extra_time_in_2: mergeDateAndTime(
+                    datePart,
+                    data.extra_time_in_2 as Date,
+                ),
+
+                extra_time_out_1: mergeDateAndTime(
+                    datePart,
+                    data.extra_time_out_1 as Date,
+                ),
+                extra_time_out_2: mergeDateAndTime(
+                    datePart,
+                    data.extra_time_out_2 as Date,
+                ),
+                id: row?.id,
+                pm_time_in: mergeDateAndTime(datePart, data.pm_time_in as Date),
+                pm_time_out: mergeDateAndTime(
+                    datePart,
+                    data.pm_time_out as Date,
+                ),
+                user: { connect: data.user },
+            };
+        },
+        whereConditions: conditions(
+            [
+                "view biometric",
+                "create biometric",
+                "edit biometric",
+                "delete biometrics",
+            ],
+            [
+                formatDateTimeForGraphQL(startOfDay),
+                formatDateTimeForGraphQL(endOfDay),
+            ],
+            "DATE",
+            "BETWEEN",
+        ),
         zodSchema: zodSchema.value,
     },
 );
-
-function condition() {
-    const now = new Date();
-
-    const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0); // 12:00 AM
-
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 0); // 11:59:59 PM
-
-    return {
-        column: "CREATED_AT",
-        operator: "BETWEEN",
-        value: [
-            formatDateTimeForGraphQL(startOfDay),
-            formatDateTimeForGraphQL(endOfDay),
-        ],
-    };
-}
 </script>

@@ -119,7 +119,7 @@ const tableData = useTableData<Task>(
                 updatedBy: { connect: auth.user?.id },
             };
         },
-        whereConditions: conditions(),
+        whereConditions: conditions([], auth.user?.id),
         zodSchema: zodSchema.value,
     },
 );

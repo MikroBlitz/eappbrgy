@@ -1,5 +1,3 @@
-import { UBadge } from "#components";
-
 import type { Column } from "~/components/table/types";
 import type { Attendance } from "~/types/codegen/graphql";
 
@@ -20,27 +18,27 @@ export const columns: Column[] = [
         sortable: true,
     },
     {
-        class: "w-52",
         key: "user",
         label: "User",
         render: (row: Attendance) => {
-            return h(
-                UBadge,
-                {
-                    color: "gray",
-                    label: row.user.name,
-                    size: "sm",
-                    variant: "solid",
-                },
-                {
-                    default: () =>
-                        h("div", { class: "flex items-center space-x-1" }, [
-                            h("span", null, row.user.name),
-                        ]),
-                },
-            );
+            const name = row.user?.name;
+            if (!name) return "";
+
+            return h("div", { class: "flex items-center space-x-2" }, [
+                h(
+                    "a",
+                    {
+                        class: "text-blue-600 cursor-pointer",
+                        onClick: () => {
+                            copyToClipboard("User", name);
+                            navigateTo("/users");
+                        },
+                    },
+                    name,
+                ),
+            ]);
         },
-        sortable: true,
+        sortable: false,
     },
     {
         class: "w-48",

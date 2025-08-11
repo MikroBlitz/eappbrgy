@@ -57,6 +57,13 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
         },
         {
             class: "col-span-full",
+            label: "Salary Rate / Hour",
+            name: "hourly_rate",
+            type: "number",
+            validation: z.number().default(0),
+        },
+        {
+            class: "col-span-full",
             label: "Email",
             name: "email",
             type: "email",

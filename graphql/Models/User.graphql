@@ -8,6 +8,7 @@ type User {
     email: String!
     password: String!
     is_active: Boolean
+    hourly_rate: Float
     is_admin: Boolean! @method(name: "is_admin")
     usersCount: Int
     face_descriptors: JSON
@@ -33,6 +34,7 @@ input UserInput {
     email: String
     password: String
     is_active: Boolean
+    hourly_rate: Float
     face_descriptors: JSON
     roles: ConnectRolesRelation
     resident: ConnectResidentRelation

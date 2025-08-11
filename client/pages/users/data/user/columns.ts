@@ -121,6 +121,11 @@ export const columns: Column[] = [
             }),
         sortable: false,
     },
+    {
+        key: "hourly_rate",
+        label: "Rate/Hour",
+        sortable: true,
+    },
     // {
     //     key: "created_at",
     //     label: "Created At",

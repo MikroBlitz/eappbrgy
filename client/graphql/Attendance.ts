@@ -52,6 +52,37 @@ export const findAttendanceByDate = gql`
     query attendanceByDate($user_id: ID!, $date: String!) {
         attendanceByDate(user_id: $user_id, date: $date) {
             id
+            user {
+                name
+            }
+        }
+    }
+`;
+
+export const dailyTimeRecord = gql`
+    query dailyTimeRecord($start: DateTime!, $end: DateTime!) {
+        dailyTimeRecord(start: $start, end: $end) {
+            user {
+                id
+                name
+                hourly_rate
+            }
+            total_hours
+            normal_hours
+            extra_hours
+            salary
+            total_working_days
+            attendances {
+                date
+                am_time_in
+                am_time_out
+                pm_time_in
+                pm_time_out
+                extra_time_in_1
+                extra_time_out_1
+                extra_time_in_2
+                extra_time_out_2
+            }
         }
     }
 `;

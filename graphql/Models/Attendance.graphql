@@ -17,6 +17,16 @@ type Attendance {
     updated_at: DateTime!
 }
 
+type DTRReport {
+    user: User!
+    total_hours: Float!
+    normal_hours: Float!
+    extra_hours: Float
+    salary: Float!
+    total_working_days: Int!
+    attendances: [Attendance!]!
+}
+
 input AttendanceInput {
     id: ID
     date: DateTime
@@ -49,9 +59,17 @@ extend type Query {
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
-        where: _ @whereConditions(columns: ["created_at"])
+        where: _ @whereConditions(columns: ["date", "created_at"])
     ): [Attendance]! @paginate
-    attendanceByDate(user_id: ID!, date: String!): Attendance @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@byDate")
+    attendanceByDate(
+        user_id: ID!,
+        date: String!
+    ): Attendance @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@byDate")
+    dailyTimeRecord(
+        start: DateTime!
+        end: DateTime!
+    ): [DTRReport]!
+    @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@dailyTimeRecord")
 }
 
 extend type Mutation @guard {

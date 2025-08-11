@@ -159,16 +159,19 @@ const tableData = useTableData<Document>(
                 ? formatDateTimeForGraphQL(String(data.valid_until))
                 : null,
         }),
-        whereConditions: conditions([
-            "view document",
-            "create document",
-            "edit document",
-            "delete document",
-            "approve document",
-            "pending document",
-            "release document",
-            "revoke document",
-        ]),
+        whereConditions: conditions(
+            [
+                "view document",
+                "create document",
+                "edit document",
+                "delete document",
+                "approve document",
+                "pending document",
+                "release document",
+                "revoke document",
+            ],
+            auth.user?.id,
+        ),
         zodSchema: zodSchema.value,
     },
 );
