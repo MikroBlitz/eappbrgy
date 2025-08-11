@@ -4,6 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Attendance;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class AttendanceQuery
@@ -20,8 +21,42 @@ class AttendanceQuery
         $start = Carbon::parse($args['start']);
         $end = Carbon::parse($args['end']);
 
-        return Attendance::with('user')
-            ->whereBetween('date', [$start, $end])
+        $query = Attendance::with('user')
+            ->whereBetween('date', [$start, $end]);
+
+        // Apply filters
+        if (!empty($args['filter']) && is_array($args['filter'])) {
+            foreach ($args['filter'] as $filter) {
+                if (!isset($filter['key'], $filter['value'])) {
+                    continue;
+                }
+
+                $field = $filter['key'];
+                $value = $filter['value'];
+
+                if (str_contains($field, '.')) {
+                    // Handle relation field, e.g., "user.id"
+                    [$relation, $relationField] = explode('.', $field, 2);
+
+                    $query->whereHas($relation, function ($q) use ($relationField, $value) {
+                        if (is_array($value)) {
+                            $q->whereIn($relationField, $value);
+                        } else {
+                            $q->where($relationField, $value);
+                        }
+                    });
+                } else {
+                    // Normal field
+                    if (is_array($value)) {
+                        $query->whereIn($field, $value);
+                    } else {
+                        $query->where($field, $value);
+                    }
+                }
+            }
+        }
+
+        return $query
             ->orderBy('date')
             ->get()
             ->groupBy('user_id')

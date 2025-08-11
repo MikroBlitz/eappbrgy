@@ -28,7 +28,6 @@ import {
 } from "lucide-vue-next";
 import { z } from "zod";
 
-import type { SqlOperator } from "~/types/codegen/graphql";
 import type { FormSchema } from "~/types/fields";
 
 export const authContext = () => {
@@ -395,3 +394,10 @@ startOfDay.setHours(0, 0, 0, 0); // 12:00 AM
 
 export const endOfDay = new Date(now);
 endOfDay.setHours(23, 59, 59, 0); // 11:59:59 PM
+
+export const currencyFormat = (value: any) => {
+    return new Intl.NumberFormat("en-PH", {
+        currency: "PHP",
+        style: "currency",
+    }).format(value);
+};

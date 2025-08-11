@@ -27,6 +27,11 @@ type DTRReport {
     attendances: [Attendance!]!
 }
 
+type DailyTimeRecordPaginator {
+    data: [DTRReport!]!
+    paginatorInfo: PaginatorInfo!
+}
+
 input AttendanceInput {
     id: ID
     date: DateTime
@@ -51,6 +56,11 @@ input ConnectAttendanceRelation {
     delete: ID
 }
 
+input FilterDtr {
+    key: String
+    value: [String]
+}
+
 extend type Query {
     attendances: [Attendance]! @all
     attendancePaginate(
@@ -66,6 +76,7 @@ extend type Query {
         date: String!
     ): Attendance @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@byDate")
     dailyTimeRecord(
+        filter: [FilterDtr]
         start: DateTime!
         end: DateTime!
     ): [DTRReport]!

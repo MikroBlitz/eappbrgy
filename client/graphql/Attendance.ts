@@ -60,8 +60,12 @@ export const findAttendanceByDate = gql`
 `;
 
 export const dailyTimeRecord = gql`
-    query dailyTimeRecord($start: DateTime!, $end: DateTime!) {
-        dailyTimeRecord(start: $start, end: $end) {
+    query dailyTimeRecord(
+        $filter: [FilterDtr]
+        $start: DateTime!
+        $end: DateTime!
+    ) {
+        dailyTimeRecord(filter: $filter, start: $start, end: $end) {
             user {
                 id
                 name
