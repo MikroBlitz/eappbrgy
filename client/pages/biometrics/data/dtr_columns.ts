@@ -1,31 +1,35 @@
 export const columns = [
     {
+        key: "id",
+        label: "ID",
+        sortable: false,
+    },
+    {
         key: "name",
         label: "Employee Name",
-        sortable: true,
+        sortable: false,
     },
     {
         key: "hourly_rate",
         label: "Hourly Rate",
-        sortable: true,
+        sortable: false,
     },
     {
         key: "salary",
         label: "Salary",
-        sortable: true,
+        sortable: false,
     },
     {
         key: "total_hours",
         label: "Total Hours",
-        sortable: true,
+        sortable: false,
     },
     {
         key: "total_working_days",
         label: "Working Days",
-        sortable: true,
+        sortable: false,
     },
     {
-        class: "text-right",
         key: "actions",
         label: "Actions",
     },

@@ -61,31 +61,47 @@ export const findAttendanceByDate = gql`
 
 export const dailyTimeRecord = gql`
     query dailyTimeRecord(
+        $first: Int!
+        $page: Int
         $filter: [FilterDtr]
         $start: DateTime!
         $end: DateTime!
     ) {
-        dailyTimeRecord(filter: $filter, start: $start, end: $end) {
-            user {
-                id
-                name
-                hourly_rate
+        dailyTimeRecord(
+            filter: $filter
+            start: $start
+            end: $end
+            first: $first
+            page: $page
+        ) {
+            data {
+                user {
+                    id
+                    name
+                    hourly_rate
+                }
+                total_hours
+                normal_hours
+                extra_hours
+                salary
+                total_working_days
+                attendances {
+                    date
+                    am_time_in
+                    am_time_out
+                    pm_time_in
+                    pm_time_out
+                    extra_time_in_1
+                    extra_time_out_1
+                    extra_time_in_2
+                    extra_time_out_2
+                }
             }
-            total_hours
-            normal_hours
-            extra_hours
-            salary
-            total_working_days
-            attendances {
-                date
-                am_time_in
-                am_time_out
-                pm_time_in
-                pm_time_out
-                extra_time_in_1
-                extra_time_out_1
-                extra_time_in_2
-                extra_time_out_2
+            paginatorInfo {
+                currentPage
+                lastPage
+                perPage
+                total
             }
         }
     }

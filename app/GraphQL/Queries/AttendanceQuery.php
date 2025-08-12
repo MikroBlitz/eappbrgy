@@ -4,8 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Attendance;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AttendanceQuery
 {
@@ -16,7 +15,7 @@ class AttendanceQuery
             ->first();
     }
 
-    public function dailyTimeRecord($root, array $args): Collection
+    public function dailyTimeRecord($root, array $args): array
     {
         $start = Carbon::parse($args['start']);
         $end = Carbon::parse($args['end']);
@@ -24,7 +23,7 @@ class AttendanceQuery
         $query = Attendance::with('user')
             ->whereBetween('date', [$start, $end]);
 
-        // Apply filters
+        // Filters
         if (!empty($args['filter']) && is_array($args['filter'])) {
             foreach ($args['filter'] as $filter) {
                 if (!isset($filter['key'], $filter['value'])) {
@@ -39,24 +38,20 @@ class AttendanceQuery
                     [$relation, $relationField] = explode('.', $field, 2);
 
                     $query->whereHas($relation, function ($q) use ($relationField, $value) {
-                        if (is_array($value)) {
-                            $q->whereIn($relationField, $value);
-                        } else {
-                            $q->where($relationField, $value);
-                        }
+                        is_array($value)
+                            ? $q->whereIn($relationField, $value)
+                            : $q->where($relationField, $value);
                     });
                 } else {
-                    // Normal field
-                    if (is_array($value)) {
-                        $query->whereIn($field, $value);
-                    } else {
-                        $query->where($field, $value);
-                    }
+                    is_array($value)
+                        ? $query->whereIn($field, $value)
+                        : $query->where($field, $value);
                 }
             }
         }
 
-        return $query
+        // Process data
+        $processed = $query
             ->orderBy('date')
             ->get()
             ->groupBy('user_id')
@@ -65,7 +60,6 @@ class AttendanceQuery
                 $extraHours = 0;
 
                 foreach ($records as $record) {
-                    // Normal time slots
                     $normalSlots = [
                         [$record->am_time_in, $record->am_time_out],
                         [$record->pm_time_in, $record->pm_time_out],
@@ -77,7 +71,6 @@ class AttendanceQuery
                         }
                     }
 
-                    // Extra time slots (double pay)
                     $extraSlots = [
                         [$record->extra_time_in_1, $record->extra_time_out_1],
                         [$record->extra_time_in_2, $record->extra_time_out_2],
@@ -112,5 +105,27 @@ class AttendanceQuery
                 ];
             })
             ->values();
+
+        // Manual pagination (Lighthouse compatible)
+        $page = $args['page'] ?? 1;
+        $perPage = $args['first'] ?? 10;
+
+        $paginated = new LengthAwarePaginator(
+            $processed->forPage($page, $perPage),
+            $processed->count(),
+            $perPage,
+            $page
+        );
+
+        return [
+            'paginatorInfo' => [
+                'currentPage' => $paginated->currentPage(),
+                'total' => $paginated->total(),
+                'perPage' => $paginated->perPage(),
+                'lastPage' => $paginated->lastPage(),
+                'hasMorePages' => $paginated->hasMorePages(),
+            ],
+            'data' => $paginated->values(),
+        ];
     }
 }

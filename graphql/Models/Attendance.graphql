@@ -76,11 +76,12 @@ extend type Query {
         date: String!
     ): Attendance @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@byDate")
     dailyTimeRecord(
+        first: Int!
+        page: Int
         filter: [FilterDtr]
         start: DateTime!
         end: DateTime!
-    ): [DTRReport]!
-    @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@dailyTimeRecord")
+    ): DailyTimeRecordPaginator @field(resolver: "App\\GraphQL\\Queries\\AttendanceQuery@dailyTimeRecord")
 }
 
 extend type Mutation @guard {

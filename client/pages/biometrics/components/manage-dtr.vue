@@ -107,24 +107,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <!-- Action Buttons -->
-                                            <div
-                                                class="flex gap-2 justify-end pt-2"
-                                            >
-                                                <UButton
-                                                    icon="solar:filter-broken"
-                                                    size="sm"
-                                                    color="green"
-                                                    :disabled="
-                                                        !hasActiveFilters
-                                                    "
-                                                    :loading="isLoading"
-                                                    @click="applyFilters"
-                                                >
-                                                    Apply
-                                                </UButton>
-                                            </div>
                                         </div>
                                     </div>
                                 </template>
@@ -355,32 +337,34 @@
             <!-- Footer with Pagination -->
             <template #footer>
                 <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                    <div
+                        class="text-xs flex items-center gap-2 text-gray-500 dark:text-gray-400"
+                    >
+                        <USelect
+                            v-model="pageCount"
+                            :options="[10, 20, 50, 100]"
+                            class="me-2 w-20"
+                            size="xs"
+                        />
                         Showing {{ (page - 1) * pageCount + 1 }} to
-                        {{ Math.min(page * pageCount, rows.length) }} of
-                        {{ rows.length }} results
+                        {{ Math.min(page * pageCount, totalResults) }} of
+                        {{ totalResults }}
                     </div>
 
                     <UPagination
                         v-model="page"
                         :page-count="pageCount"
-                        :total="rows.length"
+                        :total="totalResults"
                         :ui="{
                             wrapper: 'flex items-center gap-1',
                             rounded:
                                 '!rounded-full min-w-[32px] justify-center',
                             default: {
-                                size: 'sm',
                                 activeButton: {
-                                    variant: 'solid',
-                                },
-                                inactiveButton: {
-                                    variant: 'ghost',
+                                    variant: 'outline',
                                 },
                             },
                         }"
-                        show-last
-                        show-first
                     />
                 </div>
             </template>
@@ -421,17 +405,8 @@ const selected = ref<User[]>([]);
 const isLoading = ref(false);
 const rotationRefetch = ref(0);
 
-const handleRefetch = async () => {
-    rotationRefetch.value += 360;
-    try {
-        await refetch();
-    } catch (error) {
-        console.error(error);
-    }
-};
-
 const page = ref(1);
-const pageCount = 5;
+const pageCount = ref(10);
 const now = new Date();
 const startDate = ref<Date>(new Date(now.getFullYear(), now.getMonth(), 1));
 const endDate = ref<Date>(
@@ -442,36 +417,31 @@ const expand = ref({
     row: {},
 });
 const isViewModalOpen = ref(false);
-const selectedRow = ref<any>(null);
+const selectedRow = ref(null);
 const selectedRowAttendances = computed(() => {
     return selectedRow.value ? getAttendanceForRow(selectedRow.value) : null;
 });
 
-// Add this new method
 const openViewModal = (row: any) => {
     selectedRow.value = row;
     isViewModalOpen.value = true;
 };
 
-const { loading, refetch, result } = useQuery(dailyTimeRecord, {
-    end: formatDateTimeForGraphQL(endDate.value),
-    filter: [],
-    start: formatDateTimeForGraphQL(startDate.value),
-});
-
-const applyFilters = async () => {
-    isLoading.value = true;
+const queryVariables = computed(() => {
     const selectedIds = selected.value.map((user) => user.id);
     const filters =
         selectedIds.length > 0 ? [{ key: "user.id", value: selectedIds }] : [];
 
-    await refetch({
-        end: formatDateTimeForGraphQL(endDate.value) as string,
-        filter: filters as [],
-        start: formatDateTimeForGraphQL(startDate.value) as string,
-    });
-    isLoading.value = false;
-};
+    return {
+        end: formatDateTimeForGraphQL(endDate.value),
+        filter: filters,
+        first: Number(pageCount.value),
+        page: page.value,
+        start: formatDateTimeForGraphQL(startDate.value),
+    };
+});
+
+const { loading, refetch, result } = useQuery(dailyTimeRecord, queryVariables);
 
 const hasActiveFilters = computed(() => {
     const defaultStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -506,8 +476,30 @@ const clearFilters = () => {
     refetch({
         end: formatDateTimeForGraphQL(endDate.value),
         filter: [],
+        first: 10,
+        page: 1,
         start: formatDateTimeForGraphQL(startDate.value),
     });
+};
+
+const handleRefetch = async () => {
+    rotationRefetch.value += 360;
+    try {
+        const selectedIds = selected.value.map((user) => user.id);
+        const filters =
+            selectedIds.length > 0
+                ? [{ key: "user.id", value: selectedIds }]
+                : [];
+        await refetch({
+            end: formatDateTimeForGraphQL(endDate.value),
+            filter: filters as [],
+            first: Number(pageCount.value),
+            page: page.value,
+            start: formatDateTimeForGraphQL(startDate.value),
+        });
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 const mapReport = (report: DtrReport) => ({
@@ -523,16 +515,13 @@ const mapReport = (report: DtrReport) => ({
 });
 
 const rows = computed(() => {
-    if (!result.value) return [];
-
-    const reportsArray = Array.isArray(result.value)
-        ? result.value
-        : Array.isArray(result.value.dailyTimeRecord)
-          ? result.value.dailyTimeRecord
-          : [];
-
-    return reportsArray.map(mapReport);
+    if (!result.value?.dailyTimeRecord?.data) return [];
+    return result.value.dailyTimeRecord.data.map(mapReport);
 });
+
+const totalResults = computed(
+    () => result.value?.dailyTimeRecord?.paginatorInfo?.total || 0,
+);
 
 async function search(q: string) {
     isLoading.value = true;
@@ -540,6 +529,7 @@ async function search(q: string) {
     try {
         const { data } = await useAsyncQuery(usersPaginate, {
             first: 10,
+            page: 1,
             search: q,
         });
 
