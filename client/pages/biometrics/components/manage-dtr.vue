@@ -11,71 +11,146 @@
                             Daily Time Record
                         </h2>
 
-                        <UButton
-                            class="hover:bg-transparent hover:scale-110 rounded-full transition-all duration-300 p-1"
-                            :style="`transform: rotate(${rotationRefetch}deg);`"
-                            icon="solar:refresh-bold"
-                            variant="ghost"
-                            size="xl"
-                            @click="handleRefetch"
-                        />
-                    </div>
-
-                    <!-- Filters Row -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex-1 min-w-[200px] max-w-sm">
-                            <USelectMenu
-                                v-model="selected"
-                                :loading="isLoading"
-                                :searchable="search"
-                                placeholder="Search users..."
-                                option-attribute="name"
-                                trailing
-                                size="sm"
-                                multiple
-                            />
-                        </div>
-
                         <div class="flex items-center gap-2">
-                            <DatePickerButton
-                                v-model="startDate"
-                                variant="ghost"
-                                color="blue"
-                                placeholder="Start date"
-                                size="sm"
-                            />
-                            <span class="text-gray-400">to</span>
-                            <DatePickerButton
-                                v-model="endDate"
-                                color="blue"
-                                variant="ghost"
-                                placeholder="End date"
-                                size="sm"
-                            />
-                        </div>
+                            <!-- Filter Popover -->
+                            <UPopover
+                                :popper="{ placement: 'bottom-end' }"
+                                :ui="{
+                                    base: 'overflow-visible focus:outline-none relative',
+                                }"
+                            >
+                                <UButton
+                                    variant="outline"
+                                    label="Filters"
+                                    icon="solar:filter-broken"
+                                    size="sm"
+                                    class="w-28 px-4"
+                                />
 
-                        <div class="flex gap-2 ml-auto">
+                                <template #panel>
+                                    <div class="p-4 w-96">
+                                        <div
+                                            class="flex flex-col gap-4 overflow-visible"
+                                        >
+                                            <h3
+                                                class="font-medium text-gray-900 dark:text-white"
+                                            >
+                                                Filter Options
+                                            </h3>
+
+                                            <!-- User Selection -->
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                >
+                                                    Users
+                                                </label>
+                                                <USelectMenu
+                                                    v-model="selected"
+                                                    :loading="isLoading"
+                                                    :searchable="search"
+                                                    placeholder="Search users..."
+                                                    option-attribute="name"
+                                                    trailing
+                                                    size="sm"
+                                                    multiple
+                                                />
+                                            </div>
+
+                                            <!-- Date Range -->
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                >
+                                                    Date Range
+                                                </label>
+                                                <div
+                                                    class="flex items-center gap-2"
+                                                >
+                                                    <div
+                                                        class="relative flex-1"
+                                                    >
+                                                        <DatePickerButton
+                                                            v-model="startDate"
+                                                            variant="outline"
+                                                            color="blue"
+                                                            placeholder="Start date"
+                                                            size="sm"
+                                                            :ui="{
+                                                                container:
+                                                                    'absolute z-[100] mt-1',
+                                                                wrapper:
+                                                                    'w-full',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                    <span
+                                                        class="text-gray-400 text-sm flex-shrink-0"
+                                                        >to</span
+                                                    >
+                                                    <div
+                                                        class="relative flex-1"
+                                                    >
+                                                        <DatePickerButton
+                                                            v-model="endDate"
+                                                            color="blue"
+                                                            variant="outline"
+                                                            placeholder="End date"
+                                                            size="sm"
+                                                            :ui="{
+                                                                container:
+                                                                    'absolute z-[100] mt-1',
+                                                                wrapper:
+                                                                    'w-full',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Action Buttons -->
+                                            <div
+                                                class="flex gap-2 justify-end pt-2"
+                                            >
+                                                <UButton
+                                                    icon="solar:filter-broken"
+                                                    size="sm"
+                                                    color="green"
+                                                    :disabled="
+                                                        !hasActiveFilters
+                                                    "
+                                                    :loading="isLoading"
+                                                    @click="applyFilters"
+                                                >
+                                                    Apply
+                                                </UButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </UPopover>
+
                             <UButton
-                                v-show="selected.length > 0"
+                                v-show="hasActiveFilters"
                                 icon="solar:filter-broken"
                                 color="red"
                                 variant="outline"
-                                size="xs"
+                                size="sm"
                                 :disabled="!hasActiveFilters"
                                 @click="clearFilters"
                             >
                                 Clear
                             </UButton>
+
+                            <!-- Refresh Button -->
                             <UButton
-                                size="sm"
-                                variant="outline"
-                                color="green"
-                                :disabled="!hasActiveFilters"
-                                :loading="isLoading"
-                                @click="applyFilters"
-                            >
-                                Apply Filters
-                            </UButton>
+                                class="hover:bg-transparent hover:scale-110 rounded-full transition-all duration-300 p-1"
+                                :style="`transform: rotate(${rotationRefetch}deg);`"
+                                icon="solar:refresh-bold"
+                                variant="ghost"
+                                size="xl"
+                                @click="handleRefetch"
+                            />
                         </div>
                     </div>
                 </div>
@@ -399,15 +474,35 @@ const applyFilters = async () => {
 };
 
 const hasActiveFilters = computed(() => {
-    return (
-        startDate.value !== null ||
-        endDate.value !== null ||
-        selected.value !== null
+    const defaultStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const defaultEnd = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
     );
+
+    const isStartChanged = startDate.value.getTime() !== defaultStart.getTime();
+    const isEndChanged = endDate.value.getTime() !== defaultEnd.getTime();
+    const hasSelectedUsers =
+        Array.isArray(selected.value) && selected.value.length > 0;
+
+    return isStartChanged || isEndChanged || hasSelectedUsers;
 });
 
 const clearFilters = () => {
     selected.value = [];
+    startDate.value = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate.value = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+    );
     refetch({
         end: formatDateTimeForGraphQL(endDate.value),
         filter: [],

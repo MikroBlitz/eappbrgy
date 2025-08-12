@@ -41,7 +41,7 @@
                     >
                         <div class="flex items-center gap-2 cursor-pointer">
                             <UAvatar
-                                :src="'https://cdn.pixabay.com/photo/2024/06/21/10/50/ai-generated-8844136_1280.png'"
+                                src="/images/avatar.png"
                                 :alt="auth.user?.first_name || 'No Name'"
                                 size="sm"
                                 class="ring-2 ring-slate-200 dark:ring-slate-700 hover:ring-primary/50 transition-all duration-200"

@@ -1,6 +1,10 @@
 <template>
     <div>
-        <UModal v-model="isModalOpen" :ui="{ width: 'w-full sm:max-w-5xl' }">
+        <UModal
+            v-model="isModalOpen"
+            prevent-close
+            :ui="{ width: 'w-full sm:max-w-5xl' }"
+        >
             <UCard
                 :ui="{
                     base: 'h-full flex flex-col',
@@ -13,7 +17,7 @@
                         <h3
                             class="text-lg font-semibold text-gray-900 dark:text-white"
                         >
-                            DAILY TIME RECORD
+                            Daily Time Record
                         </h3>
                         <UButton
                             color="gray"
@@ -23,24 +27,25 @@
                             @click="isModalOpen = false"
                         />
                     </div>
-                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
                         Employee:
                         <span class="text-primary">{{ employeeName }}</span>
                     </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                        Period: {{ startDate }} to {{ endDate }}
-                    </div>
-                </template>
-
-                <div class="mb-4">
                     <div class="text-sm text-gray-700 dark:text-gray-300">
-                        Total Working Days: {{ totalDays }}
+                        Period: {{ startDate }} - {{ endDate }}
+                    </div>
+
+                    <div class="text-sm text-gray-700 dark:text-gray-300">
+                        Total Working Days:
+                        <span class="text-primary">{{ totalDays }}</span>
                     </div>
                     <div class="text-sm text-gray-700 dark:text-gray-300">
                         Total Hours:
-                        {{ totalHours.toFixed(2) }}
+                        <span class="text-primary">{{
+                            totalHours.toFixed(2)
+                        }}</span>
                     </div>
-                </div>
+                </template>
 
                 <div class="overflow-x-auto">
                     <table
@@ -221,7 +226,7 @@
                     <div class="flex justify-end">
                         <UButton
                             label="Close"
-                            color="gray"
+                            color="red"
                             variant="outline"
                             @click="isModalOpen = false"
                         />
