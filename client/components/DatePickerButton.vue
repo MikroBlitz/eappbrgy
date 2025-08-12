@@ -1,7 +1,8 @@
 <template>
     <UPopover :popper="{ placement: 'bottom-start' }">
         <UButton
-            variant="outline"
+            :variant="variant || 'outline'"
+            :color="color || 'green'"
             class="w-full flex items-center justify-center"
             icon="solar:calendar-search-broken"
             :label="date ? format(date, 'd MMM, yyyy') : 'Select date'"
@@ -14,13 +15,16 @@
 </template>
 
 <script setup lang="ts">
+import type { ButtonColor, ButtonVariant } from "#ui/types";
+
 import { format } from "date-fns";
-import { ref, watch } from "vue";
 
 import DatePicker from "./ui/DatePicker.vue";
 
 const props = defineProps<{
     modelValue: Date | null;
+    variant?: ButtonVariant;
+    color?: ButtonColor;
 }>();
 const emit = defineEmits<{
     (e: "update:modelValue", value: Date | null): void;

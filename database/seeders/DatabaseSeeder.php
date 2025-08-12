@@ -249,6 +249,7 @@ class DatabaseSeeder extends Seeder
             HouseholdSeeder::class,
             ResidentSeeder::class,
             TaskSeeder::class,
+            AttendanceSeeder::class,
         ]);
     }
 }
