@@ -16,7 +16,7 @@ export const columns = [
     },
     {
         key: "salary",
-        label: "Salary",
+        label: "Net Salary",
         sortable: false,
     },
     {
