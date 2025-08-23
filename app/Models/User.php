@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -42,7 +43,10 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'avatar_path',
     ];
+
+    protected $appends = ['avatar_url'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -92,6 +96,13 @@ class User extends Authenticatable
         ];
 
         return implode(' ', array_filter($parts));
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar_path
+            ? Storage::url($this->avatar_path)
+            : null;
     }
 
     /* Get all roles for user */

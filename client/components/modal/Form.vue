@@ -26,65 +26,81 @@
                 class="space-y-4 gap-x-2 grid-cols-12 grid"
                 @submit="onSubmit"
             >
+                <UFormGroup
+                    label="Profile Avatar"
+                    name="avatar_upload"
+                    class="col-span-full"
+                >
+                    <AvatarUpload
+                        :user="state"
+                        @avatar-updated="handleAvatarUpdated"
+                    />
+                </UFormGroup>
+
                 <template v-for="field in formSchema.fields" :key="field.name">
-                    <UFormGroup
-                        :label="field.label"
-                        :name="field.name"
-                        :class="field.class || 'col-span-full'"
-                    >
-                        <component
-                            :is="resolveComponent(field.type)"
-                            v-model="state[field.name]"
-                            :disabled="field.disabled"
-                            :hidden="field.hidden"
-                            :type="field.type"
-                            :options="field.options"
-                            :multiple="field.multiple || false"
-                            :placeholder="
-                                field.placeholder || `Enter ${field.label}`
-                            "
-                            :searchable="
-                                field.searchable === true
-                                    ? (query: string) => field.onSearch?.(query)
-                                    : false
-                            "
-                            :value-attribute="
-                                field.valueAttribute ||
-                                (['select', 'combobox'].includes(field.type)
-                                    ? 'value'
-                                    : undefined)
-                            "
-                            :option-attribute="
-                                field.optionAttribute ||
-                                (['select', 'combobox'].includes(field.type)
-                                    ? 'label'
-                                    : undefined)
-                            "
-                            :loading="
-                                ['select', 'combobox'].includes(field.type)
-                                    ? optionLoading
-                                    : undefined
-                            "
+                    <template v-if="field.name !== 'avatar_url'">
+                        <UFormGroup
+                            :label="field.label"
+                            :name="field.name"
+                            :class="field.class || 'col-span-full'"
                         >
-                            <template
-                                v-if="
-                                    ['select', 'combobox'].includes(field.type)
+                            <component
+                                :is="resolveComponent(field.type)"
+                                v-model="state[field.name]"
+                                :disabled="field.disabled"
+                                :hidden="field.hidden"
+                                :type="field.type"
+                                :options="field.options"
+                                :multiple="field.multiple || false"
+                                :placeholder="
+                                    field.placeholder || `Enter ${field.label}`
                                 "
-                                #leading="{ optionsLoading }"
+                                :searchable="
+                                    field.searchable === true
+                                        ? (query: string) =>
+                                              field.onSearch?.(query)
+                                        : false
+                                "
+                                :value-attribute="
+                                    field.valueAttribute ||
+                                    (['select', 'combobox'].includes(field.type)
+                                        ? 'value'
+                                        : undefined)
+                                "
+                                :option-attribute="
+                                    field.optionAttribute ||
+                                    (['select', 'combobox'].includes(field.type)
+                                        ? 'label'
+                                        : undefined)
+                                "
+                                :loading="
+                                    ['select', 'combobox'].includes(field.type)
+                                        ? optionLoading
+                                        : undefined
+                                "
                             >
-                                <UIcon
-                                    v-if="optionsLoading"
-                                    name="i-heroicons-arrow-path"
-                                    class="animate-spin text-primary"
-                                />
-                                <UIcon
-                                    v-else
-                                    name="mdi:form-dropdown"
-                                    class="text-primary"
-                                />
-                            </template>
-                        </component>
-                    </UFormGroup>
+                                <template
+                                    v-if="
+                                        ['select', 'combobox'].includes(
+                                            field.type,
+                                        )
+                                    "
+                                    #leading="{ optionsLoading }"
+                                >
+                                    <UIcon
+                                        v-if="optionsLoading"
+                                        name="i-heroicons-arrow-path"
+                                        class="animate-spin text-primary"
+                                    />
+                                    <UIcon
+                                        v-else
+                                        name="mdi:form-dropdown"
+                                        class="text-primary"
+                                    />
+                                </template>
+                            </component>
+                        </UFormGroup>
+                    </template>
                 </template>
 
                 <div class="flex col-span-full justify-end gap-2 pt-4">
@@ -110,11 +126,13 @@ import { UInput, USelectMenu, UTextarea } from "#components";
 
 import type { FieldType, FormSchema } from "~/types/fields";
 
+import AvatarUpload from "~/components/AvatarUpload.vue";
 import DatePicker from "~/components/DatePickerButton.vue";
 import TimePicker from "~/components/TimePickerButton.vue";
 
 const emit = defineEmits<{
     (e: "update:is-open", value: boolean): void;
+    (e: "avatar-updated"): void;
 }>();
 
 type Props<T> = {
@@ -137,6 +155,7 @@ const isModalOpen = computed({
 });
 
 const componentMap: Record<FieldType, Component> = {
+    avatar: UInput,
     combobox: USelectMenu,
     date: DatePicker,
     email: UInput,
@@ -152,4 +171,8 @@ const componentMap: Record<FieldType, Component> = {
 function resolveComponent(type: FieldType): Component {
     return componentMap[type] || UInput;
 }
+
+const handleAvatarUpdated = () => {
+    emit("avatar-updated");
+};
 </script>

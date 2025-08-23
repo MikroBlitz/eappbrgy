@@ -206,6 +206,7 @@ export const getFriendlyDate = (datetimeStr: string): string => {
 };
 
 export const getFriendlyTime = (datetimeStr: string): string => {
+    if (!datetimeStr) return "-";
     const date = new Date(datetimeStr.replace(" ", "T"));
 
     return date.toLocaleTimeString(undefined, {
@@ -216,6 +217,7 @@ export const getFriendlyTime = (datetimeStr: string): string => {
 };
 
 export const getDateOnly = (datetimeStr: string): string => {
+    if (!datetimeStr) return "-";
     const date = new Date(datetimeStr.replace(" ", "T"));
 
     const options: Intl.DateTimeFormatOptions = {

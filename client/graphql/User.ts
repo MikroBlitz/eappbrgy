@@ -41,6 +41,24 @@ export const usersPaginate = gql`
     ${userFragment}
 `;
 
+export const upsertUserAvatarMutation = gql`
+    mutation upsertUserAvatar($id: ID!, $avatar: Upload!) {
+        upsertUserAvatar(id: $id, avatar: $avatar) {
+            id
+            avatar_url
+        }
+    }
+`;
+
+export const deleteUserAvatarMutation = gql`
+    mutation deleteUserAvatar($id: ID!) {
+        deleteUserAvatar(id: $id) {
+            id
+            avatar_url
+        }
+    }
+`;
+
 export const upsertUser = gql`
     mutation upsertUser($input: UserInput!) {
         upsertUser(input: $input) {

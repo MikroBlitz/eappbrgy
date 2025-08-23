@@ -77,6 +77,7 @@
             :loading="modalLoading"
             :option-loading="tableData.optionLoading"
             :is-fullscreen="tableData.isFormFullscreen"
+            @avatar-updated="tableData.onAvatarUpdated"
         />
 
         <ModalView
@@ -173,6 +174,7 @@ interface TableData<T extends Record<string, unknown>> {
         defaultViewModal?: boolean;
         customActions?: TableAction[];
         headerActions?: boolean;
+        onAvatarUpdated?: any;
     };
 }
 
