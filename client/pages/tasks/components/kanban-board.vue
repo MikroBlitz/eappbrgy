@@ -233,6 +233,7 @@ import { VueDraggable } from "vue-draggable-plus";
 import { z } from "zod";
 
 import type { Task, TaskStatus } from "~/types/codegen/graphql";
+import type { TaskUpdatedEvent } from "~/types/global";
 
 import { deleteTask, tasksPaginate, upsertTask } from "~/graphql/Task";
 import KanbanCard from "~/pages/tasks/components/ui/KanbanCard.vue";
@@ -427,7 +428,7 @@ onMounted(() => {
 
 const { $echo } = useNuxtApp();
 onMounted(() => {
-    $echo.channel("tasks").listen(".TaskUpdated", (e) => {
+    $echo.channel("tasks").listen(".TaskUpdated", (e: TaskUpdatedEvent) => {
         // console.log("Broadcast Event:", e.task);
         taskBoard.updateTask(e.task);
         refetchTasks();

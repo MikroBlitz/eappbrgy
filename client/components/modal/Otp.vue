@@ -1,9 +1,5 @@
 <template>
-    <UModal
-        :model-value="isOpen"
-        :prevent-close="loading"
-        @update:model-value="emitClose"
-    >
+    <UModal :model-value="isOpen" prevent-close @update:model-value="emitClose">
         <div class="p-6 space-y-6">
             <!-- Header -->
             <div class="text-center space-y-2">

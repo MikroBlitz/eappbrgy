@@ -1,3 +1,5 @@
+import type { Task } from "~/types/codegen/graphql";
+
 export interface LoginResponse {
     token: string;
     user: {
@@ -22,4 +24,8 @@ export interface FormStateRegister {
 
 export interface AnyObject {
     [key: string]: any;
+}
+
+export interface TaskUpdatedEvent {
+    task: Task;
 }

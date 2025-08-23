@@ -1,6 +1,7 @@
 import type { ApolloQueryResult, DocumentNode } from "@apollo/client";
 import type { ZodSchema } from "zod";
 
+import { useTimeoutFn } from "@vueuse/shared";
 import { useToast } from "#ui/composables/useToast";
 
 import type {
@@ -114,17 +115,25 @@ export function useTableData<T extends Record<string, unknown>>(
 
             if (action.auth !== input) {
                 await action.mutation?.(input);
-                toast.add({
-                    color: "green",
-                    icon: "solar:check-circle-broken",
-                    title: `${text} has been ${actionText}.`,
-                });
+                useTimeoutFn(
+                    () =>
+                        toast.add({
+                            color: "green",
+                            icon: "solar:check-circle-broken",
+                            title: `${text} has been ${actionText}.`,
+                        }),
+                    500,
+                );
             } else {
-                toast.add({
-                    color: "red",
-                    icon: "i-mdi-alert-circle-outline",
-                    title: "Something went wrong please try again.",
-                });
+                useTimeoutFn(
+                    () =>
+                        toast.add({
+                            color: "red",
+                            icon: "i-mdi-alert-circle-outline",
+                            title: "Something went wrong please try again.",
+                        }),
+                    500,
+                );
             }
 
             await action.fetch?.();

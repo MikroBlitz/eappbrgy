@@ -101,7 +101,7 @@
                     :loading="isLoading"
                     :disabled="!formState.email || !formState.password"
                 >
-                    Create Account
+                    {{ isLoading ? "Creating..." : "Create Account" }}
                 </UButton>
             </UForm>
 
