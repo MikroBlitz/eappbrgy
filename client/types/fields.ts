@@ -10,6 +10,7 @@ export type FieldType =
     | "number"
     | "date"
     | "time"
+    | "avatar"
     | "textarea";
 
 export interface FieldOption {

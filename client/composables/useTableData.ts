@@ -65,6 +65,7 @@ export function useTableData<T extends Record<string, unknown>>(
         defaultViewModal?: boolean;
         customActions?: TableAction[];
         headerActions?: boolean;
+        onAvatarUpdated?: () => void;
     },
 ) {
     const defaultGetFormState = (item?: T): Record<string, unknown> => {
@@ -203,6 +204,7 @@ export function useTableData<T extends Record<string, unknown>>(
         headerActions: options?.headerActions,
         hideDefaultActions: options?.hideDefaultActions,
         isFormFullscreen: options?.isFormFullscreen,
+        onAvatarUpdated: options?.onAvatarUpdated,
         optionLoading: options?.optionLoading,
         relationKey: options?.relationKey,
     };

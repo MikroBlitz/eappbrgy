@@ -1,6 +1,7 @@
 export const userFragment = gql`
     fragment user on User {
         id
+        avatar_url
         name
         first_name
         middle_name

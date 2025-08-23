@@ -2,7 +2,7 @@
     <div>
         <CrudTable :table-data="tableData" />
 
-        <UModal v-model="isOpen">
+        <UModal v-model="isFaceModalOpen">
             <div class="p-6 space-y-4">
                 <div class="flex items-center">
                     <UIcon
@@ -29,7 +29,7 @@
                     <UButton
                         color="red"
                         variant="outline"
-                        @click="isOpen = false"
+                        @click="isFaceModalOpen = false"
                     >
                         Cancel
                     </UButton>
@@ -37,7 +37,7 @@
                         icon="solar:face-scan-square-broken"
                         color="green"
                         variant="solid"
-                        :loading="loading"
+                        :loading="faceLoading"
                         @click="handleSaveFace"
                     >
                         Save Face
@@ -65,8 +65,8 @@ import {
 import { columns, filters } from "../data/user/columns";
 import { schema } from "../data/user/schema";
 
-const isOpen = ref(false);
-const loading = ref(false);
+const isFaceModalOpen = ref(false);
+const faceLoading = ref(false);
 const selectedUser = ref<User | null>(null);
 const scannedDescriptor = ref<number[] | null>(null);
 
@@ -87,10 +87,20 @@ const formSchema = computed(() =>
 );
 const zodSchema = computed(() => formZodSchema(formSchema.value));
 
-const openModal = (row: User) => {
+const openFaceModal = (row: User) => {
     scannedDescriptor.value = null;
     selectedUser.value = row;
-    isOpen.value = true;
+    isFaceModalOpen.value = true;
+};
+
+const _handleAvatarUpdated = () => {
+    const { refetch } = useQuery(usersPaginate, { first: 10 });
+    refetch();
+
+    useToast().add({
+        color: "green",
+        title: "Avatar updated successfully!",
+    });
 };
 
 const tableData = useTableData<User>(
@@ -113,7 +123,7 @@ const tableData = useTableData<User>(
                 color: () => "orange",
                 condition: () => true,
                 icon: () => "solar:face-scan-square-broken",
-                onClick: (row: User) => openModal(row),
+                onClick: (row: User) => openFaceModal(row),
                 tooltip: (row: User) => `Update Face Data of ${row.name}`,
             },
         ],
@@ -151,6 +161,7 @@ const tableData = useTableData<User>(
                       roles: [],
                   };
         },
+        onAvatarUpdated: _handleAvatarUpdated,
         optionLoading: roleSearch.loadingOptions,
         prepareSubmitData: (data, selectedUser?: User) => ({
             ...data,
@@ -166,7 +177,7 @@ const tableData = useTableData<User>(
 
 const handleSaveFace = async () => {
     const { refetch } = useQuery(usersPaginate, { first: 10 });
-    loading.value = true;
+    faceLoading.value = true;
 
     try {
         if (!selectedUser.value || !scannedDescriptor.value) {
@@ -190,7 +201,7 @@ const handleSaveFace = async () => {
             title: "Face Saved",
         });
 
-        isOpen.value = false;
+        isFaceModalOpen.value = false;
     } catch (e) {
         useToast().add({
             color: "red",
@@ -198,7 +209,7 @@ const handleSaveFace = async () => {
         });
     } finally {
         useTimeoutFn(() => {
-            loading.value = false;
+            faceLoading.value = false;
         }, 500);
         scannedDescriptor.value = null;
         refetch();
