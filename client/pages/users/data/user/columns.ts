@@ -51,8 +51,24 @@ export const columns: Column[] = [
         sortable: false,
     },
     {
+        class: "w-52",
         key: "name",
         label: "Name",
+        render: (row: UserType) => {
+            const config = useRuntimeConfig();
+            return h("div", { class: "flex items-center space-x-2" }, [
+                // Avatar
+                h("img", {
+                    alt: row.name,
+                    class: "size-8 rounded-full object-cover",
+                    src: row.avatar_url
+                        ? `${config.public.API_URL}/${row.avatar_url}`
+                        : "/images/avatar.png",
+                }),
+                // Name text
+                h("span", { class: "font-medium" }, row.name),
+            ]);
+        },
         sortable: true,
     },
     {

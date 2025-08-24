@@ -23,8 +23,25 @@ export const useAuthStore = defineStore(
         });
 
         async function login(formState: FormState) {
-            const { mutate } = useMutation(LoginAuth);
             try {
+                // TODO: this is temporarily used in Reverb
+                // const config = useRuntimeConfig();
+                // await $fetch("/sanctum/csrf-cookie", {
+                //     baseURL: config.public.API_URL,
+                //     credentials: "include",
+                // });
+                //
+                // await $fetch("/api/login", {
+                //     baseURL: config.public.API_URL,
+                //     body: {
+                //         email: formState.email,
+                //         password: formState.password,
+                //     },
+                //     credentials: "include",
+                //     method: "POST",
+                // });
+
+                const { mutate } = useMutation(LoginAuth);
                 const response = await mutate({
                     email: formState.email,
                     password: formState.password,
@@ -39,7 +56,7 @@ export const useAuthStore = defineStore(
                     throw new Error("Invalid response from server");
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 throw new Error(parseGraphQLError(e));
             }
         }

@@ -41,7 +41,11 @@
                     >
                         <div class="flex items-center gap-2 cursor-pointer">
                             <UAvatar
-                                src="/images/avatar.png"
+                                :src="
+                                    auth.user?.avatar_url
+                                        ? `${config.public.API_URL}/${auth.user.avatar_url}`
+                                        : '/images/avatar.png'
+                                "
                                 :alt="auth.user?.first_name || 'No Name'"
                                 size="sm"
                                 class="ring-2 ring-slate-200 dark:ring-slate-700 hover:ring-primary/50 transition-all duration-200"
@@ -102,6 +106,7 @@ const isDark = inject("isDark");
 const toast = useToast();
 const isOpen = ref(false);
 const modalLoading = ref(false);
+const config = useRuntimeConfig();
 
 const userDropdownItems = [
     [
@@ -130,6 +135,9 @@ const userDropdownItems = [
 
 const user = auth.user;
 const formState = reactive({
+    avatar_url: user?.avatar_url
+        ? `${config.public.API_URL}/${user?.avatar_url}`
+        : undefined,
     email: user?.email,
     first_name: user?.first_name,
     id: user?.id,

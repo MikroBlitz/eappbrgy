@@ -4,18 +4,16 @@
             <div class="relative">
                 <img
                     :src="
-                        previewUrl ||
-                        user?.avatar_url ||
-                        '/placeholder-avatar.png'
+                        previewUrl || currentAvatarUrl || '/images/avatar.png'
                     "
-                    class="w-24 h-24 rounded-full object-cover border-2"
+                    class="w-24 h-24 rounded-full object-cover border"
                     alt="Avatar"
                 />
                 <label
                     for="avatar-upload"
-                    class="absolute bottom-0 right-0 bg-primary-500 text-white p-1 px-2 rounded-full cursor-pointer hover:bg-primary-600"
+                    class="absolute -bottom-2 -left-1 text-primary p-1 px-2 rounded-xl cursor-pointer transition duration-300 hover:scale-110"
                 >
-                    <UIcon name="i-heroicons-camera" class="size-4" />
+                    <UIcon name="solar:camera-bold" class="size-6 mt-1" />
                     <input
                         id="avatar-upload"
                         type="file"
@@ -24,26 +22,18 @@
                         @change="handleFileSelect"
                     />
                 </label>
-            </div>
 
-            <div class="flex flex-col gap-2">
-                <UButton
-                    v-if="selectedFile"
-                    color="primary"
-                    :loading="uploading"
-                    @click="uploadAvatar"
-                >
-                    Upload Avatar
-                </UButton>
-                <UButton
-                    v-if="user?.avatar_url && !selectedFile"
-                    color="red"
-                    variant="outline"
-                    :loading="uploading"
-                    @click="removeAvatar"
-                >
-                    Remove Avatar
-                </UButton>
+                <div class="absolute -top-1 -right-4">
+                    <UButton
+                        v-if="currentAvatarUrl && !selectedFile"
+                        color="red"
+                        variant="link"
+                        :loading="uploading"
+                        icon="solar:trash-bin-minimalistic-bold"
+                        class="transition duration-300 hover:scale-110"
+                        @click="removeAvatar"
+                    />
+                </div>
             </div>
         </div>
 
@@ -62,8 +52,6 @@
 <script setup lang="ts">
 import type { User } from "~/types/codegen/graphql";
 
-import { upsertUserAvatarMutation } from "~/graphql/User";
-
 const props = defineProps<{
     user?: User;
 }>();
@@ -76,8 +64,8 @@ const toast = useToast();
 const uploading = ref(false);
 const selectedFile = ref<File | null>(null);
 const previewUrl = ref<string | null>(null);
-
-const { mutate } = useMutation(upsertUserAvatarMutation);
+const currentAvatarUrl = ref<string | null>(props.user?.avatar_url || null);
+const config = useRuntimeConfig();
 
 const handleFileSelect = (event: Event) => {
     const input = event.target as HTMLInputElement;
@@ -121,24 +109,31 @@ const handleFileSelect = (event: Event) => {
     }
 };
 
-const uploadAvatar = async () => {
-    if (!selectedFile.value || !props.user?.id) return;
-
-    console.log("Upload Avatar", selectedFile.value);
+async function uploadAvatar(userId?: string) {
+    if (!selectedFile.value || !(userId || props.user?.id)) return;
 
     uploading.value = true;
 
     try {
-        await mutate({
-            avatar: selectedFile.value,
-            id: props.user.id,
+        const form = new FormData();
+        form.append("avatar", selectedFile.value);
+        const auth = useAuthStore();
+        const base = config.public.API_URL?.replace(/\/?$/, "");
+        const id = userId || props.user?.id;
+        await $fetch(`/api/users/${id}/avatar`, {
+            baseURL: base,
+            body: form,
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+            method: "POST",
         });
 
-        toast.add({
-            color: "green",
-            icon: "i-heroicons-check-circle",
-            title: "Avatar uploaded successfully!",
-        });
+        // toast.add({
+        //     color: "green",
+        //     icon: "i-heroicons-check-circle",
+        //     title: "Avatar uploaded successfully!",
+        // });
 
         selectedFile.value = null;
         previewUrl.value = null;
@@ -153,28 +148,31 @@ const uploadAvatar = async () => {
     } finally {
         uploading.value = false;
     }
-};
+}
 
 const removeAvatar = async () => {
     if (!props.user?.id) return;
 
     uploading.value = true;
+    selectedFile.value = null;
+    previewUrl.value = null;
 
     try {
-        const blob = new Blob([""], { type: "image/png" });
-        const emptyFile = new File([blob], "remove-avatar.png", {
-            type: "image/png",
+        const auth = useAuthStore();
+        const base = config.public.API_URL?.replace(/\/?$/, "");
+        await $fetch(`/api/users/${props.user.id}/avatar`, {
+            baseURL: base,
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+            method: "DELETE",
         });
-
-        await mutate({
-            avatar: emptyFile,
-            id: props.user.id,
-        });
+        currentAvatarUrl.value = null;
 
         toast.add({
             color: "green",
             icon: "i-heroicons-check-circle",
-            title: "Avatar removed successfully!",
+            title: "Avatar removed!",
         });
 
         emit("avatar-updated");
@@ -197,4 +195,24 @@ const formatFileSize = (bytes: number) => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
+
+// Expose methods for parent components
+function hasPendingFile() {
+    return !!selectedFile.value;
+}
+
+async function uploadIfNeeded(userId?: string) {
+    if (selectedFile.value) {
+        await uploadAvatar(userId);
+    }
+}
+
+defineExpose({ hasPendingFile, uploadIfNeeded });
+
+watch(
+    () => props.user?.avatar_url,
+    (newUrl) => {
+        currentAvatarUrl.value = newUrl || null;
+    },
+);
 </script>

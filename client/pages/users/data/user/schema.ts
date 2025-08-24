@@ -8,7 +8,7 @@ import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
-            label: "Avatar",
+            label: "Profile Photo",
             name: "avatar_url",
             type: "avatar",
         },

@@ -7,6 +7,11 @@ import { type formZodSchema, phoneRegex } from "~/utils/helpers";
 export const authSchema = (): FormSchema => ({
     fields: [
         {
+            label: "Profile Photo",
+            name: "avatar_url",
+            type: "avatar",
+        },
+        {
             class: "col-span-full",
             label: "First Name",
             name: "first_name",

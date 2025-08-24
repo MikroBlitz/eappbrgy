@@ -21,6 +21,7 @@ export const login = gql`
             token
             user {
                 id
+                avatar_url
                 first_name
                 last_name
                 middle_name

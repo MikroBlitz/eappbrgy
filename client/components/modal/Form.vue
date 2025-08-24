@@ -26,19 +26,24 @@
                 class="space-y-4 gap-x-2 grid-cols-12 grid"
                 @submit="onSubmit"
             >
-                <UFormGroup
-                    label="Profile Avatar"
-                    name="avatar_upload"
-                    class="col-span-full"
-                >
-                    <AvatarUpload
-                        :user="state"
-                        @avatar-updated="handleAvatarUpdated"
-                    />
-                </UFormGroup>
-
                 <template v-for="field in formSchema.fields" :key="field.name">
-                    <template v-if="field.name !== 'avatar_url'">
+                    <template v-if="field.type === 'avatar'">
+                        <UFormGroup
+                            :label="field.label"
+                            :name="field.name"
+                            :class="field.class || 'col-span-full'"
+                        >
+                            <AvatarUpload
+                                :ref="
+                                    (el) => (avatarUploadRefs[field.name] = el)
+                                "
+                                :user="state"
+                                @avatar-updated="handleAvatarUpdated"
+                            />
+                        </UFormGroup>
+                    </template>
+
+                    <template v-else>
                         <UFormGroup
                             :label="field.label"
                             :name="field.name"
@@ -172,7 +177,17 @@ function resolveComponent(type: FieldType): Component {
     return componentMap[type] || UInput;
 }
 
+const avatarUploadRefs = reactive<Record<string, any>>({});
+
 const handleAvatarUpdated = () => {
     emit("avatar-updated");
 };
+
+async function uploadAvatarIfNeeded(userId?: string) {
+    for (const ref of Object.values(avatarUploadRefs)) {
+        await ref?.uploadIfNeeded?.(userId);
+    }
+}
+
+defineExpose({ uploadAvatarIfNeeded });
 </script>

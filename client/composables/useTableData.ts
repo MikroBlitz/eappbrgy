@@ -111,11 +111,12 @@ export function useTableData<T extends Record<string, unknown>>(
         action: Action<TInput, TFetchResult, TMutationResult>,
     ) {
         const toast = useToast();
+        let result: TMutationResult | undefined;
         try {
             loading.value = true;
 
             if (action.auth !== input) {
-                await action.mutation?.(input);
+                result = await action.mutation?.(input);
                 useTimeoutFn(
                     () =>
                         toast.add({
@@ -138,6 +139,7 @@ export function useTableData<T extends Record<string, unknown>>(
             }
 
             await action.fetch?.();
+            return result as TMutationResult;
         } catch (e) {
             const err = parseGraphQLError(e);
             console.error("Remove error:", e);
@@ -146,6 +148,7 @@ export function useTableData<T extends Record<string, unknown>>(
                 icon: "i-mdi-alert-circle-outline",
                 title: `Error: ${err}`,
             });
+            throw e;
         } finally {
             loading.value = false;
             if (action.modal) action.modal.value = false;

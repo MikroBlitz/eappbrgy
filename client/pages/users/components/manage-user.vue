@@ -93,14 +93,9 @@ const openFaceModal = (row: User) => {
     isFaceModalOpen.value = true;
 };
 
-const _handleAvatarUpdated = () => {
+const handleAvatarUpdated = () => {
     const { refetch } = useQuery(usersPaginate, { first: 10 });
     refetch();
-
-    useToast().add({
-        color: "green",
-        title: "Avatar updated successfully!",
-    });
 };
 
 const tableData = useTableData<User>(
@@ -132,9 +127,13 @@ const tableData = useTableData<User>(
         formSchema: formSchema.value,
         getFormState: (user?: User) => {
             const roleIds = user?.roles?.map((role) => role?.id) || [];
+            const config = useRuntimeConfig();
             roleSearch.initializeOptions();
             return user
                 ? {
+                      avatar_url: user.avatar_url
+                          ? `${config.public.API_URL}/${user.avatar_url}`
+                          : undefined,
                       email: user.email || "",
                       face_descriptors: user.face_descriptors || undefined,
                       first_name: user.first_name || "",
@@ -148,6 +147,7 @@ const tableData = useTableData<User>(
                       roles: roleIds,
                   }
                 : {
+                      avatar_url: undefined,
                       email: "",
                       face_descriptors: undefined,
                       first_name: "",
@@ -161,10 +161,11 @@ const tableData = useTableData<User>(
                       roles: [],
                   };
         },
-        onAvatarUpdated: _handleAvatarUpdated,
+        onAvatarUpdated: handleAvatarUpdated,
         optionLoading: roleSearch.loadingOptions,
         prepareSubmitData: (data, selectedUser?: User) => ({
             ...data,
+            avatar_url: undefined,
             id: selectedUser?.id,
             password: data.password || selectedUser?.password,
             roles: {

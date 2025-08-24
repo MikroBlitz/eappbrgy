@@ -68,6 +68,7 @@
 
         <!-- Modals -->
         <ModalForm
+            ref="modalFormRef"
             v-model:is-open="isOpen"
             :title="`${tableData.singular} Form`"
             :form-schema="tableData.formSchema"
@@ -376,12 +377,30 @@ const handleStatusChange = (id: string) =>
         isChangeStatusModal,
     );
 
-const onSubmit = (event: FormSubmitEvent<any>) => {
+const modalFormRef = ref<{ uploadAvatarIfNeeded?: (id?: string) => Promise<void> } | null>(null);
+
+const onSubmit = async (event: FormSubmitEvent<any>) => {
     const input = props.tableData.prepareSubmitData(
         event.data,
         selectedItem.value,
     );
-    return executeMutation("upsert", { input }, "saved", isOpen);
+    const res = await executeMutation("upsert", { input }, "saved", isOpen);
+
+    // After successful save, attempt avatar upload if a file was selected
+    try {
+        let savedId: any = (selectedItem.value as any)?.id;
+        const data = (res as any)?.data;
+        if (data) {
+            const key = Object.keys(data)[0];
+            savedId = data?.[key]?.id || savedId;
+        }
+        await modalFormRef.value?.uploadAvatarIfNeeded?.(savedId);
+    } catch (e) {
+        // Non-fatal: avatar upload has its own toasts
+        console.error('Post-save avatar upload error:', e);
+    }
+
+    return res;
 };
 
 watch(error, (newError) => {

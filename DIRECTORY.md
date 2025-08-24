@@ -1,4 +1,8 @@
 .
+|-- DIRECTORY.md
+|-- Dockerfile
+|-- README.md
+|-- _lighthouse_ide_helper.php
 |-- app
 |   |-- Console
 |   |   `-- Commands
@@ -14,6 +18,8 @@
 |   |   |   |-- OtpMutator.php
 |   |   |   |-- Upload.php
 |   |   |   `-- UserMutator.php
+|   |   |-- Queries
+|   |   |   `-- AttendanceQuery.php
 |   |   `-- Resolvers
 |   |       |-- BlotterResolver.php
 |   |       |-- DocumentResolver.php
@@ -32,6 +38,7 @@
 |   |   |-- SendOtpMail.php
 |   |   `-- UserStatusChanged.php
 |   |-- Models
+|   |   |-- Attendance.php
 |   |   |-- Barangay.php
 |   |   |-- Blotter.php
 |   |   |-- Contact.php
@@ -59,6 +66,7 @@
 |   `-- providers.php
 |-- bun.lock
 |-- client
+|   |-- Dockerfile
 |   |-- app.vue
 |   |-- assets
 |   |   `-- css
@@ -66,29 +74,33 @@
 |   |-- components
 |   |   |-- AppHeader.vue
 |   |   |-- AppSidebar.vue
+|   |   |-- AvatarUpload.vue
+|   |   |-- BiometricComp.vue
 |   |   |-- CrudTable.vue
 |   |   |-- DatePickerButton.vue
 |   |   |-- FluidCursor.vue
+|   |   |-- Notification.vue
+|   |   |-- TimePickerButton.vue
 |   |   |-- modal
 |   |   |   |-- Confirm.vue
 |   |   |   |-- Form.vue
 |   |   |   |-- Otp.vue
 |   |   |   `-- View.vue
-|   |   |-- Notification.vue
 |   |   |-- table
 |   |   |   |-- Data.vue
 |   |   |   `-- types.ts
 |   |   `-- ui
 |   |       |-- DatePicker.vue
-|   |       `-- SpinnerLoader.vue
+|   |       |-- SpinnerLoader.vue
+|   |       `-- TimePicker.vue
 |   |-- composables
 |   |   |-- useConstants.ts
 |   |   |-- useCopyClipboard.ts
 |   |   |-- useLinks.ts
 |   |   |-- useSearchQueryOptions.ts
 |   |   `-- useTableData.ts
-|   |-- Dockerfile
 |   |-- graphql
+|   |   |-- Attendance.ts
 |   |   |-- Auth.ts
 |   |   |-- Barangay.ts
 |   |   |-- Blotter.ts
@@ -111,6 +123,8 @@
 |   |-- middleware
 |   |   `-- auth.global.ts
 |   |-- pages
+|   |   |-- Login.vue
+|   |   |-- Register.vue
 |   |   |-- barangays
 |   |   |   |-- components
 |   |   |   |   `-- manage-barangay.vue
@@ -119,7 +133,20 @@
 |   |   |   |   `-- schema.ts
 |   |   |   `-- index.vue
 |   |   |-- biometrics
-|   |   |   `-- index.vue
+|   |   |   |-- components
+|   |   |   |   |-- clock-display.vue
+|   |   |   |   |-- manage-attendance.vue
+|   |   |   |   |-- manage-biometric.vue
+|   |   |   |   |-- manage-dtr.vue
+|   |   |   |   `-- modal
+|   |   |   |       `-- AttendanceDetail.vue
+|   |   |   |-- data
+|   |   |   |   |-- columns.ts
+|   |   |   |   |-- dtr_columns.ts
+|   |   |   |   `-- schema.ts
+|   |   |   |-- index.vue
+|   |   |   `-- utils
+|   |   |       `-- helpers.ts
 |   |   |-- blotters
 |   |   |   |-- components
 |   |   |   |   `-- manage-blotter.vue
@@ -144,7 +171,6 @@
 |   |   |   |   `-- schema.ts
 |   |   |   `-- index.vue
 |   |   |-- index.vue
-|   |   |-- Login.vue
 |   |   |-- messages
 |   |   |   |-- components
 |   |   |   |   `-- manage-messages.vue
@@ -164,7 +190,6 @@
 |   |   |   |   |-- columns.ts
 |   |   |   |   `-- schema.ts
 |   |   |   `-- index.vue
-|   |   |-- Register.vue
 |   |   |-- residents
 |   |   |   |-- components
 |   |   |   |   `-- manage-resident.vue
@@ -262,20 +287,20 @@
 |   |   |-- 2025_06_30_182649_create_officials_table.php
 |   |   |-- 2025_06_30_182650_add_captain_to_barangays_table.php
 |   |   |-- 2025_07_12_205508_create_documents_table.php
-|   |   `-- 2025_08_04_102115_create_tasks_table.php
+|   |   |-- 2025_08_04_102115_create_tasks_table.php
+|   |   `-- 2025_08_07_142843_create_attendances_table.php
 |   `-- seeders
+|       |-- AttendanceSeeder.php
 |       |-- DatabaseSeeder.php
 |       |-- HouseholdSeeder.php
 |       |-- PurokSeeder.php
 |       |-- ResidentSeeder.php
 |       `-- TaskSeeder.php
-|-- DIRECTORY.md
 |-- docker-compose.yml
-|-- Dockerfile
 |-- eslint.config.mjs
 |-- graphql
-|   |-- auth.graphql
 |   |-- Models
+|   |   |-- Attendance.graphql
 |   |   |-- Barangay.graphql
 |   |   |-- Blotter.graphql
 |   |   |-- Contact.graphql
@@ -289,8 +314,8 @@
 |   |   |-- Role.graphql
 |   |   |-- Task.graphql
 |   |   `-- User.graphql
+|   |-- auth.graphql
 |   `-- schema.graphql
-|-- _lighthouse_ide_helper.php
 |-- nginx
 |   `-- default.conf
 |-- nuxt.config.ts
@@ -299,7 +324,15 @@
 |-- programmatic-types.graphql
 |-- public
 |   |-- client
+|   |   |-- images
+|   |   |   `-- avatar.png
 |   |   `-- models
+|   |       |-- age_gender_model
+|   |       |   |-- age_gender_model-shard1
+|   |       |   `-- age_gender_model-weights_manifest.json
+|   |       |-- face_expression
+|   |       |   |-- face_expression_model-shard1
+|   |       |   `-- face_expression_model-weights_manifest.json
 |   |       |-- face_landmark_68
 |   |       |   |-- face_landmark_68_model-shard1
 |   |       |   `-- face_landmark_68_model-weights_manifest.json
@@ -313,7 +346,6 @@
 |   |-- favicon.ico
 |   |-- index.php
 |   `-- robots.txt
-|-- README.md
 |-- resources
 |   |-- css
 |   |   `-- app.css

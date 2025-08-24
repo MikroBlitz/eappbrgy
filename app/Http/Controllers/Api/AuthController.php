@@ -32,7 +32,7 @@ class AuthController extends Controller
             ], 403);
         }
 
-        $token = $user->createToken($user->name. 'Auth-Token')->plainTextToken;
+        $token = $user->createToken($user->email. 'Auth-Token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login Successful',
