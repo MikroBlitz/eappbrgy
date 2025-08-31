@@ -377,7 +377,9 @@ const handleStatusChange = (id: string) =>
         isChangeStatusModal,
     );
 
-const modalFormRef = ref<{ uploadAvatarIfNeeded?: (id?: string) => Promise<void> } | null>(null);
+const modalFormRef = ref<{
+    uploadAvatarIfNeeded?: (id?: string) => Promise<void>;
+} | null>(null);
 
 const onSubmit = async (event: FormSubmitEvent<any>) => {
     const input = props.tableData.prepareSubmitData(
@@ -386,7 +388,6 @@ const onSubmit = async (event: FormSubmitEvent<any>) => {
     );
     const res = await executeMutation("upsert", { input }, "saved", isOpen);
 
-    // After successful save, attempt avatar upload if a file was selected
     try {
         let savedId: any = (selectedItem.value as any)?.id;
         const data = (res as any)?.data;
@@ -396,8 +397,7 @@ const onSubmit = async (event: FormSubmitEvent<any>) => {
         }
         await modalFormRef.value?.uploadAvatarIfNeeded?.(savedId);
     } catch (e) {
-        // Non-fatal: avatar upload has its own toasts
-        console.error('Post-save avatar upload error:', e);
+        console.error("Post-save avatar upload error:", e);
     }
 
     return res;

@@ -162,7 +162,6 @@ const tableData = useTableData<User>(
         optionLoading: roleSearch.loadingOptions,
         prepareSubmitData: (data, selectedUser?: User) => ({
             ...data,
-            avatar_url: undefined,
             id: selectedUser?.id,
             password: data.password || selectedUser?.password,
             roles: {

@@ -82,6 +82,7 @@
         </header>
 
         <ModalForm
+            ref="modalFormRef"
             v-model:is-open="isOpen"
             title="Update Profile"
             :form-schema="formSchema"
@@ -145,6 +146,8 @@ const formState = reactive({
 });
 const formSchema = computed(() => authSchema());
 const zodSchema = computed(() => formZodSchema(formSchema.value));
+const modalFormRef = ref();
+
 const onSubmit = async () => {
     if (!formState.id) return;
     modalLoading.value = true;
@@ -163,6 +166,7 @@ const onSubmit = async () => {
             input.password = formState.password;
 
         await mutate({ input });
+        await modalFormRef.value?.uploadAvatarIfNeeded?.(formState.id);
         toast.add({
             color: "green",
             icon: "solar:check-circle-broken",
