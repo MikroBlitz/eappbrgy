@@ -54,7 +54,13 @@
                                 v-model="state[field.name]"
                                 :disabled="field.disabled"
                                 :hidden="field.hidden"
-                                :type="field.type"
+                                :type="
+                                    field.type === 'password'
+                                        ? showPassword
+                                            ? 'text'
+                                            : 'password'
+                                        : field.type
+                                "
                                 :options="field.options"
                                 :multiple="field.multiple || false"
                                 :placeholder="
@@ -84,6 +90,22 @@
                                         : undefined
                                 "
                             >
+                                <UButton
+                                    v-if="field.type === 'password'"
+                                    variant="link"
+                                    color="gray"
+                                    class="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+                                    @click="showPassword = !showPassword"
+                                >
+                                    <UIcon
+                                        v-show="state[field.name]"
+                                        :name="
+                                            showPassword
+                                                ? 'solar:eye-broken'
+                                                : 'solar:eye-closed-bold'
+                                        "
+                                    />
+                                </UButton>
                                 <template
                                     v-if="
                                         ['select', 'combobox'].includes(
@@ -134,6 +156,8 @@ import type { FieldType, FormSchema } from "~/types/fields";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 import DatePicker from "~/components/DatePickerButton.vue";
 import TimePicker from "~/components/TimePickerButton.vue";
+
+const showPassword = ref(false);
 
 const emit = defineEmits<{
     (e: "update:is-open", value: boolean): void;

@@ -30,10 +30,13 @@
 |   |   |-- Controllers
 |   |   |   |-- Api
 |   |   |   |   |-- AuthController.php
+|   |   |   |   |-- UserAvatarController.php
 |   |   |   |   `-- UserController.php
 |   |   |   `-- Controller.php
-|   |   `-- Middleware
-|   |       `-- RoleMiddleware.php
+|   |   |-- Middleware
+|   |   |   `-- RoleMiddleware.php
+|   |   `-- Requests
+|   |       `-- AvatarUploadRequest.php
 |   |-- Mail
 |   |   |-- SendOtpMail.php
 |   |   `-- UserStatusChanged.php
@@ -53,8 +56,7 @@
 |   |   |-- Task.php
 |   |   `-- User.php
 |   |-- Providers
-|   |   |-- AppServiceProvider.php
-|   |   `-- AuthServiceProvider.php
+|   |   `-- AppServiceProvider.php
 |   `-- Traits
 |       `-- HasGraphQLScopes.php
 |-- artisan
@@ -261,6 +263,7 @@
 |   |-- lighthouse.php
 |   |-- logging.php
 |   |-- mail.php
+|   |-- media-library.php
 |   |-- octane.php
 |   |-- permission.php
 |   |-- queue.php
@@ -288,7 +291,8 @@
 |   |   |-- 2025_06_30_182650_add_captain_to_barangays_table.php
 |   |   |-- 2025_07_12_205508_create_documents_table.php
 |   |   |-- 2025_08_04_102115_create_tasks_table.php
-|   |   `-- 2025_08_07_142843_create_attendances_table.php
+|   |   |-- 2025_08_07_142843_create_attendances_table.php
+|   |   `-- 2025_08_31_101754_create_media_table.php
 |   `-- seeders
 |       |-- AttendanceSeeder.php
 |       |-- DatabaseSeeder.php
@@ -362,6 +366,7 @@
 |   |-- channels.php
 |   |-- console.php
 |   `-- web.php
+|-- rr
 |-- run_server.sh
 |-- schema-directives.graphql
 |-- server

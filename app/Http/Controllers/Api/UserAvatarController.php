@@ -17,18 +17,17 @@ class UserAvatarController extends Controller
     {
         $authUser = Auth::user();
 
-        if ($authUser === null || ($authUser->id !== $user->id && ! $authUser->hasRole('Admin'))) {
+        if ($authUser === null || ($authUser->id !== $user->id && ! $authUser->can('edit user'))) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Delete existing avatar if any
-        if ($user->avatar_path && Storage::disk('public')->exists($user->avatar_path)) {
-            Storage::disk('public')->delete($user->avatar_path);
-        }
-
-        $path = $request->file('avatar')->store('avatars', 'public');
-        $user->avatar_path = $path;
         $user->save();
+
+        if ($request->hasFile('avatar')) {
+            // Replace old avatar
+            $user->clearMediaCollection('avatar');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
 
         return response()->json([
             'message' => 'Avatar uploaded successfully',
@@ -40,15 +39,11 @@ class UserAvatarController extends Controller
     {
         $authUser = Auth::user();
 
-        if ($authUser === null || ($authUser->id !== $user->id && ! $authUser->hasRole('Admin'))) {
+        if ($authUser === null || ($authUser->id !== $user->id && ! $authUser->can('edit user'))) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        if ($user->avatar_path && Storage::disk('public')->exists($user->avatar_path)) {
-            Storage::disk('public')->delete($user->avatar_path);
-        }
-
-        $user->avatar_path = null;
+        $user->clearMediaCollection('avatar');
         $user->save();
 
         return response()->json([

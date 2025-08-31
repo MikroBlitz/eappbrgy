@@ -87,10 +87,27 @@
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
-                        type="password"
+                        :type="showPassword ? 'text' : 'password'"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
-                    />
+                        class="relative"
+                    >
+                        <UButton
+                            variant="link"
+                            color="gray"
+                            class="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+                            @click="showPassword = !showPassword"
+                        >
+                            <UIcon
+                                v-show="formState.password"
+                                :name="
+                                    showPassword
+                                        ? 'solar:eye-broken'
+                                        : 'solar:eye-closed-bold'
+                                "
+                            />
+                        </UButton>
+                    </UInput>
                 </UFormGroup>
 
                 <UButton
@@ -166,6 +183,7 @@ const isLoading = ref<boolean>(false);
 const toast = useToast();
 const isOtpModal = ref(false);
 const currentUserId = 0;
+const showPassword = ref(false);
 
 const formState = reactive({
     email: "",

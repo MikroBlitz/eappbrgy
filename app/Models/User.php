@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasGraphQLScopes;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable, HasApiTokens, softDeletes, HasRoles, HasGraphQLScopes;
+    use HasFactory, Notifiable, HasApiTokens, softDeletes, HasRoles, HasGraphQLScopes, InteractsWithMedia;
 
     protected array $searchable = [
         'id',
@@ -98,11 +100,11 @@ class User extends Authenticatable
         return implode(' ', array_filter($parts));
     }
 
-    public function getAvatarUrlAttribute(): ?string
+    protected function avatarUrl(): Attribute
     {
-        return $this->avatar_path
-            ? Storage::url($this->avatar_path)
-            : null;
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('avatar') ?: null,
+        );
     }
 
     /* Get all roles for user */

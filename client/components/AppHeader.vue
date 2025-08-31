@@ -43,7 +43,7 @@
                             <UAvatar
                                 :src="
                                     auth.user?.avatar_url
-                                        ? `${config.public.API_URL}/${auth.user.avatar_url}`
+                                        ? auth.user.avatar_url
                                         : '/images/avatar.png'
                                 "
                                 :alt="auth.user?.first_name || 'No Name'"
@@ -106,7 +106,6 @@ const isDark = inject("isDark");
 const toast = useToast();
 const isOpen = ref(false);
 const modalLoading = ref(false);
-const config = useRuntimeConfig();
 
 const userDropdownItems = [
     [
@@ -135,9 +134,7 @@ const userDropdownItems = [
 
 const user = auth.user;
 const formState = reactive({
-    avatar_url: user?.avatar_url
-        ? `${config.public.API_URL}/${user?.avatar_url}`
-        : undefined,
+    avatar_url: user?.avatar_url ? user?.avatar_url : undefined,
     email: user?.email,
     first_name: user?.first_name,
     id: user?.id,

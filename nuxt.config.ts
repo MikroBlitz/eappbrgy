@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     },
     compatibilityDate: "2024-11-01",
     css: ["~/assets/css/main.css"],
-    devtools: { enabled: true },
+    devtools: { enabled: false },
     dir: {
         public: "public/client",
     },

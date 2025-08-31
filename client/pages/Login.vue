@@ -39,15 +39,31 @@
                     />
                 </UFormGroup>
 
-                <UFormGroup label="Password" name="password" class="mt-2">
+                <UFormGroup label="Password" name="password">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
-                        type="password"
+                        :type="showPassword ? 'text' : 'password'"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
-                        required
-                    />
+                        class="relative"
+                    >
+                        <UButton
+                            variant="link"
+                            color="gray"
+                            class="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+                            @click="showPassword = !showPassword"
+                        >
+                            <UIcon
+                                v-show="formState.password"
+                                :name="
+                                    showPassword
+                                        ? 'solar:eye-broken'
+                                        : 'solar:eye-closed-bold'
+                                "
+                            />
+                        </UButton>
+                    </UInput>
                 </UFormGroup>
 
                 <div class="flex items-center justify-between mt-1">
@@ -115,12 +131,15 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/authStore";
 import { useTimeoutFn } from "@vueuse/shared";
 import { ref, reactive } from "vue";
 import { z } from "zod";
 
 import type { FormState } from "~/types/global";
+
+import { useAuthStore } from "@/stores/authStore";
+
+const showPassword = ref(false);
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
