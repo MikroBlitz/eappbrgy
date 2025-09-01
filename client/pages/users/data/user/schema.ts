@@ -9,7 +9,7 @@ export const schema = (handlers: SearchableFieldHandlers): FormSchema => ({
     fields: [
         {
             label: "Profile Photo",
-            name: "avatar_url",
+            name: "avatar",
             type: "avatar",
         },
         {
