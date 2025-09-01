@@ -8,7 +8,7 @@ export const authSchema = (): FormSchema => ({
     fields: [
         {
             label: "Profile Photo",
-            name: "avatar_url",
+            name: "avatar",
             type: "avatar",
         },
         {

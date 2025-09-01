@@ -429,7 +429,7 @@ onMounted(() => {
 const { $echo } = useNuxtApp();
 onMounted(() => {
     $echo.channel("tasks").listen(".TaskUpdated", (e: TaskUpdatedEvent) => {
-        // console.log("Broadcast Event:", e.task);
+        console.log("Broadcast Event:", e.task);
         taskBoard.updateTask(e.task);
         refetchTasks();
     });
