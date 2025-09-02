@@ -1,91 +1,99 @@
 <template>
-    <UModal :model-value="isOpen" prevent-close @update:model-value="emitClose">
-        <div class="p-6 space-y-6">
-            <!-- Header -->
-            <div class="text-center space-y-2">
-                <div
-                    class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
-                >
-                    <Icon :name="icon" class="w-8 h-8 text-primary" />
-                </div>
-                <h3 class="text-xl font-bold text-primary">{{ title }}</h3>
-                <p class="text-sm text-gray-500">{{ description }}</p>
-            </div>
-
-            <!-- OTP Inputs -->
-            <div class="space-y-4">
-                <div class="flex justify-center gap-3">
-                    <input
-                        v-for="(digit, index) in otpDigits"
-                        :key="index"
-                        :ref="(el) => setInputRef(el, index)"
-                        v-model="otpDigits[index]"
-                        type="text"
-                        inputmode="numeric"
-                        maxlength="1"
-                        class="w-12 h-12 text-center bg-primary/10 text-lg font-bold text-primary border rounded-lg transition-colors"
-                        :class="{
-                            'border-red-500 focus:ring-red-500': hasError,
-                            'border-green-500 bg-green-50 dark:bg-green-900':
-                                digit && !hasError,
-                            'bg-gray-500': loading,
-                        }"
-                        :disabled="loading"
-                        @input="handleInput(index, $event)"
-                        @keydown="handleKeydown(index, $event)"
-                        @paste="handlePaste"
-                    />
-                </div>
-
-                <div v-if="hasError" class="text-center text-sm text-red-600">
-                    {{ errorMessage }}
-                </div>
-
-                <div v-if="showTimer" class="text-center text-sm text-gray-500">
-                    Code expires in
-                    <span class="font-mono font-bold text-green-600">{{
-                        formatTime(timeLeft)
-                    }}</span>
-                </div>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex flex-col gap-3">
-                <UButton
-                    size="lg"
-                    class="justify-center"
-                    :disabled="!isOtpComplete || loading"
-                    :loading="loading"
-                    @click="verifyOtpMethod"
-                >
-                    {{ loading ? "Loading..." : "Verify Code" }}
-                </UButton>
-
-                <div class="flex justify-between items-center">
-                    <UButton
-                        variant="ghost"
-                        color="gray"
-                        :disabled="loading"
-                        @click="emitClose(false)"
+    <UModal v-model:open="isOpen" :prevent-close="true">
+        <template #content>
+            <div class="p-6 space-y-6">
+                <!-- Header -->
+                <div class="text-center space-y-2">
+                    <div
+                        class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center"
                     >
-                        Cancel
-                    </UButton>
-                    <UButton
-                        variant="ghost"
-                        size="sm"
-                        color="gray"
-                        :disabled="!canResend || loading"
-                        @click="sendOtp"
+                        <Icon :name="icon" class="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 class="text-xl font-bold text-primary">{{ title }}</h3>
+                    <p class="text-sm text-gray-500">{{ description }}</p>
+                </div>
+
+                <!-- OTP Inputs -->
+                <div class="space-y-4">
+                    <div class="flex justify-center gap-3">
+                        <input
+                            v-for="(digit, index) in otpDigits"
+                            :key="index"
+                            :ref="(el) => setInputRef(el, index)"
+                            v-model="otpDigits[index]"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="1"
+                            class="w-12 h-12 text-center bg-primary/10 text-lg font-bold text-primary border rounded-lg transition-colors"
+                            :class="{
+                                'border-red-500 focus:ring-red-500': hasError,
+                                'border-green-500 bg-green-50 dark:bg-green-900':
+                                    digit && !hasError,
+                                'bg-gray-500': loading,
+                            }"
+                            :disabled="loading"
+                            @input="handleInput(index, $event)"
+                            @keydown="handleKeydown(index, $event)"
+                            @paste="handlePaste"
+                        />
+                    </div>
+
+                    <div
+                        v-if="hasError"
+                        class="text-center text-sm text-red-600"
                     >
-                        {{
-                            canResend
-                                ? "Resend Code"
-                                : `Resend in ${resendTimer}s`
-                        }}
+                        {{ errorMessage }}
+                    </div>
+
+                    <div
+                        v-if="showTimer"
+                        class="text-center text-sm text-gray-500"
+                    >
+                        Code expires in
+                        <span class="font-mono font-bold text-green-600">{{
+                            formatTime(timeLeft)
+                        }}</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-col gap-3">
+                    <UButton
+                        size="lg"
+                        class="justify-center"
+                        :disabled="!isOtpComplete || loading"
+                        :loading="loading"
+                        @click="verifyOtpMethod"
+                    >
+                        {{ loading ? "Loading..." : "Verify Code" }}
                     </UButton>
+
+                    <div class="flex justify-between items-center">
+                        <UButton
+                            variant="ghost"
+                            color="neutral"
+                            :disabled="loading"
+                            @click="emitClose(false)"
+                        >
+                            Cancel
+                        </UButton>
+                        <UButton
+                            variant="ghost"
+                            size="sm"
+                            color="neutral"
+                            :disabled="!canResend || loading"
+                            @click="sendOtp"
+                        >
+                            {{
+                                canResend
+                                    ? "Resend Code"
+                                    : `Resend in ${resendTimer}s`
+                            }}
+                        </UButton>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
     </UModal>
 </template>
 
@@ -96,23 +104,28 @@ import { requestOtp, verifyOtp } from "~/graphql/Auth";
 import { formatTime, hmacSHA256 } from "~/utils/helpers";
 
 const props = defineProps<{
-    isOpen: boolean;
+    open: boolean;
     userId?: string | number; // existing user flow
     email?: string; // registration flow
     sessionPrefix?: string;
     title?: string;
     description?: string;
-    icon?: string;
+    icon: string;
     expiryTime?: number; // default 300s
     resendDelay?: number; // default 60s
     onVerified?: () => void;
 }>();
 
 const emit = defineEmits<{
-    (e: "update:isOpen", value: boolean): void;
+    (e: "update:open", value: boolean): void;
 }>();
 
 const toast = useToast();
+
+const isOpen = computed({
+    get: () => props.open,
+    set: (val: boolean) => emit("update:open", val),
+});
 
 const otpDigits = ref<string[]>(Array(6).fill(""));
 const inputRefs = ref<HTMLInputElement[]>([]);
@@ -141,7 +154,7 @@ function handleInput(index: number, event: Event) {
     otpDigits.value[index] = value;
     if (value && index < 5) inputRefs.value[index + 1]?.focus();
     if (hasError.value) clearError();
-    if (isOtpComplete.value) useTimeoutFn(() => verifyOtpMethod(), 150);
+    // if (isOtpComplete.value) useTimeoutFn(() => verifyOtpMethod(), 150); // TODO: disable auto verify must click button to send OTP
 }
 function handleKeydown(index: number, event: KeyboardEvent) {
     if (event.key === "Backspace" && !otpDigits.value[index] && index > 0)
@@ -176,7 +189,7 @@ async function sendOtp() {
         if (!data?.requestOtp?.status)
             throw new Error(data?.requestOtp?.error || "OTP request failed");
 
-        toast.add({ color: "green", title: "OTP sent to your email" });
+        toast.add({ color: "success", title: "OTP sent to your email" });
         resetTimers();
     } catch (e: any) {
         showError(e?.message || "Failed to send OTP");
@@ -232,7 +245,7 @@ function resetTimers() {
     }, 1000);
 
     watch(
-        () => props.isOpen,
+        () => props.open,
         (val) => {
             if (!val) {
                 clearInterval(expiryInterval);
@@ -259,7 +272,7 @@ function clearOtp() {
 }
 
 function emitClose(value: boolean) {
-    emit("update:isOpen", value);
+    emit("update:open", value);
     if (!value) {
         clearOtp();
         clearError();
@@ -268,7 +281,7 @@ function emitClose(value: boolean) {
 
 // Open watcher
 watch(
-    () => props.isOpen,
+    () => props.open,
     async (val) => {
         if (val) {
             clearOtp();

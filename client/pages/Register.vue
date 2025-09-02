@@ -28,73 +28,78 @@
             </template>
 
             <UForm
-                :validate="validate"
+                :schema="schema"
                 :state="formState"
                 class="gap-y-2 flex flex-col"
                 @submit="isOtpModal = true"
             >
-                <UFormGroup label="First Name" name="first_name">
+                <UFormField label="First Name" name="first_name">
                     <UInput
                         v-model="formState.first_name"
                         placeholder="Enter first name"
                         type="text"
                         autocomplete="first_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Middle Name" name="middle_name">
+                <UFormField label="Middle Name" name="middle_name">
                     <UInput
                         v-model="formState.middle_name"
                         placeholder="Enter middle name"
                         type="text"
                         autocomplete="middle_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Last Name" name="last_name">
+                <UFormField label="Last Name" name="last_name">
                     <UInput
                         v-model="formState.last_name"
                         placeholder="Enter last name"
                         type="text"
                         autocomplete="last_name"
                         icon="line-md:account"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Phone" name="phone">
+                <UFormField label="Phone" name="phone">
                     <UInput
                         v-model="formState.phone"
                         placeholder="Enter your phone"
                         type="phone"
                         autocomplete="phone"
                         icon="i-heroicons-phone"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Email" name="email">
+                <UFormField label="Email" name="email">
                     <UInput
                         v-model="formState.email"
                         placeholder="Enter your email"
                         type="email"
                         autocomplete="email"
                         icon="i-heroicons-envelope"
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Password" name="password">
+                <UFormField label="Password" name="password">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
                         :type="showPassword ? 'text' : 'password'"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
-                        class="relative"
+                        class="relative w-full"
                     >
                         <UButton
                             variant="link"
-                            color="gray"
+                            color="neutral"
                             class="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
                             @click="showPassword = !showPassword"
                         >
@@ -108,7 +113,7 @@
                             />
                         </UButton>
                     </UInput>
-                </UFormGroup>
+                </UFormField>
 
                 <UButton
                     type="submit"
@@ -116,7 +121,9 @@
                     color="primary"
                     class="mt-3 py-2"
                     :loading="isLoading"
-                    :disabled="!formState.email || !formState.password"
+                    :disabled="
+                        !formState.email || !formState.password || isOtpModal
+                    "
                 >
                     {{ isLoading ? "Creating..." : "Create Account" }}
                 </UButton>
@@ -130,35 +137,12 @@
                             Login
                         </UButton>
                     </p>
-
-                    <UDivider label="Or continue with" class="my-4" />
-
-                    <div class="flex justify-center space-x-4 mt-4">
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-google"
-                            aria-label="Continue with Google"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-facebook"
-                            aria-label="Continue with Facebook"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-apple"
-                            aria-label="Continue with Apple"
-                        />
-                    </div>
                 </div>
             </template>
         </UCard>
 
         <ModalOtp
-            v-model:is-open="isOtpModal"
+            v-model:open="isOtpModal"
             :user-id="currentUserId"
             :email="formState.email"
             session-prefix="otp:register"
@@ -214,7 +198,7 @@ const onSubmit = async () => {
 
         console.log(response);
         toast.add({
-            color: "green",
+            color: "success",
             description: "Successfully registered, you can now login.",
             icon: "solar:check-circle-broken",
             title: "Success",
@@ -222,7 +206,7 @@ const onSubmit = async () => {
     } catch (error) {
         console.error(error);
         toast.add({
-            color: "red",
+            color: "error",
             description: String(error) || "Something went wrong.",
             icon: "i-mdi-alert-circle-outline",
             title: "Error",

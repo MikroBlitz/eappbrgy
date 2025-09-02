@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex items-center justify-center min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-50 relative overflow-hidden"
+        class="flex px-4 items-center justify-center min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-50 relative overflow-hidden"
     >
         <!-- Background gradient circles (green theme) -->
         <div
@@ -27,8 +27,8 @@
                 </div>
             </template>
 
-            <UForm :validate="validate" :state="formState" @submit="onSubmit">
-                <UFormGroup label="Email" name="email">
+            <UForm :schema="loginSchema" :state="formState" @submit="onSubmit">
+                <UFormField label="Email" name="email">
                     <UInput
                         v-model="formState.email"
                         placeholder="Enter your email"
@@ -36,21 +36,22 @@
                         autocomplete="email"
                         icon="i-heroicons-envelope"
                         required
+                        class="w-full"
                     />
-                </UFormGroup>
+                </UFormField>
 
-                <UFormGroup label="Password" name="password">
+                <UFormField label="Password" name="password">
                     <UInput
                         v-model="formState.password"
                         placeholder="Enter your password"
                         :type="showPassword ? 'text' : 'password'"
                         autocomplete="current-password"
                         icon="i-heroicons-lock-closed"
-                        class="relative"
+                        class="relative w-full"
                     >
                         <UButton
                             variant="link"
-                            color="gray"
+                            color="neutral"
                             class="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
                             @click="showPassword = !showPassword"
                         >
@@ -64,7 +65,7 @@
                             />
                         </UButton>
                     </UInput>
-                </UFormGroup>
+                </UFormField>
 
                 <div class="flex items-center justify-between mt-1">
                     <UCheckbox
@@ -101,29 +102,6 @@
                             Create an account
                         </UButton>
                     </p>
-
-                    <UDivider label="Or continue with" class="my-4" />
-
-                    <div class="flex justify-center space-x-4 mt-4">
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-google"
-                            aria-label="Continue with Google"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-facebook"
-                            aria-label="Continue with Facebook"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-apple"
-                            aria-label="Continue with Apple"
-                        />
-                    </div>
                 </div>
             </template>
         </UCard>
@@ -153,31 +131,18 @@ const formState = reactive<FormState>({
     rememberMe: false,
 });
 
-const validate = (state: FormState) => {
-    const result = loginSchema.safeParse(state);
-    if (result.success) return [];
-
-    return result.error.issues.map((issue) => ({
-        message: issue.message,
-        path: issue.path.join("."),
-    }));
-};
-
 const isLoading = ref<boolean>(false);
 const authStore = useAuthStore();
 const toast = useToast();
 
 const onSubmit = async () => {
-    const validationErrors = validate(formState);
-
-    if (validationErrors.length > 0) return;
     isLoading.value = true;
 
     try {
         await authStore.login(formState);
     } catch (e) {
         toast.add({
-            color: "red",
+            color: "error",
             description: e.message,
             icon: "i-mdi-alert-circle-outline",
             title: "Authentication failed",
