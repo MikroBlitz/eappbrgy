@@ -10,7 +10,6 @@ class AvatarUploadRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Authorization is handled within the controller based on the target user.
         return true;
     }
 

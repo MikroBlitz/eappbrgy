@@ -11,8 +11,8 @@
                 <div
                     class="flex flex-col sm:flex-row items-center justify-center gap-4 p-5 w-full mx-auto"
                 >
+                    <!--  v-if="activeButton === 'am_time_in'"  -->
                     <UButton
-                        v-if="activeButton === 'am_time_in'"
                         :disabled="isLoading"
                         size="xl"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -21,30 +21,27 @@
                         Time In (AM)
                     </UButton>
 
-                    <template
-                        v-else-if="activeButton === 'am_time_out_pm_time_in'"
+                    <!--  v-else-if="activeButton === 'am_time_out_pm_time_in'"  -->
+                    <UButton
+                        :disabled="isLoading"
+                        size="xl"
+                        class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('am_time_out')"
                     >
-                        <UButton
-                            :disabled="isLoading"
-                            size="xl"
-                            class="w-full sm:w-auto text-sm sm:text-base"
-                            @click="() => handleButtonClick('am_time_out')"
-                        >
-                            Time Out (AM)
-                        </UButton>
-
-                        <UButton
-                            :disabled="isLoading"
-                            size="xl"
-                            class="w-full sm:w-auto text-sm sm:text-base"
-                            @click="() => handleButtonClick('pm_time_in')"
-                        >
-                            Time In (PM)
-                        </UButton>
-                    </template>
+                        Time Out (AM)
+                    </UButton>
 
                     <UButton
-                        v-else-if="activeButton === 'pm_time_out'"
+                        :disabled="isLoading"
+                        size="xl"
+                        class="w-full sm:w-auto text-sm sm:text-base"
+                        @click="() => handleButtonClick('pm_time_in')"
+                    >
+                        Time In (PM)
+                    </UButton>
+
+                    <!--  v-else-if="activeButton === 'pm_time_out'" -->
+                    <UButton
                         :disabled="isLoading"
                         size="xl"
                         class="w-full sm:w-auto text-sm sm:text-base"
@@ -53,16 +50,17 @@
                         Time Out (PM)
                     </UButton>
 
-                    <span
-                        v-if="!activeButton"
-                        class="text-gray-600 dark:text-gray-400"
-                        >No available action at this time. Please come back
-                        tomorrow.</span
-                    >
+                    <!--                    <span-->
+                    <!--                        v-if="!activeButton"-->
+                    <!--                        class="text-gray-600 dark:text-gray-400"-->
+                    <!--                        >No available action at this time. Please come back-->
+                    <!--                        tomorrow.-->
+                    <!--                    </span>-->
                 </div>
             </div>
 
-            <div v-if="activeButton" class="w-full lg:w-auto">
+            <!--  v-if="activeButton"  -->
+            <div class="w-full lg:w-auto">
                 <BiometricComp
                     ref="biometricRef"
                     :has-detect-face="false"
@@ -72,7 +70,8 @@
             </div>
         </div>
 
-        <div v-if="activeButton" class="mt-4">
+        <!--  v-if="activeButton" -->
+        <div class="mt-4">
             <ManageAttendance ref="manageAttendanceRef" />
         </div>
     </div>
@@ -144,7 +143,6 @@ async function onRecognized(userId: string) {
         if (mutationData?.upsertAttendance) {
             toast.add({
                 color: "green",
-                description: `${res?.data?.attendanceByDate?.user.name}` || "",
                 title: formatAttendanceLabel(selectedType.value, !!existingId),
             });
         }
@@ -171,10 +169,10 @@ onMounted(() => {
 });
 onBeforeUnmount(() => clearInterval(interval));
 
-const activeButton = computed(() => {
-    if (isBetween("06:00", "09:59")) return "am_time_in";
-    if (isBetween("10:00", "14:59")) return "am_time_out_pm_time_in";
-    if (isBetween("15:00", "19:00")) return "pm_time_out";
-    return null;
-});
+// const activeButton = computed(() => {
+//     if (isBetween("06:00", "09:59")) return "am_time_in";
+//     if (isBetween("10:00", "14:59")) return "am_time_out_pm_time_in";
+//     if (isBetween("15:00", "19:00")) return "pm_time_out";
+//     return null;
+// });
 </script>
