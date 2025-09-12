@@ -52,6 +52,8 @@
 <script setup lang="ts">
 import type { User } from "~/types/codegen/graphql";
 
+import { formatFileSize } from "~/utils/helpers";
+
 const props = defineProps<{
     user?: User;
 }>();
@@ -129,12 +131,6 @@ async function uploadAvatar(userId?: string) {
             method: "POST",
         });
 
-        // toast.add({
-        //     color: "green",
-        //     icon: "i-heroicons-check-circle",
-        //     title: "Avatar uploaded successfully!",
-        // });
-
         selectedFile.value = null;
         previewUrl.value = null;
         emit("avatar-updated");
@@ -186,14 +182,6 @@ const removeAvatar = async () => {
     } finally {
         uploading.value = false;
     }
-};
-
-const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
 // Expose methods for parent components

@@ -21,6 +21,11 @@
             icon="solar:shield-check-broken"
             :on-verified="updateBlotterStatus"
         />
+
+        <ViewBlotter
+            v-model:is-open="isViewModal"
+            :selected-row="selectedRow"
+        />
     </div>
 </template>
 
@@ -36,6 +41,7 @@ import {
     deleteBlotter,
 } from "~/graphql/Blotter";
 import { residentsPaginate } from "~/graphql/Resident";
+import ViewBlotter from "~/pages/blotters/components/ViewBlotter.vue";
 import { generateCustomId, toTitleCase } from "~/utils/helpers";
 
 import { columns, filters } from "../data/columns";
@@ -49,6 +55,12 @@ const selectedStatus = ref("");
 const isConfirmModal = ref(false);
 const isOtpModal = ref(false);
 const modalLoading = ref(false);
+const isViewModal = ref(false);
+
+function openViewModal(row: Blotter) {
+    selectedRow.value = row;
+    isViewModal.value = true;
+}
 
 const createResidentSearchHandler = () =>
     useSearchQueryOptions(residentsPaginate, {
@@ -118,8 +130,14 @@ const tableData = useTableData<Blotter>(
                 onClick: (row: Blotter) => openOtpWith(row, "dismissed"),
                 tooltip: () => "Dismiss this blotter",
             },
+            {
+                color: () => "yellow",
+                condition: () => auth.can("view blotter"),
+                icon: () => "solar:eye-broken",
+                onClick: (row: Blotter) => openViewModal(row),
+                tooltip: () => "View this blotter",
+            },
         ],
-        defaultViewModal: true,
         filters,
         formSchema: formSchema.value,
         getFormState: (row?: Blotter) => {
