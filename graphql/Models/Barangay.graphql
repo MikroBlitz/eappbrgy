@@ -35,7 +35,7 @@ input ConnectBarangaysRelation {
     delete: [ID]
 }
 
-extend type Query {
+extend type Query @guard {
     barangays: [Barangay]! @all
     barangaysPaginate(
         first: Int!

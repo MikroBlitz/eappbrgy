@@ -34,7 +34,7 @@ input ConnectOfficialsRelation {
     delete: [ID]
 }
 
-extend type Query {
+extend type Query @guard {
     officials: [Official]! @all
     officialsPaginate(
         first: Int!

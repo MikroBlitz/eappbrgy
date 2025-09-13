@@ -42,7 +42,7 @@ input ConnectTaskRelation {
     delete: ID
 }
 
-extend type Query {
+extend type Query @guard {
     tasks: [Task]! @all
     tasksPaginate(
         first: Int!

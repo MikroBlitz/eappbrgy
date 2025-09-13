@@ -27,7 +27,7 @@ input ConnectContactsRelation {
     delete: [ID]
 }
 
-extend type Query { # TODO: add @guard after implemented
+extend type Query @guard {
     contact(id: ID! @eq): Contact @find
     contacts(
         first: Int!
@@ -36,7 +36,7 @@ extend type Query { # TODO: add @guard after implemented
     ): [Contact!]! @paginate
 }
 
-extend type Mutation { # TODO: add @guard after implemented
+extend type Mutation @guard {
     upsertContact(input: ContactInput! @spread): Contact! @upsert
     deleteContact(id: ID! @eq): Contact @delete
 }

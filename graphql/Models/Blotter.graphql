@@ -46,7 +46,7 @@ input ConnectBlottersRelation {
     delete: [ID]
 }
 
-extend type Query {
+extend type Query @guard {
     blotters: [Blotter]! @all
     blottersPaginate(
         first: Int!

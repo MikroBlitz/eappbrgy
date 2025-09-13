@@ -29,7 +29,7 @@ input ConnectMessagesRelation {
     delete: [ID]
 }
 
-extend type Query { # TODO: add @guard after implemented
+extend type Query @guard {
     message(id: ID! @eq): Message @all
     messages(
         first: Int!
@@ -40,7 +40,7 @@ extend type Query { # TODO: add @guard after implemented
     messagesCount: Int! @count(model: "Message")
 }
 
-extend type Mutation { # TODO: add @guard after implemented
+extend type Mutation @guard {
     upsertMessage(input: MessageInput! @spread): Message! @upsert
     deleteMessage(id: [ID!] @eq): [Message] @delete
 }

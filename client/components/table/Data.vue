@@ -49,7 +49,7 @@
                             multiple
                         >
                             <UButton icon="solar:widget-4-broken" color="gray">
-                                Table Columns
+                                Columns
                             </UButton>
                         </USelectMenu>
                     </div>
@@ -61,7 +61,7 @@
                             v-model="search"
                             icon="solar:magnifer-broken"
                             placeholder="Search"
-                            class="w-full sm:w-auto"
+                            class="w-36 sm:w-auto"
                         />
 
                         <div class="flex gap-2">

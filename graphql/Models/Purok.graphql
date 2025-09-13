@@ -30,7 +30,7 @@ input ConnectPuroksRelation {
     delete: [ID]
 }
 
-extend type Query {
+extend type Query @guard {
     puroks: [Purok]! @all
     puroksPaginate(
         first: Int!

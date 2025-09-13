@@ -61,7 +61,7 @@ input FilterDtr {
     value: [String]
 }
 
-extend type Query {
+extend type Query @guard {
     attendances: [Attendance]! @all
     attendancePaginate(
         first: Int!
