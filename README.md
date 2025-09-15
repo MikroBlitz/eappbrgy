@@ -1,15 +1,26 @@
 ## Project Overview
-This project is a **full-stack monolithic application** that seamlessly integrates **Nuxt.js** for the frontend with a **Laravel-powered API** on the backend. It provides a unified, efficient, and maintainable development workflow within a single codebase.
+This project is a **full-stack monolithic application** that seamlessly integrates **Nuxt.js** for the frontend with a **Laravel-powered API** on the backend.
 
-### Tech Stack
+## Tech Stack
+
 ![Nuxt.js](https://img.shields.io/badge/Nuxt.js-00C58E?style=for-the-badge&logo=nuxt.js&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![Apollo GraphQL](https://img.shields.io/badge/Apollo%20GraphQL-311C87?style=for-the-badge&logo=apollo-graphql&logoColor=white)
-![Pinia](https://img.shields.io/badge/Pinia-2C3E50?style=for-the-badge&logo=pinia&logoColor=yellow)
 ![Lighthouse](https://img.shields.io/badge/Laravel%20Lighthouse-10B981?style=for-the-badge&logo=graphql&logoColor=white)
 ![Sanctum](https://img.shields.io/badge/Sanctum-3498DB?style=for-the-badge&logo=laravel&logoColor=white)
+![Reverb](https://img.shields.io/badge/Laravel%20Reverb-8E44AD?style=for-the-badge&logo=laravel&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+---
+## Other
+
+![Pinia](https://img.shields.io/badge/Pinia-2C3E50?style=for-the-badge&logo=pinia&logoColor=yellow)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)
 
 ## Setup Instructions
 
@@ -23,37 +34,7 @@ Make sure you have the following software installed on your system:
 - [GitHub CLI](https://cli.github.com/) *(optional)*
 - [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm) *(optional)*
 
----
-
-### Docker Setup *(Optional)*
-If you prefer using Docker:
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/MikroBlitz/govana.git
-   
-    cd govana
-    ```
-2. Copy the `.env.example` file and generate the application key and OTP key:
-    ```bash
-    composer install && cp .env.example .env && php artisan key:generate && php artisan otp:generate-key
-    ```
-
-3. Build and start the Docker containers:
-    ```bash
-    docker compose up -d --build
-    ```
-
-4. Run database migrations and seeders:
-    ```bash
-    docker compose exec backend php artisan migrate:fresh --seed
-    ```
-
-5. Access the frontend at `http://localhost:3000` and the backend at `http://localhost:8000`.
-
----
-
-### Manual Setup
+### Local Setup
 1. Clone the repository:
     ```bash
     git clone https://github.com/MikroBlitz/govana.git
@@ -97,6 +78,34 @@ If you prefer using Docker:
     * * * * * cd /path-to-app && php artisan schedule:run >> /dev/null 2>&1
     ```
    This ensures all scheduled tasks (e.g., auto-expiring permits) run automatically based on their defined schedule.
+
+---
+### Docker Setup *(Optional)*
+If you prefer using Docker:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/MikroBlitz/govana.git
+   
+    cd govana
+    ```
+2. Copy the `.env.example` file and generate the application key and OTP key:
+    ```bash
+    composer install && cp .env.example .env && php artisan key:generate && php artisan otp:generate-key
+    ```
+
+3. Build and start the Docker containers:
+    ```bash
+    docker compose up -d --build
+    ```
+
+4. Run database migrations and seeders:
+    ```bash
+    docker compose exec backend php artisan migrate:fresh --seed
+    ```
+
+5. Access the frontend at `http://localhost:3000` and the backend at `http://localhost:8000`.
+---
 
 ### Testing API performance
 
