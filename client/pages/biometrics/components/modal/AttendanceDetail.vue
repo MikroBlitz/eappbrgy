@@ -78,30 +78,30 @@
                                 >
                                     PM Out
                                 </th>
-                                <th
-                                    v-if="hasAnyExtraTime1"
-                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                >
-                                    Extra Time 1 In
-                                </th>
-                                <th
-                                    v-if="hasAnyExtraTime1"
-                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                >
-                                    Extra Time 1 Out
-                                </th>
-                                <th
-                                    v-if="hasAnyExtraTime2"
-                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                >
-                                    Extra Time 2 In
-                                </th>
-                                <th
-                                    v-if="hasAnyExtraTime2"
-                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                                >
-                                    Extra Time 2 Out
-                                </th>
+                                <!--                                <th-->
+                                <!--                                    v-if="hasAnyExtraTime1"-->
+                                <!--                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"-->
+                                <!--                                >-->
+                                <!--                                    Extra Time 1 In-->
+                                <!--                                </th>-->
+                                <!--                                <th-->
+                                <!--                                    v-if="hasAnyExtraTime1"-->
+                                <!--                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"-->
+                                <!--                                >-->
+                                <!--                                    Extra Time 1 Out-->
+                                <!--                                </th>-->
+                                <!--                                <th-->
+                                <!--                                    v-if="hasAnyExtraTime2"-->
+                                <!--                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"-->
+                                <!--                                >-->
+                                <!--                                    Extra Time 2 In-->
+                                <!--                                </th>-->
+                                <!--                                <th-->
+                                <!--                                    v-if="hasAnyExtraTime2"-->
+                                <!--                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"-->
+                                <!--                                >-->
+                                <!--                                    Extra Time 2 Out-->
+                                <!--                                </th>-->
                                 <th
                                     class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                                 >
@@ -163,47 +163,47 @@
                                     }}
                                 </td>
 
-                                <td
-                                    v-if="hasExtraTime(attendance)"
-                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{
-                                        getFriendlyTime(
-                                            attendance.extra_time_in_1,
-                                        ) || "-"
-                                    }}
-                                </td>
-                                <td
-                                    v-if="hasExtraTime(attendance)"
-                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{
-                                        getFriendlyTime(
-                                            attendance.extra_time_out_1,
-                                        ) || "-"
-                                    }}
-                                </td>
+                                <!--                                <td-->
+                                <!--                                    v-if="hasExtraTime(attendance)"-->
+                                <!--                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"-->
+                                <!--                                >-->
+                                <!--                                    {{-->
+                                <!--                                        getFriendlyTime(-->
+                                <!--                                            attendance.extra_time_in_1,-->
+                                <!--                                        ) || "-"-->
+                                <!--                                    }}-->
+                                <!--                                </td>-->
+                                <!--                                <td-->
+                                <!--                                    v-if="hasExtraTime(attendance)"-->
+                                <!--                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"-->
+                                <!--                                >-->
+                                <!--                                    {{-->
+                                <!--                                        getFriendlyTime(-->
+                                <!--                                            attendance.extra_time_out_1,-->
+                                <!--                                        ) || "-"-->
+                                <!--                                    }}-->
+                                <!--                                </td>-->
 
-                                <td
-                                    v-if="hasExtraTime2(attendance)"
-                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{
-                                        getFriendlyTime(
-                                            attendance.extra_time_in_2,
-                                        ) || "-"
-                                    }}
-                                </td>
-                                <td
-                                    v-if="hasExtraTime2(attendance)"
-                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{
-                                        getFriendlyTime(
-                                            attendance.extra_time_out_2,
-                                        ) || "-"
-                                    }}
-                                </td>
+                                <!--                                <td-->
+                                <!--                                    v-if="hasExtraTime2(attendance)"-->
+                                <!--                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"-->
+                                <!--                                >-->
+                                <!--                                    {{-->
+                                <!--                                        getFriendlyTime(-->
+                                <!--                                            attendance.extra_time_in_2,-->
+                                <!--                                        ) || "-"-->
+                                <!--                                    }}-->
+                                <!--                                </td>-->
+                                <!--                                <td-->
+                                <!--                                    v-if="hasExtraTime2(attendance)"-->
+                                <!--                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"-->
+                                <!--                                >-->
+                                <!--                                    {{-->
+                                <!--                                        getFriendlyTime(-->
+                                <!--                                            attendance.extra_time_out_2,-->
+                                <!--                                        ) || "-"-->
+                                <!--                                    }}-->
+                                <!--                                </td>-->
 
                                 <td
                                     class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"

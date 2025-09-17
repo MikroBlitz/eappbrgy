@@ -57,10 +57,10 @@ const tableData = useTableData<Attendance>(
                       am_time_in: row.am_time_in || "",
                       am_time_out: row.am_time_out || "",
                       date: row.date,
-                      extra_time_in_1: row.extra_time_in_1,
-                      extra_time_in_2: row.extra_time_in_2,
-                      extra_time_out_1: row.extra_time_out_1,
-                      extra_time_out_2: row.extra_time_out_2,
+                      // extra_time_in_1: row.extra_time_in_1,
+                      // extra_time_in_2: row.extra_time_in_2,
+                      // extra_time_out_1: row.extra_time_out_1,
+                      // extra_time_out_2: row.extra_time_out_2,
                       id: row.id,
                       pm_time_in: row.pm_time_in || "",
                       pm_time_out: row.pm_time_out || "",
@@ -70,10 +70,10 @@ const tableData = useTableData<Attendance>(
                       am_time_in: "",
                       am_time_out: "",
                       date: "",
-                      extra_time_in_1: "",
-                      extra_time_in_2: "",
-                      extra_time_out_1: "",
-                      extra_time_out_2: "",
+                      // extra_time_in_1: "",
+                      // extra_time_in_2: "",
+                      // extra_time_out_1: "",
+                      // extra_time_out_2: "",
                       id: undefined,
                       pm_time_in: "",
                       pm_time_out: "",
@@ -94,23 +94,23 @@ const tableData = useTableData<Attendance>(
                     data.am_time_out as Date,
                 ),
                 date: mergeDateAndTime(datePart, "00:00:00"),
-                extra_time_in_1: mergeDateAndTime(
-                    datePart,
-                    data.extra_time_in_1 as Date,
-                ),
-                extra_time_in_2: mergeDateAndTime(
-                    datePart,
-                    data.extra_time_in_2 as Date,
-                ),
-
-                extra_time_out_1: mergeDateAndTime(
-                    datePart,
-                    data.extra_time_out_1 as Date,
-                ),
-                extra_time_out_2: mergeDateAndTime(
-                    datePart,
-                    data.extra_time_out_2 as Date,
-                ),
+                // extra_time_in_1: mergeDateAndTime(
+                //     datePart,
+                //     data.extra_time_in_1 as Date,
+                // ),
+                // extra_time_in_2: mergeDateAndTime(
+                //     datePart,
+                //     data.extra_time_in_2 as Date,
+                // ),
+                //
+                // extra_time_out_1: mergeDateAndTime(
+                //     datePart,
+                //     data.extra_time_out_1 as Date,
+                // ),
+                // extra_time_out_2: mergeDateAndTime(
+                //     datePart,
+                //     data.extra_time_out_2 as Date,
+                // ),
                 id: row?.id,
                 pm_time_in: mergeDateAndTime(datePart, data.pm_time_in as Date),
                 pm_time_out: mergeDateAndTime(
@@ -119,6 +119,10 @@ const tableData = useTableData<Attendance>(
                 ),
                 user: { connect: data.user },
             };
+        },
+        sortOptions: {
+            column: "id",
+            direction: "desc",
         },
         whereConditions: conditions(
             [

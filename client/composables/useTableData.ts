@@ -66,6 +66,10 @@ export function useTableData<T extends Record<string, unknown>>(
         customActions?: TableAction[];
         headerActions?: boolean;
         onAvatarUpdated?: () => void;
+        sortOptions?: {
+            column?: string;
+            direction?: "asc" | "desc";
+        };
     },
 ) {
     const defaultGetFormState = (item?: T): Record<string, unknown> => {
@@ -210,5 +214,6 @@ export function useTableData<T extends Record<string, unknown>>(
         onAvatarUpdated: options?.onAvatarUpdated,
         optionLoading: options?.optionLoading,
         relationKey: options?.relationKey,
+        sortOptions: options?.sortOptions,
     };
 }

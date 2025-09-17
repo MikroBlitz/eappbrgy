@@ -546,17 +546,17 @@ const generateDTRPDF = (row: any) => {
     try {
         const doc = new jsPDF();
         const attendanceData = getAttendanceForRow(row) || [];
-        const hasExtraTime1 = attendanceData.some(
-            (att) => att.extra_time_in_1 && att.extra_time_out_1,
-        );
-        const hasExtraTime2 = attendanceData.some(
-            (att) => att.extra_time_in_2 && att.extra_time_out_2,
-        );
+        // const hasExtraTime1 = attendanceData.some(
+        //     (att) => att.extra_time_in_1 && att.extra_time_out_1,
+        // );
+        // const hasExtraTime2 = attendanceData.some(
+        //     (att) => att.extra_time_in_2 && att.extra_time_out_2,
+        // );
 
         // table headers
         const headers = ["Date", "AM In", "AM Out", "PM In", "PM Out"];
-        if (hasExtraTime1) headers.push("Extra Time 1 In", "Extra Time 1 Out");
-        if (hasExtraTime2) headers.push("Extra Time 2 In", "Extra Time 2 Out");
+        // if (hasExtraTime1) headers.push("Extra Time 1 In", "Extra Time 1 Out");
+        // if (hasExtraTime2) headers.push("Extra Time 2 In", "Extra Time 2 Out");
         headers.push("Total Hours");
 
         // table rows
@@ -570,22 +570,22 @@ const generateDTRPDF = (row: any) => {
                 att.pm_time_out ? formatTime(att.pm_time_out) : "-",
             ];
 
-            if (hasExtraTime1) {
-                row.push(
-                    att.extra_time_in_1 ? formatTime(att.extra_time_in_1) : "-",
-                    att.extra_time_out_1
-                        ? formatTime(att.extra_time_out_1)
-                        : "-",
-                );
-            }
-            if (hasExtraTime2) {
-                row.push(
-                    att.extra_time_in_2 ? formatTime(att.extra_time_in_2) : "-",
-                    att.extra_time_out_2
-                        ? formatTime(att.extra_time_out_2)
-                        : "-",
-                );
-            }
+            // if (hasExtraTime1) {
+            //     row.push(
+            //         att.extra_time_in_1 ? formatTime(att.extra_time_in_1) : "-",
+            //         att.extra_time_out_1
+            //             ? formatTime(att.extra_time_out_1)
+            //             : "-",
+            //     );
+            // }
+            // if (hasExtraTime2) {
+            //     row.push(
+            //         att.extra_time_in_2 ? formatTime(att.extra_time_in_2) : "-",
+            //         att.extra_time_out_2
+            //             ? formatTime(att.extra_time_out_2)
+            //             : "-",
+            //     );
+            // }
 
             row.push(calculateDailyHours(att));
             return row;

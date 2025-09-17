@@ -176,6 +176,10 @@ interface TableData<T extends Record<string, unknown>> {
         customActions?: TableAction[];
         headerActions?: boolean;
         onAvatarUpdated?: any;
+        sortOptions?: {
+            column?: string;
+            direction?: "asc" | "desc";
+        };
     };
 }
 
@@ -186,7 +190,11 @@ const headerActions = computed(() => props.tableData.headerActions ?? true);
 const auth = useAuthStore();
 const selectedColumns = ref(props.tableData.columns);
 const selectedRows = ref<T[]>([]);
-const sort = ref({ column: "id", direction: "asc" as "asc" | "desc" });
+const sort = ref({
+    column: props.tableData.sortOptions?.column || "id",
+    direction:
+        props.tableData.sortOptions?.direction || ("asc" as "asc" | "desc"),
+});
 const page = ref(1);
 const pageCount = ref(10);
 const search = ref("");
