@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
-    use HasGraphQLScopes, HasFactory;
+    use HasFactory, HasGraphQLScopes;
 
     protected array $searchable = [
         'id',

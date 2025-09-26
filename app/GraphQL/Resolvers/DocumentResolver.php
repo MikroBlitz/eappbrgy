@@ -4,10 +4,10 @@ namespace App\GraphQL\Resolvers;
 
 use App\Models\Document;
 use Carbon\Carbon;
+use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use GraphQL\Type\Definition\ResolveInfo;
 
 class DocumentResolver
 {
@@ -23,18 +23,18 @@ class DocumentResolver
                 if (str_ends_with($snakeKey, '_by')) {
                     $input[$snakeKey] = $value['connect'];
                 } else {
-                    $input[$snakeKey . '_id'] = $value['connect'];
+                    $input[$snakeKey.'_id'] = $value['connect'];
                 }
                 unset($input[$key]);
             }
         }
 
-        $isUpdating = isset($input['id']) && !empty($input['id']);
+        $isUpdating = isset($input['id']) && ! empty($input['id']);
 
         if ($isUpdating) {
             $document = Document::find($input['id']);
 
-            if (!$document) {
+            if (! $document) {
                 throw ValidationException::withMessages(['id' => ['Document not found.']]);
             }
 
@@ -42,8 +42,8 @@ class DocumentResolver
             if (in_array($document->status, ['released', 'revoked'])) {
                 throw ValidationException::withMessages([
                     'status' => [
-                        "Cannot update '{$document->status}' document. Only pending, approved and expired can be updated."
-                    ]
+                        "Cannot update '{$document->status}' document. Only pending, approved and expired can be updated.",
+                    ],
                 ]);
             }
 

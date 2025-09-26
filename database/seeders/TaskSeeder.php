@@ -24,8 +24,8 @@ class TaskSeeder extends Seeder
         foreach ($statuses as $statusIndex => $status) {
             for ($i = 1; $i <= 20; $i++) {
                 $tasks[] = [
-                    'title' => ucfirst($status) . ' Task ' . $i,
-                    'description' => 'This is a ' . $status . ' task. ' . Str::random(20),
+                    'title' => ucfirst($status).' Task '.$i,
+                    'description' => 'This is a '.$status.' task. '.Str::random(20),
                     'status' => $status,
                     'priority' => $priorities[array_rand($priorities)],
                     'order' => $i,

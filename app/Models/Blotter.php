@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\HasGraphQLScopes;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,7 +16,7 @@ class Blotter extends Model
         'case_no',
         'complaint',
         'details',
-        'barangay.name'
+        'barangay.name',
     ];
 
     // Relationships

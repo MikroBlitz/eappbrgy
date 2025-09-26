@@ -4,10 +4,10 @@ namespace App\GraphQL\Resolvers;
 
 use App\Events\TaskUpdated;
 use App\Models\Task;
+use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use GraphQL\Type\Definition\ResolveInfo;
 
 class TaskResolver
 {
@@ -23,18 +23,18 @@ class TaskResolver
                 if (str_ends_with($snakeKey, '_by')) {
                     $input[$snakeKey] = $value['connect'];
                 } else {
-                    $input[$snakeKey . '_id'] = $value['connect'];
+                    $input[$snakeKey.'_id'] = $value['connect'];
                 }
                 unset($input[$key]);
             }
         }
 
-        $isUpdating = isset($input['id']) && !empty($input['id']);
+        $isUpdating = isset($input['id']) && ! empty($input['id']);
 
         if ($isUpdating) {
             $task = Task::find($input['id']);
 
-            if (!$task) {
+            if (! $task) {
                 throw ValidationException::withMessages(['id' => ['Task not found.']]);
             }
 

@@ -4,7 +4,8 @@ namespace App\GraphQL\Resolvers;
 
 use App\Models\User;
 
-class FaceResolver {
+class FaceResolver
+{
     public function register($_, array $args): bool
     {
         $user = User::findOrFail($args['user_id']);
@@ -34,6 +35,6 @@ class FaceResolver {
 
     private function euclideanDistance($a, $b): float
     {
-        return sqrt(array_sum(array_map(fn($x, $y) => pow($x - $y, 2), $a, $b)));
+        return sqrt(array_sum(array_map(fn ($x, $y) => pow($x - $y, 2), $a, $b)));
     }
 }

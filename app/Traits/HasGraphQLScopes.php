@@ -56,7 +56,7 @@ trait HasGraphQLScopes
 
     public function scopeFilter(Builder $query, ?array $filters): Builder
     {
-        if (!$filters) {
+        if (! $filters) {
             return $query;
         }
 

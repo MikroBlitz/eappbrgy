@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
-
 
 class UserController extends Controller
 {
@@ -43,6 +41,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
+
         return response()->json($user);
     }
 
@@ -53,7 +52,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'sometimes|required|string',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
+            'email' => 'sometimes|required|email|unique:users,email,'.$id,
             'password' => 'sometimes|required|string|min:6',
             'role' => 'sometimes|required|string|exists:roles,name',
         ]);
@@ -75,7 +74,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent admin from deleting themselves
         // if (auth()->user()->id === $user->id) {
         //     return response()->json(['message' => 'You cannot delete yourself'], 403);
@@ -85,5 +84,4 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully']);
     }
-
 }

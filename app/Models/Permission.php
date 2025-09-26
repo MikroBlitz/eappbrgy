@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Models;
+
 use App\Traits\HasGraphQLScopes;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\Permission\Models\Permission as SpatiePermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class Permission extends SpatiePermission
 {
@@ -17,5 +17,4 @@ class Permission extends SpatiePermission
         'name',
         'guard_name',
     ];
-
 }

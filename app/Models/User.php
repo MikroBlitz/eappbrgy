@@ -6,9 +6,9 @@ namespace App\Models;
 use App\Traits\HasGraphQLScopes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,7 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable, HasApiTokens, softDeletes, HasRoles, HasGraphQLScopes, InteractsWithMedia;
+    use HasApiTokens, HasFactory, HasGraphQLScopes, HasRoles, InteractsWithMedia, Notifiable, softDeletes;
 
     protected array $searchable = [
         'id',
@@ -84,9 +84,7 @@ class User extends Authenticatable implements HasMedia
     /**
      * Compose the complete name of the user.
      *
-     * @param \App\Modules\User\Models\User $user
-     *
-     * @return string
+     * @param  \App\Modules\User\Models\User  $user
      */
     public function generateFullName(): string
     {

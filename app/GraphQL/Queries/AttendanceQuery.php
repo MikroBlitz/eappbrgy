@@ -24,9 +24,9 @@ class AttendanceQuery
             ->whereBetween('date', [$start, $end]);
 
         // Filters
-        if (!empty($args['filter']) && is_array($args['filter'])) {
+        if (! empty($args['filter']) && is_array($args['filter'])) {
             foreach ($args['filter'] as $filter) {
-                if (!isset($filter['key'], $filter['value'])) {
+                if (! isset($filter['key'], $filter['value'])) {
                     continue;
                 }
 
@@ -53,7 +53,7 @@ class AttendanceQuery
             ->orderBy('date')
             ->get()
             ->groupBy('user_id')
-            ->map(fn($records) => $this->calculateUserAttendance($records))
+            ->map(fn ($records) => $this->calculateUserAttendance($records))
             ->values();
 
         // Pagination
@@ -69,7 +69,7 @@ class AttendanceQuery
                 'perPage' => $paginated->perPage(),
                 'lastPage' => $paginated->lastPage(),
                 'hasMorePages' => $paginated->hasMorePages(),
-            ]
+            ],
         ];
     }
 
@@ -80,26 +80,26 @@ class AttendanceQuery
             ['pm_time_in', 'pm_time_out'],
         ]);
 
-//        $extraHours = $this->calculateHours($records, [  // TODO: enable this when extra time is implemented
-//            ['extra_time_in_1', 'extra_time_out_1'],
-//            ['extra_time_in_2', 'extra_time_out_2'],
-//        ]);
+        //        $extraHours = $this->calculateHours($records, [  // TODO: enable this when extra time is implemented
+        //            ['extra_time_in_1', 'extra_time_out_1'],
+        //            ['extra_time_in_2', 'extra_time_out_2'],
+        //        ]);
 
         $rate = $records->first()->user->hourly_rate ?? 0;
-//        $salary = round(($normalHours * $rate) + ($extraHours * $rate * 2), 2); // TODO: enable this when extra time is implemented
+        //        $salary = round(($normalHours * $rate) + ($extraHours * $rate * 2), 2); // TODO: enable this when extra time is implemented
         $salary = round($normalHours * $rate, 2);
 
         $totalWorkingDays = $records->pluck('date')
-            ->map(fn($d) => Carbon::parse($d)->toDateString())
+            ->map(fn ($d) => Carbon::parse($d)->toDateString())
             ->unique()
             ->count();
 
         return [
             'user' => $records->first()->user,
-//            'total_hours' => round($normalHours + $extraHours, 2), // TODO: enable this when extra time is implemented
+            //            'total_hours' => round($normalHours + $extraHours, 2), // TODO: enable this when extra time is implemented
             'total_hours' => round($normalHours, 2),
             'normal_hours' => round($normalHours, 2),
-//            'extra_hours' => round($extraHours, 2), // TODO: enable this when extra time is implemented
+            //            'extra_hours' => round($extraHours, 2), // TODO: enable this when extra time is implemented
             'salary' => $salary,
             'total_working_days' => $totalWorkingDays,
             'attendances' => $records->values(),
@@ -118,6 +118,7 @@ class AttendanceQuery
                 }
             }
         }
+
         return $total;
     }
 

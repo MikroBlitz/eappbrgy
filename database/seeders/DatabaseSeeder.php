@@ -141,7 +141,7 @@ class DatabaseSeeder extends Seeder
             $permissionMap[$permissionName] = Permission::firstOrCreate(['name' => $permissionName]);
         }
 
-        $systemAdmin->syncPermissions(array_map(fn($name) => $permissionMap[$name], $permissions));
+        $systemAdmin->syncPermissions(array_map(fn ($name) => $permissionMap[$name], $permissions));
 
         // Assign roles to users
         $admin->assignRole($adminRole);
@@ -149,7 +149,7 @@ class DatabaseSeeder extends Seeder
 
         // Create additional users
         $users = User::factory(50)->create();
-        $users->each(fn($user) => $user->assignRole($userRole));
+        $users->each(fn ($user) => $user->assignRole($userRole));
         $userRole->syncPermissions([
             'view dashboard',
             'view document',

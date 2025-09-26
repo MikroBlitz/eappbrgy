@@ -10,14 +10,14 @@ final class Logout
     {
         $user = Auth::guard('sanctum')->user();
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('Unauthenticated');
         }
 
         $user->tokens()->delete();
 
         return [
-            'message' => 'Logged out successfully'
+            'message' => 'Logged out successfully',
         ];
     }
 }

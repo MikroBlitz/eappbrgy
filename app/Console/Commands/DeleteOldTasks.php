@@ -37,6 +37,7 @@ class DeleteOldTasks extends Command
 
         if ($oldTasks->isEmpty()) {
             $this->info('No old tasks found for deletion.');
+
             return;
         }
 

@@ -30,8 +30,9 @@ class GenerateOtpSecretKey extends Command
 
         $path = base_path('.env');
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             $this->error('.env file not found!');
+
             return 1;
         }
 
@@ -40,14 +41,14 @@ class GenerateOtpSecretKey extends Command
 
         // Replace existing OTP_SECRET_KEY or add it if not present
         if (preg_match('/^OTP_SECRET_KEY=.*$/m', $env)) {
-            $env = preg_replace('/^OTP_SECRET_KEY=.*$/m', 'OTP_SECRET_KEY=' . $key, $env);
+            $env = preg_replace('/^OTP_SECRET_KEY=.*$/m', 'OTP_SECRET_KEY='.$key, $env);
         } else {
-            $env .= "\nOTP_SECRET_KEY=" . $key;
+            $env .= "\nOTP_SECRET_KEY=".$key;
         }
 
         file_put_contents($path, $env);
 
-        $this->info("OTP_SECRET_KEY generated and saved to .env:");
+        $this->info('OTP_SECRET_KEY generated and saved to .env:');
         $this->line($key);
 
         return 0;

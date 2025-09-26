@@ -1,10 +1,11 @@
 <?php
+
 namespace App\GraphQL\Mutations;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Models\User;
 
 class OtpMutator
 {
@@ -17,11 +18,12 @@ class OtpMutator
         $userId = $args['user_id'] ?? null;
         $sessionKey = $args['generated_session_key'] ?? Str::uuid()->toString();
         $clientIp = request()->ip();
-        $redisKey = "$clientIp:" . ($email ?? $userId) . "-general";
+        $redisKey = "$clientIp:".($email ?? $userId).'-general';
 
         // Prevent OTP spamming (max 3 attempts within 2 minutes)
         if (Cache::has($redisKey) && Cache::get($redisKey) >= 3) {
             $ttl = Cache::getRedis()->ttl($redisKey);
+
             return [
                 'status' => false,
                 'error' => "You cannot request another OTP for another $ttl seconds",
@@ -61,7 +63,7 @@ class OtpMutator
 
         return [
             'status' => true,
-            'remarks' => "OTP has been sent",
+            'remarks' => 'OTP has been sent',
             'expiry' => 300,
             'session_key' => $sessionKey,
         ];
@@ -77,7 +79,7 @@ class OtpMutator
         $clientIp = request()->ip();
 
         $otpData = Cache::get($sessionKey);
-        if (!$otpData) {
+        if (! $otpData) {
             return [
                 'status' => false,
                 'error' => 'Session expired or invalid',
@@ -92,7 +94,7 @@ class OtpMutator
         if ($decoded['otp'] === $inputHashedOtp) {
             // OTP VERIFIED
             Cache::forget($sessionKey);
-            Cache::forget("$clientIp:" . ($decoded['email'] ?? $decoded['user_id']) . "-general");
+            Cache::forget("$clientIp:".($decoded['email'] ?? $decoded['user_id']).'-general');
 
             return [
                 'status' => true,
@@ -104,6 +106,7 @@ class OtpMutator
 
             if ($decoded['tries'] >= 3) {
                 Cache::forget($sessionKey);
+
                 return [
                     'status' => false,
                     'error' => 'OTP attempts exceeded, request again',
@@ -111,6 +114,7 @@ class OtpMutator
             } else {
                 $ttl = Cache::getRedis()->ttl($sessionKey);
                 Cache::put($sessionKey, json_encode($decoded), now()->addSeconds($ttl));
+
                 return [
                     'status' => false,
                     'error' => 'Incorrect OTP',

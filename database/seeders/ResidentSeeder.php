@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Household;
 use App\Models\Purok;
 use App\Models\Resident;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ResidentSeeder extends Seeder

@@ -9,7 +9,6 @@ use App\Http\Requests\AvatarUploadRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class UserAvatarController extends Controller
 {

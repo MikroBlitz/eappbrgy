@@ -32,10 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Console\Commands\GenerateOtpSecretKey::class,
     ])
     ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
-//        TODO: for Production
-//        $schedule->command('permits:expire-check')->dailyAt('00:00');
-//        $schedule->command('tasks:delete-check')->dailyAt('00:00');
-//
+        //        TODO: for Production
+        //        $schedule->command('permits:expire-check')->dailyAt('00:00');
+        //        $schedule->command('tasks:delete-check')->dailyAt('00:00');
+        //
         $schedule->command('permits:expire-check')->everyMinute();
         $schedule->command('tasks:delete-check')->everyMinute();
     })

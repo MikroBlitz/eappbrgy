@@ -15,12 +15,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/users/{user}/avatar', [UserAvatarController::class, 'store']);
-    Route::delete('/users/{user}/avatar', [UserAvatarController::class, 'destroy']);;
+    Route::delete('/users/{user}/avatar', [UserAvatarController::class, 'destroy']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
         return $request->user();
     });
 });
-
-

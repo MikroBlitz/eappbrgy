@@ -208,7 +208,7 @@
                                 variant="ghost"
                                 :ui="{ rounded: 'rounded-full' }"
                                 title="Download DTR as PDF"
-                                @click="generateDTRPDF(row)"
+                                @click="dtrDownload.cscFormat(row)"
                             />
                         </div>
                     </template>
@@ -381,11 +381,9 @@
 </template>
 
 <script setup lang="ts">
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-
 import type { DtrReport, User } from "~/types/codegen/graphql";
 
+import { useDTRGenerator } from "~/composables/useDTRGenerator";
 import { dailyTimeRecord } from "~/graphql/Attendance";
 import { usersPaginate } from "~/graphql/User";
 
@@ -395,12 +393,10 @@ import {
     getAttendanceForRow,
     hasExtraTime,
     hasExtraTime2,
-    calculateDailyHours,
+    // calculateDailyHours,
     formatDate,
-    formatTime,
 } from "../utils/helpers";
 
-const toast = useToast();
 const selected = ref<User[]>([]);
 const isLoading = ref(false);
 const rotationRefetch = ref(0);
@@ -421,6 +417,8 @@ const selectedRow = ref(null);
 const selectedRowAttendances = computed(() => {
     return selectedRow.value ? getAttendanceForRow(selectedRow.value) : null;
 });
+
+const dtrDownload = useDTRGenerator(startDate.value, endDate.value);
 
 const openViewModal = (row: any) => {
     selectedRow.value = row;
@@ -541,107 +539,4 @@ async function search(q: string) {
         isLoading.value = false;
     }
 }
-
-const generateDTRPDF = (row: any) => {
-    try {
-        const doc = new jsPDF();
-        const attendanceData = getAttendanceForRow(row) || [];
-        // const hasExtraTime1 = attendanceData.some(
-        //     (att) => att.extra_time_in_1 && att.extra_time_out_1,
-        // );
-        // const hasExtraTime2 = attendanceData.some(
-        //     (att) => att.extra_time_in_2 && att.extra_time_out_2,
-        // );
-
-        // table headers
-        const headers = ["Date", "AM In", "AM Out", "PM In", "PM Out"];
-        // if (hasExtraTime1) headers.push("Extra Time 1 In", "Extra Time 1 Out");
-        // if (hasExtraTime2) headers.push("Extra Time 2 In", "Extra Time 2 Out");
-        headers.push("Total Hours");
-
-        // table rows
-        const tableData = attendanceData.map((att) => {
-            const date = new Date(att.date);
-            const row = [
-                formatDate(date),
-                att.am_time_in ? formatTime(att.am_time_in) : "-",
-                att.am_time_out ? formatTime(att.am_time_out) : "-",
-                att.pm_time_in ? formatTime(att.pm_time_in) : "-",
-                att.pm_time_out ? formatTime(att.pm_time_out) : "-",
-            ];
-
-            // if (hasExtraTime1) {
-            //     row.push(
-            //         att.extra_time_in_1 ? formatTime(att.extra_time_in_1) : "-",
-            //         att.extra_time_out_1
-            //             ? formatTime(att.extra_time_out_1)
-            //             : "-",
-            //     );
-            // }
-            // if (hasExtraTime2) {
-            //     row.push(
-            //         att.extra_time_in_2 ? formatTime(att.extra_time_in_2) : "-",
-            //         att.extra_time_out_2
-            //             ? formatTime(att.extra_time_out_2)
-            //             : "-",
-            //     );
-            // }
-
-            row.push(calculateDailyHours(att));
-            return row;
-        });
-
-        // header
-        doc.setFontSize(16);
-        doc.text("DAILY TIME RECORD", 105, 15, { align: "center" });
-        doc.setFontSize(12);
-        doc.text(`Employee: ${row.name}`, 14, 25);
-        doc.text(
-            `Period: ${formatDate(startDate.value)} to ${formatDate(endDate.value)}`,
-            14,
-            35,
-        );
-
-        // summary
-        doc.setFontSize(12);
-        const totalWorkingDays = attendanceData.length;
-        const totalHours = attendanceData.reduce((sum, att) => {
-            const hours = Number(calculateDailyHours(att));
-            return sum + (isNaN(hours) ? 0 : hours);
-        }, 0);
-        doc.text(`Total Working Days: ${totalWorkingDays}`, 14, 45);
-        doc.text(`Total Hours: ${totalHours.toFixed(2)}`, 14, 55);
-
-        // table
-        autoTable(doc, {
-            alternateRowStyles: {
-                fillColor: [240, 240, 240],
-            },
-            body: tableData,
-            head: [headers],
-            headStyles: {
-                fillColor: [46, 204, 113],
-                fontStyle: "bold",
-                textColor: 255,
-            },
-            margin: { top: 60 },
-            startY: 60,
-            theme: "grid",
-        });
-
-        // save PDF
-        const fileName = `DTR_${row.name.replace(/\s+/g, "_")}_${formatDate(
-            startDate.value,
-        )}_to_${formatDate(endDate.value)}.pdf`.replace(/[/\\?%*:|"<>]/g, "");
-        doc.save(fileName);
-
-        toast.add({
-            color: "green",
-            icon: "solar:check-circle-broken",
-            title: `PDF Downloaded.`,
-        });
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-    }
-};
 </script>

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Purok;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PurokSeeder extends Seeder
@@ -15,7 +14,7 @@ class PurokSeeder extends Seeder
     {
         for ($i = 1; $i <= 50; $i++) {
             Purok::create([
-                'name' => "Purok $i"
+                'name' => "Purok $i",
             ]);
         }
     }

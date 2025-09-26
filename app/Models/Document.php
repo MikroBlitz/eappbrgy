@@ -27,7 +27,7 @@ class Document extends Model
         'requested_at',
         'issued_at',
         'valid_until',
-        'status'
+        'status',
     ];
 
     public function resident(): BelongsTo
@@ -44,5 +44,4 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
 }

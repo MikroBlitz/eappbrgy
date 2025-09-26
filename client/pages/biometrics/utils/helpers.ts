@@ -83,17 +83,24 @@ export const calculateDailyHours = (attendance: any) => {
     }
 };
 
-export const formatTime = (dateTime: string | Date) => {
+export const formatTime = (
+    dateTime: string | Date,
+    withAmPm: boolean = true,
+) => {
     if (!dateTime) return "N/A";
 
     const date = new Date(dateTime);
     if (isNaN(date.getTime())) return "Invalid Time";
 
-    return date.toLocaleTimeString("en-US", {
+    let time = date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         hour12: true,
         minute: "2-digit",
     });
+
+    if (!withAmPm) time = time.replace(/\s?(AM|PM)$/i, "");
+
+    return time;
 };
 
 export const formatDate = (dateInput: Date | string | null | undefined) => {
