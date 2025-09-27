@@ -14,7 +14,8 @@ final class Logout
             throw new \Exception('Unauthenticated');
         }
 
-        $user->tokens()->delete();
+//        $user->tokens()->delete();
+        $user->currentAccessToken()->delete();
 
         return [
             'message' => 'Logged out successfully',

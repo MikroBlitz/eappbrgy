@@ -19,7 +19,11 @@ final class Login
             throw new \Exception('Account not activated, please contact the administrator');
         }
 
-        $token = $user->createToken($args['email'].'Auth-Token')->plainTextToken;
+        $token = $user->createToken(
+            $args['email'].'Auth-Token',
+            ['*'], // abilities all
+            now()->addMonth() // expires in 1 month
+        )->plainTextToken;
 
         return [
             'token' => $token,
