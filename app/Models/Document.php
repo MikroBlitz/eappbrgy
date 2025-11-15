@@ -16,19 +16,7 @@ class Document extends Model
         'resident.name',
     ];
 
-    protected $fillable = [
-        'id',
-        'resident_id',
-        'created_by',
-        'updated_by',
-        'doc_no',
-        'type',
-        'category',
-        'requested_at',
-        'issued_at',
-        'valid_until',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function resident(): BelongsTo
     {

@@ -17,16 +17,7 @@ class Task extends Model
         'description',
     ];
 
-    protected $fillable = [
-        'id',
-        'created_by',
-        'updated_by',
-        'title',
-        'description',
-        'status',
-        'priority',
-        'order',
-    ];
+    protected $guarded = [];
 
     public function createdBy(): BelongsTo
     {

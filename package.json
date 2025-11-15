@@ -4,7 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "nuxt build",
-        "dev": "nuxt dev --host",
+        "dev": "nuxt dev",
         "start": "concurrently \"nuxt dev\" \"php artisan serve\" \"php artisan reverb:start --port=6001\"",
         "octane": "concurrently \"php artisan octane:start --workers=8 --task-workers=8 --max-requests=300\" \"php artisan reverb:start --port=6002 --debug\"",
         "octane-host": "php artisan octane:start --workers=8 --task-workers=8 --max-requests=300 --host=192.168.254.112 --port=8000",
@@ -33,7 +33,7 @@
         "jspdf": "^3.0.2",
         "jspdf-autotable": "^5.0.2",
         "lucide-vue-next": "^0.487.0",
-        "nuxt": "^4.0.3",
+        "nuxt": "^4.2.1",
         "pinia": "^3.0.3",
         "pinia-plugin-persistedstate": "^4.5.0",
         "tailwind-merge": "^3.3.1",
