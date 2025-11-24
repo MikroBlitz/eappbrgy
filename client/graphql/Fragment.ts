@@ -264,3 +264,19 @@ export const attendanceFragment = gql`
         updated_at
     }
 `;
+
+export const announcementFragment = gql`
+    fragment announcement on Announcement {
+        id
+        title
+        content
+        read
+        createdBy {
+            id
+            name
+        }
+        publish_date
+        created_at
+        updated_at
+    }
+`;

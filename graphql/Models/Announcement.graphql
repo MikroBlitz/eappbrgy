@@ -1,0 +1,35 @@
+type Announcement {
+    id: ID!
+    title: String!
+    content: String!
+    read: Boolean # TODO: to be fixed
+    createdBy: User! @belongsTo(relation: "createdBy")
+    publish_date: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input AnnouncementInput {
+    id: ID
+    title: String!
+    content: String!
+    read: Boolean # TODO: to be fixed
+    createdBy: ConnectUserRelation
+    publish_date: DateTime
+}
+
+extend type Query {
+    announcements: [Announcement]! @all
+    announcementPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [Announcement]! @paginate
+}
+
+extend type Mutation {
+    upsertAnnouncement(input: AnnouncementInput! @spread): Announcement! @upsert
+    deleteAnnouncement(id: [ID!] @eq): [Announcement] @delete
+}

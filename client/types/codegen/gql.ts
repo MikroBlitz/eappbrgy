@@ -14,6 +14,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
+    "\n    query announcementPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        announcementPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...announcement\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.AnnouncementPaginateDocument,
+    "\n    mutation upsertAnnouncement($input: AnnouncementInput!) {\n        upsertAnnouncement(input: $input) {\n            ...announcement\n        }\n    }\n    \n": types.UpsertAnnouncementDocument,
+    "\n    mutation deleteAnnouncement($id: [ID!]) {\n        deleteAnnouncement(id: $id) {\n            id\n        }\n    }\n": types.DeleteAnnouncementDocument,
     "\n    query attendancePaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryAttendancePaginateWhereWhereConditions\n    ) {\n        attendancePaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...attendance\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.AttendancePaginateDocument,
     "\n    mutation upsertAttendance($input: AttendanceInput!) {\n        upsertAttendance(input: $input) {\n            ...attendance\n        }\n    }\n    \n": types.UpsertAttendanceDocument,
     "\n    mutation deleteAttendance($id: [ID!]) {\n        deleteAttendance(id: $id) {\n            id\n        }\n    }\n": types.DeleteAttendanceDocument,
@@ -52,6 +55,7 @@ const documents = {
     "\n    fragment barangay on Barangay {\n        id\n        name\n        official {\n            id\n            resident {\n                id\n                name\n            }\n            position\n        }\n        population\n        created_at\n        updated_at\n    }\n": types.BarangayFragmentDoc,
     "\n    fragment task on Task {\n        id\n        title\n        description\n        status\n        priority\n        order\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.TaskFragmentDoc,
     "\n    fragment attendance on Attendance {\n        id\n        date\n        user {\n            id\n            name\n            hourly_rate\n        }\n        am_time_in\n        am_time_out\n        pm_time_in\n        pm_time_out\n        extra_time_in_1\n        extra_time_out_1\n        extra_time_in_2\n        extra_time_out_2\n        created_at\n        updated_at\n    }\n": types.AttendanceFragmentDoc,
+    "\n    fragment announcement on Announcement {\n        id\n        title\n        content\n        read\n        createdBy {\n            id\n            name\n        }\n        publish_date\n        created_at\n        updated_at\n    }\n": types.AnnouncementFragmentDoc,
     "\n    query householdsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        householdsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...household\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.HouseholdsPaginateDocument,
     "\n    mutation upsertHousehold($input: HouseholdInput!) {\n        upsertHousehold(input: $input) {\n            ...household\n        }\n    }\n    \n": types.UpsertHouseholdDocument,
     "\n    mutation deleteHousehold($id: [ID!]) {\n        deleteHousehold(id: $id) {\n            id\n        }\n    }\n": types.DeleteHouseholdDocument,
@@ -102,6 +106,18 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query announcementPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        announcementPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...announcement\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query announcementPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        announcementPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...announcement\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation upsertAnnouncement($input: AnnouncementInput!) {\n        upsertAnnouncement(input: $input) {\n            ...announcement\n        }\n    }\n    \n"): (typeof documents)["\n    mutation upsertAnnouncement($input: AnnouncementInput!) {\n        upsertAnnouncement(input: $input) {\n            ...announcement\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation deleteAnnouncement($id: [ID!]) {\n        deleteAnnouncement(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteAnnouncement($id: [ID!]) {\n        deleteAnnouncement(id: $id) {\n            id\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -254,6 +270,10 @@ export function graphql(source: "\n    fragment task on Task {\n        id\n    
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    fragment attendance on Attendance {\n        id\n        date\n        user {\n            id\n            name\n            hourly_rate\n        }\n        am_time_in\n        am_time_out\n        pm_time_in\n        pm_time_out\n        extra_time_in_1\n        extra_time_out_1\n        extra_time_in_2\n        extra_time_out_2\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment attendance on Attendance {\n        id\n        date\n        user {\n            id\n            name\n            hourly_rate\n        }\n        am_time_in\n        am_time_out\n        pm_time_in\n        pm_time_out\n        extra_time_in_1\n        extra_time_out_1\n        extra_time_in_2\n        extra_time_out_2\n        created_at\n        updated_at\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    fragment announcement on Announcement {\n        id\n        title\n        content\n        read\n        createdBy {\n            id\n            name\n        }\n        publish_date\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment announcement on Announcement {\n        id\n        title\n        content\n        read\n        createdBy {\n            id\n            name\n        }\n        publish_date\n        created_at\n        updated_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

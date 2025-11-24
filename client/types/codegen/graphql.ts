@@ -28,6 +28,36 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type Announcement = {
+  __typename?: 'Announcement';
+  content: Scalars['String']['output'];
+  createdBy: User;
+  created_at?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  publish_date?: Maybe<Scalars['DateTime']['output']>;
+  read?: Maybe<Scalars['Boolean']['output']>;
+  title: Scalars['String']['output'];
+  updated_at?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type AnnouncementInput = {
+  content: Scalars['String']['input'];
+  createdBy?: InputMaybe<ConnectUserRelation>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  publish_date?: InputMaybe<Scalars['DateTime']['input']>;
+  read?: InputMaybe<Scalars['Boolean']['input']>;
+  title: Scalars['String']['input'];
+};
+
+/** A paginated list of Announcement items. */
+export type AnnouncementPaginator = {
+  __typename?: 'AnnouncementPaginator';
+  /** A list of Announcement items. */
+  data: Array<Announcement>;
+  /** Pagination information about the list of items. */
+  paginatorInfo: PaginatorInfo;
+};
+
 export type Attendance = {
   __typename?: 'Attendance';
   am_time_in?: Maybe<Scalars['DateTime']['output']>;
@@ -517,6 +547,7 @@ export type MessagePaginator = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteAnnouncement?: Maybe<Array<Maybe<Announcement>>>;
   deleteAttendance?: Maybe<Array<Maybe<Attendance>>>;
   deleteBarangay?: Maybe<Array<Maybe<Barangay>>>;
   deleteBlotter?: Maybe<Array<Maybe<Blotter>>>;
@@ -541,6 +572,7 @@ export type Mutation = {
   updateUserStatus?: Maybe<User>;
   /** Upload a file that is publicly available. */
   upload?: Maybe<Scalars['String']['output']>;
+  upsertAnnouncement: Announcement;
   upsertAttendance: Attendance;
   upsertBarangay: Barangay;
   upsertBlotter: Blotter;
@@ -556,6 +588,11 @@ export type Mutation = {
   upsertTask?: Maybe<Task>;
   upsertUser: User;
   verifyOtp?: Maybe<OtpResponse>;
+};
+
+
+export type MutationDeleteAnnouncementArgs = {
+  id?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 
@@ -671,6 +708,11 @@ export type MutationUpdateUserStatusArgs = {
 
 export type MutationUploadArgs = {
   file: Scalars['Upload']['input'];
+};
+
+
+export type MutationUpsertAnnouncementArgs = {
+  input: AnnouncementInput;
 };
 
 
@@ -893,6 +935,8 @@ export type PurokPaginator = {
 
 export type Query = {
   __typename?: 'Query';
+  announcementPaginate: AnnouncementPaginator;
+  announcements: Array<Maybe<Announcement>>;
   attendanceByDate?: Maybe<Attendance>;
   attendancePaginate: AttendancePaginator;
   attendances: Array<Maybe<Attendance>>;
@@ -937,6 +981,15 @@ export type Query = {
   users: Array<Maybe<User>>;
   usersCount: Scalars['Int']['output'];
   usersPaginate: UserPaginator;
+};
+
+
+export type QueryAnnouncementPaginateArgs = {
+  filter?: InputMaybe<Array<InputMaybe<FilterInput>>>;
+  first: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortInput>;
 };
 
 
@@ -1496,6 +1549,37 @@ export type WhereConditionsRelation = {
   relation: Scalars['String']['input'];
 };
 
+export type AnnouncementPaginateQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortInput>;
+  filter?: InputMaybe<Array<InputMaybe<FilterInput>> | InputMaybe<FilterInput>>;
+}>;
+
+
+export type AnnouncementPaginateQuery = { __typename?: 'Query', announcementPaginate: { __typename?: 'AnnouncementPaginator', data: Array<(
+      { __typename?: 'Announcement' }
+      & { ' $fragmentRefs'?: { 'AnnouncementFragment': AnnouncementFragment } }
+    )>, paginatorInfo: { __typename?: 'PaginatorInfo', currentPage: number, lastPage: number, perPage: number, total: number } } };
+
+export type UpsertAnnouncementMutationVariables = Exact<{
+  input: AnnouncementInput;
+}>;
+
+
+export type UpsertAnnouncementMutation = { __typename?: 'Mutation', upsertAnnouncement: (
+    { __typename?: 'Announcement' }
+    & { ' $fragmentRefs'?: { 'AnnouncementFragment': AnnouncementFragment } }
+  ) };
+
+export type DeleteAnnouncementMutationVariables = Exact<{
+  id?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+}>;
+
+
+export type DeleteAnnouncementMutation = { __typename?: 'Mutation', deleteAnnouncement?: Array<{ __typename?: 'Announcement', id: string } | null> | null };
+
 export type AttendancePaginateQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -1735,6 +1819,8 @@ export type BarangayFragment = { __typename?: 'Barangay', id: string, name: stri
 export type TaskFragment = { __typename?: 'Task', id: string, title: string, description?: string | null, status?: TaskStatus | null, priority?: TaskPriority | null, order?: number | null, created_at: any, updated_at: any, createdBy: { __typename?: 'User', id: string, name?: string | null }, updatedBy?: { __typename?: 'User', id: string, name?: string | null } | null } & { ' $fragmentName'?: 'TaskFragment' };
 
 export type AttendanceFragment = { __typename?: 'Attendance', id: string, date?: any | null, am_time_in?: any | null, am_time_out?: any | null, pm_time_in?: any | null, pm_time_out?: any | null, extra_time_in_1?: any | null, extra_time_out_1?: any | null, extra_time_in_2?: any | null, extra_time_out_2?: any | null, created_at: any, updated_at: any, user: { __typename?: 'User', id: string, name?: string | null, hourly_rate?: number | null } } & { ' $fragmentName'?: 'AttendanceFragment' };
+
+export type AnnouncementFragment = { __typename?: 'Announcement', id: string, title: string, content: string, read?: boolean | null, publish_date?: any | null, created_at?: any | null, updated_at?: any | null, createdBy: { __typename?: 'User', id: string, name?: string | null } } & { ' $fragmentName'?: 'AnnouncementFragment' };
 
 export type HouseholdsPaginateQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -2061,6 +2147,10 @@ export const DocumentFragmentDoc = {"kind":"Document","definitions":[{"kind":"Fr
 export const BarangayFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"barangay"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Barangay"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"official"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"resident"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"position"}}]}},{"kind":"Field","name":{"kind":"Name","value":"population"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<BarangayFragment, unknown>;
 export const TaskFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"task"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Task"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"priority"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<TaskFragment, unknown>;
 export const AttendanceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"hourly_rate"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AttendanceFragment, unknown>;
+export const AnnouncementFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"announcement"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Announcement"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"read"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish_date"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AnnouncementFragment, unknown>;
+export const AnnouncementPaginateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"announcementPaginate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SortInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"announcementPaginate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"announcement"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paginatorInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentPage"}},{"kind":"Field","name":{"kind":"Name","value":"lastPage"}},{"kind":"Field","name":{"kind":"Name","value":"perPage"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"announcement"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Announcement"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"read"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish_date"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AnnouncementPaginateQuery, AnnouncementPaginateQueryVariables>;
+export const UpsertAnnouncementDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"upsertAnnouncement"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AnnouncementInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertAnnouncement"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"announcement"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"announcement"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Announcement"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"read"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publish_date"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<UpsertAnnouncementMutation, UpsertAnnouncementMutationVariables>;
+export const DeleteAnnouncementDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteAnnouncement"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAnnouncement"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteAnnouncementMutation, DeleteAnnouncementMutationVariables>;
 export const AttendancePaginateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"attendancePaginate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"page"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SortInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterInput"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"whereConditions"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"QueryAttendancePaginateWhereWhereConditions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attendancePaginate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"page"},"value":{"kind":"Variable","name":{"kind":"Name","value":"page"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"whereConditions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"attendance"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paginatorInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentPage"}},{"kind":"Field","name":{"kind":"Name","value":"lastPage"}},{"kind":"Field","name":{"kind":"Name","value":"perPage"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"hourly_rate"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<AttendancePaginateQuery, AttendancePaginateQueryVariables>;
 export const UpsertAttendanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"upsertAttendance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AttendanceInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertAttendance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"attendance"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"attendance"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attendance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"hourly_rate"}}]}},{"kind":"Field","name":{"kind":"Name","value":"am_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"am_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_in"}},{"kind":"Field","name":{"kind":"Name","value":"pm_time_out"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_1"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_in_2"}},{"kind":"Field","name":{"kind":"Name","value":"extra_time_out_2"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<UpsertAttendanceMutation, UpsertAttendanceMutationVariables>;
 export const DeleteAttendanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteAttendance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAttendance"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteAttendanceMutation, DeleteAttendanceMutationVariables>;
